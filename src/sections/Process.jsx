@@ -88,21 +88,19 @@ function StrokeIcon({ src, visible }) {
     const paths = el.querySelectorAll('path, circle, rect, line, polyline, polygon');
 
     if (visible) {
-      // Draw stroke in
       setDrawn(false);
       paths.forEach(path => {
         try {
           const len = path.getTotalLength();
           path.style.strokeDasharray = len;
           path.style.strokeDashoffset = '0';
-          path.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
+          path.style.transition = 'stroke-dashoffset 3s cubic-bezier(0.22, 1, 0.36, 1)';
         } catch (e) {}
       });
-      // After stroke draws, trigger fill
-      const timer = setTimeout(() => setDrawn(true), 1200);
+      // After stroke finishes drawing, trigger fill
+      const timer = setTimeout(() => setDrawn(true), 2800);
       return () => clearTimeout(timer);
     } else {
-      // Reset: hide fill immediately, reset stroke
       setDrawn(false);
       paths.forEach(path => {
         try {
@@ -117,14 +115,13 @@ function StrokeIcon({ src, visible }) {
 
   return (
     <div className="pj-step__icon" style={{ position: 'relative' }}>
-      {/* Stroke layer — always on top, draws first, fades out after fill appears */}
       {strokeSvg && (
         <div
           ref={strokeRef}
           className="pj-icon-stroke"
           style={{
             opacity: drawn ? 0 : 1,
-            transition: drawn ? 'opacity 0.6s ease 0.2s' : 'none',
+            transition: drawn ? 'opacity 1s ease 0.4s' : 'none',
           }}
           dangerouslySetInnerHTML={{ __html: strokeSvg }}
         />
@@ -135,7 +132,7 @@ function StrokeIcon({ src, visible }) {
           className="pj-icon-fill"
           style={{
             opacity: drawn ? 1 : 0,
-            transition: drawn ? 'opacity 0.8s cubic-bezier(0.22,1,0.36,1)' : 'none',
+            transition: drawn ? 'opacity 1.2s cubic-bezier(0.22,1,0.36,1)' : 'none',
           }}
           dangerouslySetInnerHTML={{ __html: originalSvg }}
         />
