@@ -195,11 +195,11 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   vertical-align: middle;
 }
 
-/* Single-color tint for SVG icons */
-.hero-icon-tint { filter: brightness(0) invert(1); }
-.hero-icon-tint--0 { filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(340deg); }
-.hero-icon-tint--1 { filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(310deg); }
-.hero-icon-tint--2 { filter: brightness(0) invert(1) sepia(1) saturate(5) hue-rotate(210deg); }
+/* Single-color tint for SVG icons — all white */
+.hero-icon-tint,
+.hero-icon-tint--0,
+.hero-icon-tint--1,
+.hero-icon-tint--2 { filter: brightness(0) invert(1); }
 
 .hero-scroll-hint {
   position: absolute;
