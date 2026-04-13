@@ -103,13 +103,13 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
                   onOpenPage && onOpenPage(item.id, y);
                 }}
                 style={{
-                  backgroundColor: isHovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)',
-                  color: isHovered ? '#0C0E13' : '#ffffff',
+                  backgroundColor: isHovered ? '#ffffff' : 'rgba(255,255,255,0)',
+                  color: isHovered ? '#0059A3' : '#ffffff',
                 }}
               >
                 <span
                   className="toc-row__label"
-                  style={{ color: isHovered ? 'rgba(12,14,19,0.4)' : undefined }}
+                  style={{ color: isHovered ? 'rgba(0,89,163,0.5)' : undefined }}
                 >
                   {item.label}
                 </span>
