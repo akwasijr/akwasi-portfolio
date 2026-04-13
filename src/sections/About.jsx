@@ -83,23 +83,33 @@ function VennDiagram() {
 
 function BigStatement() {
   const ref = useRef(null);
-  const isInView = useScrollVisible(ref, 0.3);
+  const isInView = useScrollVisible(ref, 0.2);
+
+  const lines = [
+    { text: 'The idea behind ', em: 'Studio 42', after: ' is simple:' },
+    { text: 'Turning complex AI capabilities' },
+    { text: 'into human-centered experiences.' },
+    { text: 'We validate feasibility from day one,' },
+    { text: 'bridging vision with deep technical insight.' },
+    { text: 'We are fast-paced, precise and strategic.' },
+    { text: 'From pixel to production.' },
+  ];
 
   return (
     <div ref={ref} className="editorial-statement">
-      <motion.p
-        className="editorial-statement__text"
-        animate={isInView
-          ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-          : { opacity: 0, y: 60, filter: 'blur(10px)' }
-        }
-        transition={{ duration: 0.9, ease }}
-      >
-        The idea behind <em>Studio 42</em> is simple: Turning complex AI capabilities
-        into human-centered experiences. We validate feasibility from day one,
-        bridging vision with deep technical insight. We are fast-paced, precise
-        and strategic. From pixel to production.
-      </motion.p>
+      <p className="editorial-statement__text">
+        {lines.map((line, i) => (
+          <span key={i} style={{ overflow: 'hidden', display: 'block' }}>
+            <motion.span
+              style={{ display: 'block' }}
+              animate={isInView ? { y: 0, opacity: 1 } : { y: '110%', opacity: 0 }}
+              transition={{ duration: 0.8, delay: i * 0.1, ease }}
+            >
+              {line.text}{line.em && <em>{line.em}</em>}{line.after}
+            </motion.span>
+          </span>
+        ))}
+      </p>
     </div>
   );
 }
