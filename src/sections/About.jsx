@@ -1,4 +1,5 @@
-import ScrollReveal from '../components/ScrollReveal';
+import { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const disciplines = [
@@ -10,41 +11,150 @@ const disciplines = [
   { abbr: 'TA', name: 'Technical Architects', color: '#F2A573' },
 ];
 
+const ease = [0.22, 1, 0.36, 1];
+
+function VennDiagram() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.3 });
+
+  return (
+    <div ref={ref} className="venn-wrap">
+      <svg viewBox="0 0 600 400" className="venn-svg">
+        {/* Left circle - Design */}
+        <motion.circle
+          cx="240" cy="200" r="160"
+          fill="none" stroke="rgba(126,128,238,0.3)" strokeWidth="1.5"
+          animate={isInView ? { r: 160, opacity: 1 } : { r: 80, opacity: 0 }}
+          transition={{ duration: 1, ease }}
+        />
+        {/* Right circle - Engineering */}
+        <motion.circle
+          cx="360" cy="200" r="160"
+          fill="none" stroke="rgba(126,128,238,0.3)" strokeWidth="1.5"
+          animate={isInView ? { r: 160, opacity: 1 } : { r: 80, opacity: 0 }}
+          transition={{ duration: 1, delay: 0.15, ease }}
+        />
+        {/* Intersection fill */}
+        <motion.path
+          d="M300,73.6 A160,160,0,0,1,300,326.4 A160,160,0,0,1,300,73.6Z"
+          fill="#7E80EE"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.8, delay: 0.4, ease }}
+        />
+        {/* Labels */}
+        <motion.text
+          x="190" y="206" textAnchor="middle" fill="rgba(255,255,255,0.5)"
+          fontSize="16" fontWeight="400"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >Design</motion.text>
+        <motion.text
+          x="300" y="206" textAnchor="middle" fill="#fff"
+          fontSize="16" fontWeight="600"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.6 }}
+        >S42</motion.text>
+        <motion.text
+          x="410" y="206" textAnchor="middle" fill="rgba(255,255,255,0.5)"
+          fontSize="16" fontWeight="400"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+        >Engineering</motion.text>
+      </svg>
+    </div>
+  );
+}
+
+function BigStatement() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.3 });
+
+  return (
+    <div ref={ref} className="editorial-statement">
+      <motion.p
+        className="editorial-statement__text"
+        animate={isInView
+          ? { opacity: 1, y: 0, filter: 'blur(0px)' }
+          : { opacity: 0, y: 60, filter: 'blur(10px)' }
+        }
+        transition={{ duration: 0.9, ease }}
+      >
+        The idea behind <em>Studio 42</em> is simple: Turning complex AI capabilities
+        into human-centered experiences. We validate feasibility from day one,
+        bridging vision with deep technical insight. We are fast-paced, precise
+        and strategic. From pixel to production.
+      </motion.p>
+    </div>
+  );
+}
+
+function TeamSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.3 });
+
+  return (
+    <div ref={ref} className="editorial-team-section">
+      <div className="editorial-team-section__divider" />
+      <div className="editorial-team-section__header">
+        <motion.h2
+          className="editorial-team-section__title"
+          animate={isInView
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 40 }
+          }
+          transition={{ duration: 0.7, ease }}
+        >
+          Our Team
+        </motion.h2>
+        <motion.p
+          className="editorial-team-section__sub"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.15, ease }}
+        >
+          Only the best in their field
+        </motion.p>
+        <motion.span
+          className="editorial-team-section__count"
+          animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ duration: 0.6, delay: 0.2, ease }}
+        >
+          6 disciplines
+        </motion.span>
+      </div>
+
+      <div className="editorial-team-grid">
+        {disciplines.map((d, i) => (
+          <motion.div
+            key={d.abbr}
+            className="editorial-team-card"
+            animate={isInView
+              ? { opacity: 1, y: 0 }
+              : { opacity: 0, y: 30 }
+            }
+            transition={{ duration: 0.6, delay: 0.1 + i * 0.07, ease }}
+          >
+            <div className="editorial-team-card__badge" style={{ borderColor: d.color }}>
+              {d.abbr}
+            </div>
+            <span className="editorial-team-card__name">{d.name}</span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function AboutSection() {
   return (
-    <section className="section section--dark">
+    <div className="editorial-page">
       <Starfield count={50} />
-      <div className="section-inner">
-        <ScrollReveal blur>
-          <p className="wwd-label">Our team</p>
-          <h2 className="wwd-heading">
-            A global, cross-functional team blending UX,
-            engineering, and data science to bring ideas to life.
-          </h2>
-        </ScrollReveal>
 
-        <ScrollReveal delay={0.15}>
-          <p style={{ fontSize: '17px', lineHeight: 1.75, color: 'rgba(255,255,255,0.55)', maxWidth: '640px', marginTop: '32px' }}>
-            We validate feasibility from day one. Our unique strength lies
-            in bridging early concepting with deep technical insight. From
-            visionary prototypes to complex custom-built solutions, we make
-            innovation tangible.
-          </p>
-        </ScrollReveal>
+      <section className="editorial-hero">
+        <VennDiagram />
+      </section>
 
-        <div className="team-grid">
-          {disciplines.map((d, i) => (
-            <ScrollReveal key={d.abbr} delay={0.1 + i * 0.08} y={30}>
-              <div className="team-card">
-                <div className="team-card__badge" style={{ borderColor: d.color }}>
-                  {d.abbr}
-                </div>
-                <span className="team-card__name">{d.name}</span>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </div>
-    </section>
+      <BigStatement />
+      <TeamSection />
+    </div>
   );
 }
