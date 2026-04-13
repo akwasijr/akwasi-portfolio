@@ -59,6 +59,11 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .section--blue   { background: #0059A3; color: #fff; }
 .section--light  { background: #F5F0EB; color: #0C0E13; }
 
+.section--hero-gradient {
+  background: linear-gradient(135deg, #4A1A8A 0%, #7E80EE 25%, #1376BF 50%, #F45A9B 75%, #F2A573 100%);
+  color: #fff;
+}
+
 /* ── Decorative ── */
 .patch-decoration {
   position: absolute;

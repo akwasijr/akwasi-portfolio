@@ -48,7 +48,7 @@ export default function HeroSection() {
   const contentScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.92]);
 
   return (
-    <section ref={sectionRef} className="section section--dark" data-section="0">
+    <section ref={sectionRef} className="section section--hero-gradient" data-section="0">
       <Starfield count={25} />
       <img src="/assets/patch-dark.svg" alt="" className="patch-decoration"
         style={{ width: '400px', top: '-80px', right: '-60px' }} role="presentation" />
