@@ -1,5 +1,5 @@
 import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useInView } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const steps = [
@@ -37,59 +37,55 @@ const steps = [
 
 const ease = [0.22, 1, 0.36, 1];
 
-function JourneyStep({ step, index, isLast }) {
+function JourneyStep({ step, index }) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const isInView = useInView(ref, { amount: 0.3, margin: '-10% 0px -10% 0px' });
   const isEven = index % 2 === 0;
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.2 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
 
   return (
     <div ref={ref} className={'pj-step' + (isEven ? '' : ' pj-step--alt')}>
-      {/* Vertical line */}
+      {/* Dot on the center line */}
       <div className="pj-step__line">
         <motion.div
           className="pj-step__dot"
-          initial={{ scale: 0 }}
-          animate={visible ? { scale: 1 } : { scale: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease }}
+          animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+          transition={{ duration: 0.4, ease }}
         />
-        {!isLast && (
-          <motion.div
-            className="pj-step__connector"
-            initial={{ scaleY: 0 }}
-            animate={visible ? { scaleY: 1 } : { scaleY: 0 }}
-            transition={{ duration: 0.8, delay: 0.4, ease }}
-          />
-        )}
       </div>
 
-      {/* Icon */}
+      {/* Animated SVG icon */}
       <motion.div
         className="pj-step__icon-wrap"
-        initial={{ opacity: 0, scale: 0.5, rotate: -15 }}
-        animate={visible ? { opacity: 1, scale: 1, rotate: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.15, ease }}
+        animate={isInView
+          ? { opacity: 1, scale: 1, rotate: 0, y: 0 }
+          : { opacity: 0, scale: 0.4, rotate: -20, y: 30 }
+        }
+        transition={{ duration: 0.7, delay: 0.1, ease }}
       >
-        <img src={step.icon} alt="" className="pj-step__icon" />
+        <motion.img
+          src={step.icon}
+          alt=""
+          className="pj-step__icon"
+          animate={isInView
+            ? { y: [0, -6, 0] }
+            : { y: 0 }
+          }
+          transition={isInView
+            ? { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+            : { duration: 0.3 }
+          }
+        />
       </motion.div>
 
-      {/* Content */}
+      {/* Text content */}
       <div className="pj-step__content">
         <motion.h3
           className="pj-step__title"
-          initial={{ opacity: 0, y: 50 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.1, ease }}
+          animate={isInView
+            ? { opacity: 1, y: 0, filter: 'blur(0px)' }
+            : { opacity: 0, y: 60, filter: 'blur(8px)' }
+          }
+          transition={{ duration: 0.7, delay: 0.05, ease }}
         >
           {step.title.split('\n').map((line, i) => (
             <span key={i}>{line}<br /></span>
@@ -97,9 +93,11 @@ function JourneyStep({ step, index, isLast }) {
         </motion.h3>
         <motion.p
           className="pj-step__desc"
-          initial={{ opacity: 0, y: 30 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.7, delay: 0.3, ease }}
+          animate={isInView
+            ? { opacity: 1, y: 0 }
+            : { opacity: 0, y: 30 }
+          }
+          transition={{ duration: 0.6, delay: 0.2, ease }}
         >
           {step.desc}
         </motion.p>
@@ -110,41 +108,30 @@ function JourneyStep({ step, index, isLast }) {
 
 function JourneyIntro() {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.3 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
+  const isInView = useInView(ref, { amount: 0.4 });
 
   return (
     <div ref={ref} className="pj-intro">
       <motion.p
         className="pj-intro__label"
-        initial={{ opacity: 0, y: 20 }}
-        animate={visible ? { opacity: 1, y: 0 } : {}}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.6, ease }}
       >
         Our process
       </motion.p>
       <motion.h2
         className="pj-intro__heading"
-        initial={{ opacity: 0, y: 50 }}
-        animate={visible ? { opacity: 1, y: 0 } : {}}
+        animate={isInView
+          ? { opacity: 1, y: 0, filter: 'blur(0px)' }
+          : { opacity: 0, y: 60, filter: 'blur(10px)' }
+        }
         transition={{ duration: 0.8, delay: 0.1, ease }}
       >
         From problem exploration<br />to technical proof
       </motion.h2>
       <motion.p
         className="pj-intro__sub"
-        initial={{ opacity: 0 }}
-        animate={visible ? { opacity: 1 } : {}}
+        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.6, delay: 0.3, ease }}
       >
         Scroll to explore each stage of our journey
@@ -161,12 +148,14 @@ export default function ProcessSection() {
       <JourneyIntro />
 
       <div className="pj-timeline">
+        {/* Continuous center line */}
+        <div className="pj-timeline__line" />
+
         {steps.map((step, i) => (
           <JourneyStep
             key={i}
             step={step}
             index={i}
-            isLast={i === steps.length - 1}
           />
         ))}
       </div>
