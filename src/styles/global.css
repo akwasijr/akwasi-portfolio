@@ -56,7 +56,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 /* Section backgrounds */
 .section--dark   { background: radial-gradient(ellipse at 50% 40%, #131620 0%, #0C0E13 70%); color: #fff; }
 .section--purple { background: #7E80EE; color: #fff; }
-.section--blue   { background: #1376BF; color: #fff; }
+.section--blue   { background: #0059A3; color: #fff; }
 .section--light  { background: #F5F0EB; color: #0C0E13; }
 
 /* ── Decorative ── */
@@ -265,7 +265,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   justify-content: center;
   padding: 0 64px;
   cursor: none;
-  border-top: 2px solid rgba(255,255,255,0.85);
+  border-top: 1px solid rgba(255,255,255,0.35);
   transition: background-color 0.35s ease, color 0.35s ease;
   border-radius: 0;
   margin: 0;
@@ -273,7 +273,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .toc-row:last-child {
-  border-bottom: 2px solid rgba(255,255,255,0.85);
+  border-bottom: 1px solid rgba(255,255,255,0.35);
 }
 
 .toc-row__label {

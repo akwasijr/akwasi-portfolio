@@ -81,10 +81,6 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
           transition={{ duration: 0.8, ease }}
         >
           <img src="/assets/logo.svg" alt="Studio 42" style={{ width: '180px', height: 'auto' }} />
-          <p className="toc-desc">
-            Experience-led presales through storytelling
-            and engineered prototypes.
-          </p>
         </motion.div>
 
         <div className="toc-list">
