@@ -62,19 +62,12 @@ function IntroSection() {
   );
 }
 
-function PillarBlock({ num, title, desc, bullets, flipped }) {
+function PillarBlock({ title, desc, bullets, flipped }) {
   const ref = useRef(null);
   const visible = useScrollVisible(ref, 0.2);
 
   return (
     <div ref={ref} className={'wwd-block' + (flipped ? ' wwd-block--flip' : '')}>
-      <motion.div
-        className="wwd-block__num-side"
-        animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: flipped ? 40 : -40 }}
-        transition={{ duration: 0.8, ease }}
-      >
-        <span className="wwd-block__num">{num}</span>
-      </motion.div>
       <div className="wwd-block__content">
         <motion.h3
           className="wwd-block__title"
@@ -90,18 +83,12 @@ function PillarBlock({ num, title, desc, bullets, flipped }) {
         >
           {desc}
         </motion.p>
-        <motion.div
-          className="wwd-block__divider"
-          animate={visible ? { scaleX: 1 } : { scaleX: 0 }}
-          transition={{ duration: 0.6, delay: 0.3, ease }}
-          style={{ transformOrigin: flipped ? 'right' : 'left' }}
-        />
         <ul className="wwd-block__list">
           {bullets.map((b, i) => (
             <motion.li
               key={i}
               animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-              transition={{ duration: 0.5, delay: 0.35 + i * 0.08, ease }}
+              transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease }}
             >
               {b}
             </motion.li>
@@ -121,7 +108,6 @@ export default function WhatWeDoSection() {
 
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 48px 120px', position: 'relative', zIndex: 2 }}>
         <PillarBlock
-          num="01"
           title="Storytelling"
           desc="We motivate customer action towards AI transformation by aligning outcomes, visualizing custom AI experiences, and crafting inspiring stories."
           bullets={[
@@ -132,7 +118,6 @@ export default function WhatWeDoSection() {
           ]}
         />
         <PillarBlock
-          num="02"
           title="Product Delivery"
           desc="We collaboratively design and build production-ready solutions, grounded in the vision and strategies established in earlier phases."
           bullets={[
