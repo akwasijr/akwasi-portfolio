@@ -27,18 +27,16 @@ class Orb {
     this.opacityDir = 1;
   }
 
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
+  update(ease = 1) {
+    this.x += this.vx * ease;
+    this.y += this.vy * ease;
 
-    // Bounce softly off edges
     if (this.x < -this.radius * 0.3) this.vx = Math.abs(this.vx);
     if (this.x > this.w + this.radius * 0.3) this.vx = -Math.abs(this.vx);
     if (this.y < -this.radius * 0.3) this.vy = Math.abs(this.vy);
     if (this.y > this.h + this.radius * 0.3) this.vy = -Math.abs(this.vy);
 
-    // Breathe opacity
-    this.opacity += this.opacitySpeed * this.opacityDir;
+    this.opacity += this.opacitySpeed * this.opacityDir * ease;
     if (this.opacity > 0.65) this.opacityDir = -1;
     if (this.opacity < 0.25) this.opacityDir = 1;
   }
@@ -80,16 +78,24 @@ export default function AnimatedGradient() {
     resize();
     window.addEventListener('resize', resize);
 
-    const draw = () => {
+    const settleDuration = 3000;
+    const startTime = performance.now();
+
+    const draw = (now) => {
       ctx.fillStyle = '#1a0a2e';
       ctx.fillRect(0, 0, w, h);
 
+      const elapsed = now - startTime;
+      const ease = Math.max(0, 1 - elapsed / settleDuration);
+
       orbs.forEach(o => {
-        o.update();
+        o.update(ease);
         o.draw(ctx);
       });
 
-      animRef.current = requestAnimationFrame(draw);
+      if (ease > 0.001) {
+        animRef.current = requestAnimationFrame(draw);
+      }
     };
 
     animRef.current = requestAnimationFrame(draw);
