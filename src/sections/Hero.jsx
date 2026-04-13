@@ -143,10 +143,8 @@ export default function HeroSection() {
                         style={{
                           width: '0.8em',
                           height: '0.8em',
-                          filter: `brightness(0) saturate(100%) drop-shadow(0 0 0 ${line.color})`,
-                          opacity: 0.9,
                         }}
-                        className={`hero-icon-tint hero-icon-tint--${i}`}
+                        className={`hero-icon-tint`}
                       />
                     </motion.span>
                   </span>
