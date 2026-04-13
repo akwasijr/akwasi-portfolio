@@ -565,12 +565,18 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 
 .team-map-container {
   width: 100%;
-  aspect-ratio: 2 / 1;
-  border-radius: 16px;
+  aspect-ratio: 1 / 1;
+  max-width: 560px;
+  margin: 0 auto;
+  border-radius: 50%;
   overflow: hidden;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.01);
   position: relative;
+}
+
+.team-map-container--globe {
+  border: none;
+  background: none;
 }
 
 .team-map-container svg { cursor: none; }
@@ -689,7 +695,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   .team-map-wrap { padding: 0 24px 80px; }
   .team-map-header { gap: 12px; }
   .team-map-locate { margin-left: 0; }
-  .team-map-container { aspect-ratio: 4 / 3; }
+  .team-map-container { max-width: 100%; aspect-ratio: 1 / 1; }
 }
 
 /* ══════════════════════════════════════
