@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { geoMercator, geoPath } from 'd3-geo';
 import { feature } from 'topojson-client';
@@ -64,37 +64,107 @@ function getLocalTime(tz) {
 }
 
 const W = 960;
-const H = 500;
+const H = 540;
+
+// Cluster nearby points at a given pixel radius
+function clusterMarkers(memberList, proj, radius) {
+  const placed = [];
+  const clusters = [];
+
+  memberList.forEach((m, idx) => {
+    const [px, py] = proj(m.coords);
+    let merged = false;
+    for (const c of clusters) {
+      const dx = c.x - px;
+      const dy = c.y - py;
+      if (Math.sqrt(dx * dx + dy * dy) < radius) {
+        c.members.push(idx);
+        c.x = (c.x * (c.members.length - 1) + px) / c.members.length;
+        c.y = (c.y * (c.members.length - 1) + py) / c.members.length;
+        merged = true;
+        break;
+      }
+    }
+    if (!merged) {
+      clusters.push({ x: px, y: py, members: [idx] });
+    }
+  });
+  return clusters;
+}
 
 export default function TeamMap() {
   const [geoData, setGeoData] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [expandedCluster, setExpandedCluster] = useState(null);
   const [userPos, setUserPos] = useState(null);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState([0, 0]);
+  const dragging = useRef(false);
+  const lastMouse = useRef([0, 0]);
 
   const projection = useMemo(() =>
     geoMercator()
-      .scale(140)
-      .translate([W / 2, H / 1.5])
-  , []);
+      .scale(140 * zoom)
+      .translate([W / 2 + pan[0], H / 1.4 + pan[1]])
+  , [zoom, pan]);
 
   const pathGen = useMemo(() => geoPath().projection(projection), [projection]);
+
+  const clusters = useMemo(() =>
+    clusterMarkers(members, projection, 20 / zoom)
+  , [projection, zoom]);
 
   useEffect(() => {
     fetch(GEO_URL)
       .then(r => r.json())
-      .then(topo => {
-        const countries = feature(topo, topo.objects.countries);
-        setGeoData(countries);
-      });
+      .then(topo => setGeoData(feature(topo, topo.objects.countries)));
   }, []);
+
+  const handleWheel = useCallback((e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? 0.85 : 1.18;
+    setZoom(z => Math.max(1, Math.min(12, z * delta)));
+    setExpandedCluster(null);
+    setSelected(null);
+  }, []);
+
+  const handleMouseDown = useCallback((e) => {
+    dragging.current = true;
+    lastMouse.current = [e.clientX, e.clientY];
+  }, []);
+
+  const handleMouseMove = useCallback((e) => {
+    if (!dragging.current) return;
+    const dx = e.clientX - lastMouse.current[0];
+    const dy = e.clientY - lastMouse.current[1];
+    lastMouse.current = [e.clientX, e.clientY];
+    setPan(p => [p[0] + dx, p[1] + dy]);
+  }, []);
+
+  const handleMouseUp = useCallback(() => { dragging.current = false; }, []);
 
   const locateMe = () => {
     if (!navigator.geolocation) return;
     navigator.geolocation.getCurrentPosition(
       (pos) => setUserPos([pos.coords.longitude, pos.coords.latitude]),
-      () => {},
-      { enableHighAccuracy: false, timeout: 5000 }
+      () => {}, { enableHighAccuracy: false, timeout: 5000 }
     );
+  };
+
+  const resetView = () => { setZoom(1); setPan([0, 0]); setSelected(null); setExpandedCluster(null); };
+
+  const handleClusterClick = (cluster, ci, e) => {
+    e.stopPropagation();
+    if (cluster.members.length === 1) {
+      setSelected(cluster.members[0]);
+      setExpandedCluster(null);
+    } else {
+      // Zoom into the cluster
+      const m = members[cluster.members[0]];
+      const [cx, cy] = m.coords;
+      setExpandedCluster(ci);
+      setSelected(null);
+    }
   };
 
   return (
@@ -109,51 +179,76 @@ export default function TeamMap() {
             </span>
           ))}
         </div>
-        <button className="team-map-locate" onClick={locateMe}>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="0" x2="8" y2="4" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="12" x2="8" y2="16" stroke="currentColor" strokeWidth="1.5"/><line x1="0" y1="8" x2="4" y2="8" stroke="currentColor" strokeWidth="1.5"/><line x1="12" y1="8" x2="16" y2="8" stroke="currentColor" strokeWidth="1.5"/></svg>
-          Locate me
-        </button>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px' }}>
+          {zoom > 1 && (
+            <button className="team-map-locate" onClick={resetView}>Reset</button>
+          )}
+          <button className="team-map-locate" onClick={locateMe}>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="0" x2="8" y2="4" stroke="currentColor" strokeWidth="1.5"/><line x1="8" y1="12" x2="8" y2="16" stroke="currentColor" strokeWidth="1.5"/><line x1="0" y1="8" x2="4" y2="8" stroke="currentColor" strokeWidth="1.5"/><line x1="12" y1="8" x2="16" y2="8" stroke="currentColor" strokeWidth="1.5"/></svg>
+            Locate me
+          </button>
+        </div>
       </div>
 
-      <div className="team-map-container" onClick={() => setSelected(null)}>
+      <div
+        className="team-map-container"
+        onClick={() => { setSelected(null); setExpandedCluster(null); }}
+        onWheel={handleWheel}
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseLeave={handleMouseUp}
+      >
         <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', height: '100%' }}>
-          {/* Countries */}
           {geoData && geoData.features.map((geo, i) => (
-            <path
-              key={i}
-              d={pathGen(geo)}
-              fill="rgba(255,255,255,0.04)"
-              stroke="rgba(255,255,255,0.08)"
-              strokeWidth={0.5}
-            />
+            <path key={i} d={pathGen(geo)} fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.08)" strokeWidth={0.5 / zoom} />
           ))}
 
-          {/* Team markers */}
-          {members.map((m, i) => {
-            const [x, y] = projection(m.coords);
+          {/* Clusters or individual dots */}
+          {clusters.map((c, ci) => {
+            const isExpanded = expandedCluster === ci;
+            const count = c.members.length;
+            const color = teamColors[members[c.members[0]].team];
+
+            if (count === 1 || isExpanded) {
+              // Show individual members
+              return c.members.map((mi, j) => {
+                const m = members[mi];
+                const [x, y] = projection(m.coords);
+                const isSelected = selected === mi;
+                return (
+                  <g key={`${ci}-${j}`} onClick={(e) => { e.stopPropagation(); setSelected(mi); }} style={{ cursor: 'pointer' }}>
+                    <circle cx={x} cy={y} r={5 / zoom} fill={teamColors[m.team]} opacity={0.9} stroke="rgba(0,0,0,0.4)" strokeWidth={0.5 / zoom} />
+                    {isSelected && <circle cx={x} cy={y} r={10 / zoom} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5 / zoom} opacity={0.6} />}
+                  </g>
+                );
+              });
+            }
+
+            // Cluster dot with count
             return (
-              <g key={i} onClick={(e) => { e.stopPropagation(); setSelected(i); }} style={{ cursor: 'pointer' }}>
-                <circle cx={x} cy={y} r={4} fill={teamColors[m.team]} opacity={0.85} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
-                {selected === i && (
-                  <circle cx={x} cy={y} r={8} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5} opacity={0.6} />
-                )}
+              <g key={ci} onClick={(e) => handleClusterClick(c, ci, e)} style={{ cursor: 'pointer' }}>
+                <circle cx={c.x} cy={c.y} r={14 / zoom} fill={color} opacity={0.2} />
+                <circle cx={c.x} cy={c.y} r={9 / zoom} fill={color} opacity={0.85} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5 / zoom} />
+                <text x={c.x} y={c.y + 3.5 / zoom} textAnchor="middle" fill="#fff" fontSize={9 / zoom} fontWeight="700" style={{ pointerEvents: 'none' }}>
+                  {count}
+                </text>
               </g>
             );
           })}
 
-          {/* User location pulse */}
           {userPos && (() => {
             const [ux, uy] = projection(userPos);
             return (
               <g>
-                <circle cx={ux} cy={uy} r={6} fill="#fff" opacity={0.3} className="map-user-pulse" />
-                <circle cx={ux} cy={uy} r={3} fill="#fff" />
+                <circle cx={ux} cy={uy} r={6 / zoom} fill="#fff" opacity={0.3} className="map-user-pulse" />
+                <circle cx={ux} cy={uy} r={3 / zoom} fill="#fff" />
               </g>
             );
           })()}
         </svg>
 
-        {/* Popup overlay */}
+        {/* Popup for selected person */}
         <AnimatePresence>
           {selected !== null && (() => {
             const m = members[selected];
@@ -174,6 +269,43 @@ export default function TeamMap() {
                 <div className="map-popup__name">{m.name}</div>
                 <div className="map-popup__city">{m.city}</div>
                 <div className="map-popup__time">{getLocalTime(m.tz)}</div>
+              </motion.div>
+            );
+          })()}
+        </AnimatePresence>
+
+        {/* Expanded cluster member list */}
+        <AnimatePresence>
+          {expandedCluster !== null && (() => {
+            const c = clusters[expandedCluster];
+            if (!c) return null;
+            const pctX = (c.x / W) * 100;
+            const pctY = (c.y / H) * 100;
+            return (
+              <motion.div
+                className="map-cluster-list"
+                style={{ left: pctX + '%', top: pctY + '%' }}
+                initial={{ opacity: 0, y: 8, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.25 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="map-cluster-list__title">{c.members.length} team members</div>
+                {c.members.map((mi) => {
+                  const m = members[mi];
+                  return (
+                    <button
+                      key={mi}
+                      className="map-cluster-list__item"
+                      onClick={() => { setSelected(mi); setExpandedCluster(null); }}
+                    >
+                      <span className="map-cluster-list__dot" style={{ background: teamColors[m.team] }} />
+                      <span className="map-cluster-list__name">{m.name}</span>
+                      <span className="map-cluster-list__city">{m.city}</span>
+                    </button>
+                  );
+                })}
               </motion.div>
             );
           })()}
