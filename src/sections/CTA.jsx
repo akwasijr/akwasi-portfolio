@@ -1,8 +1,10 @@
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 export default function CTASection() {
   return (
-    <section className="section section--dark" data-section="6">
+    <section className="section section--dark" data-section="7">
+      <Starfield count={40} />
       <img src="/assets/patch-light.svg" alt="" className="patch-decoration"
         style={{ width: '500px', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.03 }}
         role="presentation" />

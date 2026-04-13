@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
 import * as THREE from 'three';
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 const disciplines = [
   { abbr: 'PM',  name: 'Product Management',   color: '#F2A573', orbit: 3.0, speed: 0.3, offset: 0 },
@@ -128,7 +129,8 @@ export default function CapabilitiesSection() {
   }, []);
 
   return (
-    <section className="section section--dark" data-section="2" style={{ padding: 0, display: 'block', position: 'relative' }}>
+    <section className="section section--dark" data-section="3" style={{ padding: 0, display: 'block', position: 'relative' }}>
+      <Starfield count={55} />
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
         <div ref={ref} style={{ width: '100%', height: '100%' }}>
           {visible && (

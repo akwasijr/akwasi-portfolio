@@ -1,8 +1,10 @@
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 export default function AboutSection() {
   return (
-    <section className="section section--purple" data-section="1">
+    <section className="section section--purple" data-section="2">
+      <Starfield count={45} />
       <div className="section-inner">
         <ScrollReveal blur>
           <h2 className="about-heading-white">

@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 const projects = [
   {
@@ -73,7 +74,8 @@ export default function CaseStudiesSection() {
   };
 
   return (
-    <section className="section section--dark2" data-section="4">
+    <section className="section section--dark" data-section="5">
+      <Starfield count={45} />
       <div className="section-inner">
         <ScrollReveal>
           <h2 className="cases-heading">Selected<br />projects</h2>

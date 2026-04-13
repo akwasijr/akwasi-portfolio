@@ -5,6 +5,7 @@ import CustomCursor from './components/CustomCursor';
 import Navigation from './components/Navigation';
 import CircleWipe from './components/CircleWipe';
 import HeroSection from './sections/Hero';
+import TableOfContentsSection from './sections/TableOfContents';
 import AboutSection from './sections/About';
 import CapabilitiesSection from './sections/Capabilities';
 import ProcessSection from './sections/Process';
@@ -12,7 +13,7 @@ import CaseStudiesSection from './sections/CaseStudies';
 import PositioningSection from './sections/Positioning';
 import CTASection from './sections/CTA';
 
-const TOTAL_SECTIONS = 7;
+const TOTAL_SECTIONS = 8;
 
 export default function App() {
   const containerRef = useRef(null);
@@ -74,6 +75,7 @@ export default function App() {
       />
       <div ref={containerRef} className="scroll-container">
         <HeroSection />
+        <TableOfContentsSection onNavigate={scrollToSection} />
         <CircleWipe>
           <AboutSection />
           <CapabilitiesSection />

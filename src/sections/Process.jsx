@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 const steps = [
   {
@@ -42,7 +43,8 @@ export default function ProcessSection() {
   const step = steps[active];
 
   return (
-    <section className="section section--blue" data-section="3">
+    <section className="section section--blue" data-section="4">
+      <Starfield count={40} />
       <div className="section-inner">
         <ScrollReveal blur>
           <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.45)', marginBottom: '16px' }}>Our process</p>

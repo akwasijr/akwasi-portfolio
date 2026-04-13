@@ -1,4 +1,5 @@
 import ScrollReveal from '../components/ScrollReveal';
+import Starfield from '../components/Starfield';
 
 const teams = [
   { name: 'Innovation Hub', desc: 'Early-stage ideation and inspiration to help customers envision possibilities.', phase: 'Inspire + Design' },
@@ -11,23 +12,24 @@ const teams = [
 
 export default function PositioningSection() {
   return (
-    <section className="section section--light" data-section="5">
+    <section className="section section--purple" data-section="6">
+      <Starfield count={40} />
       <div className="section-inner">
         <div className="pos-layout">
           <ScrollReveal>
-            <h2 className="pos-heading-light">Where<br />we fit</h2>
-            <p className="pos-body-light">
+            <h2 className="pos-heading-dark">Where<br />we fit</h2>
+            <p className="pos-body-dark">
               Studio 42 sits in the Inspire + Design phase of MCEM,
               bridging vision with technical proof alongside peer teams.
             </p>
           </ScrollReveal>
 
           <ScrollReveal delay={0.15}>
-            <div className="pos-teams-light">
+            <div className="pos-teams-dark">
               {teams.map((team, i) => (
-                <div key={i} className={"pos-team-light" + (team.highlight ? " pos-team-light--hl" : "")}>
-                  <span className="pos-team-light__name">{team.name}</span>
-                  <span className="pos-team-light__desc">{team.desc}</span>
+                <div key={i} className={"pos-team-dark" + (team.highlight ? " pos-team-dark--hl" : "")}>
+                  <span className="pos-team-dark__name">{team.name}</span>
+                  <span className="pos-team-dark__desc">{team.desc}</span>
                 </div>
               ))}
             </div>
