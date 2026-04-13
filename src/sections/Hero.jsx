@@ -6,28 +6,10 @@ import AnimatedGradient from '../components/AnimatedGradient';
 
 const ease = [0.22, 1, 0.36, 1];
 
-const VisionIcon = () => (
-  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#F2A573" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
-  </svg>
-);
-
-const ValueIcon = () => (
-  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#F45A9B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
-  </svg>
-);
-
-const ScaleIcon = () => (
-  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#7E80EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-    <path d="M21 3L3 21"/><path d="M21 3h-6"/><path d="M21 3v6"/><path d="M3 21h6"/><path d="M3 21v-6"/>
-  </svg>
-);
-
 const headingLines = [
-  { text: 'From ', word: 'Vision', hoverIcon: <VisionIcon /> },
-  { text: 'to ', word: 'Value', hoverIcon: <ValueIcon /> },
-  { text: 'at ', word: 'Scale', hoverIcon: <ScaleIcon /> },
+  { text: 'From ', word: 'Vision', icon: '/assets/icons/01.svg', color: '#F2A573' },
+  { text: 'to ', word: 'Value', icon: '/assets/icons/03.svg', color: '#F45A9B' },
+  { text: 'at ', word: 'Scale', icon: '/assets/icons/05.svg', color: '#7E80EE' },
 ];
 
 export default function HeroSection() {
@@ -148,7 +130,6 @@ export default function HeroSection() {
                         left: '50%',
                         top: '50%',
                         display: 'inline-block',
-                        fontSize: '0.65em',
                       }}
                       animate={isHovered
                         ? { opacity: 1, scale: 1, x: '-50%', y: '-50%', rotate: 0 }
@@ -156,7 +137,17 @@ export default function HeroSection() {
                       }
                       transition={{ duration: 0.4, ease }}
                     >
-                      {line.hoverIcon}
+                      <img
+                        src={line.icon}
+                        alt=""
+                        style={{
+                          width: '0.8em',
+                          height: '0.8em',
+                          filter: `brightness(0) saturate(100%) drop-shadow(0 0 0 ${line.color})`,
+                          opacity: 0.9,
+                        }}
+                        className={`hero-icon-tint hero-icon-tint--${i}`}
+                      />
                     </motion.span>
                   </span>
                 </motion.span>
