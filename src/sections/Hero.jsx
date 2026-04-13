@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import Starfield from '../components/Starfield';
 import LottieLogo from '../components/LottieLogo';
+import AnimatedGradient from '../components/AnimatedGradient';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -49,6 +50,7 @@ export default function HeroSection() {
 
   return (
     <section ref={sectionRef} className="section section--hero-gradient" data-section="0">
+      <AnimatedGradient />
       <Starfield count={25} />
       <img src="/assets/patch-dark.svg" alt="" className="patch-decoration"
         style={{ width: '400px', top: '-80px', right: '-60px' }} role="presentation" />
