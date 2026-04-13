@@ -77,8 +77,7 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
       <div className="section-inner">
         <motion.div
           className="toc-header"
-          initial={{ opacity: 0, y: 40 }}
-          animate={visible ? { opacity: 1, y: 0 } : {}}
+          animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease }}
         >
           <img src="/assets/logo.svg" alt="Studio 42" style={{ width: '180px', height: 'auto' }} />
@@ -96,10 +95,10 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
               <motion.div
                 key={item.id}
                 className="toc-row"
-                custom={i}
-                variants={rowVariants}
-                initial="hidden"
-                animate={visible ? "visible" : "hidden"}
+                animate={visible
+                  ? { opacity: 1, y: 0, transition: { duration: 0.7, delay: 0.3 + i * 0.1, ease } }
+                  : { opacity: 0, y: 60, transition: { duration: 0.3, delay: 0, ease } }
+                }
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
                 onClick={(e) => {
