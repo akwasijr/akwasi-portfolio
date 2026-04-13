@@ -54,28 +54,30 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
 
-  // Reset animation when a sub-page opens, re-trigger when it closes
+  // Reset when page opens, re-animate when it closes
   useEffect(() => {
     if (pageOpen) {
       setVisible(false);
+    } else {
+      // Re-animate after curtains close
+      const timer = setTimeout(() => setVisible(true), 700);
+      return () => clearTimeout(timer);
     }
   }, [pageOpen]);
 
-  // Trigger when section enters viewport (initial + after returning from sub-page)
+  // Initial entrance via scroll
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
       ([e]) => {
-        if (e.isIntersecting && !pageOpen) {
-          setVisible(true);
-        }
+        if (e.isIntersecting) setVisible(true);
       },
-      { threshold: 0.4 }
+      { threshold: 0.3 }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, [pageOpen]);
+  }, []);
 
   return (
     <section ref={ref} className="section section--blue toc-section" data-section="1">
