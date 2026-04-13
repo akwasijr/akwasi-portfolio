@@ -85,7 +85,7 @@ export default function HeroSection() {
           transition={{ duration: 0.5, ease }}
           style={{ y: logoY }}
         >
-          <LottieLogo width={160} autoplay={reveal} loop={false} style={{ margin: '0 auto', marginBottom: '48px' }} />
+          <LottieLogo width={160} autoplay={reveal} loop={false} variant="light" style={{ margin: '0 auto', marginBottom: '48px' }} />
         </motion.div>
 
         <motion.h1 className="hero-mega" style={{ y: headingY }}>

@@ -86,7 +86,7 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease }}
         >
-          <LottieLogo width={180} autoplay={visible} loop={false} />
+          <LottieLogo width={180} autoplay={visible} loop={false} variant="light" />
         </motion.div>
 
         <div className="toc-list">
