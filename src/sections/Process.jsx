@@ -63,62 +63,81 @@ function useScrollVisible(ref, threshold = 0.2) {
 function StrokeIcon({ src, visible }) {
   const [originalSvg, setOriginalSvg] = useState(null);
   const [strokeSvg, setStrokeSvg] = useState(null);
-  const containerRef = useRef(null);
   const strokeRef = useRef(null);
+  const [drawn, setDrawn] = useState(false);
 
   useEffect(() => {
     fetch(src)
       .then(r => r.text())
       .then(text => {
         setOriginalSvg(text);
-        // Create stroke-only version for draw animation
         const stroked = text
           .replace(/fill="(?!none)[^"]*"/g, 'fill="none"')
-          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="1"')
-          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="1"')
-          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="1"');
+          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="1.2"')
+          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="1.2"')
+          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="1.2"');
         setStrokeSvg(stroked);
       });
   }, [src]);
 
-  // Set up stroke dash on the overlay layer
+  // Animate stroke draw, then after it finishes, show fill
   useEffect(() => {
     const el = strokeRef.current;
     if (!el || !strokeSvg) return;
+
     const paths = el.querySelectorAll('path, circle, rect, line, polyline, polygon');
-    paths.forEach(path => {
-      try {
-        const len = path.getTotalLength();
-        path.style.strokeDasharray = len;
-        path.style.strokeDashoffset = visible ? '0' : String(len);
-        path.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
-      } catch (e) {}
-    });
+
+    if (visible) {
+      // Draw stroke in
+      setDrawn(false);
+      paths.forEach(path => {
+        try {
+          const len = path.getTotalLength();
+          path.style.strokeDasharray = len;
+          path.style.strokeDashoffset = '0';
+          path.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
+        } catch (e) {}
+      });
+      // After stroke draws, trigger fill
+      const timer = setTimeout(() => setDrawn(true), 1200);
+      return () => clearTimeout(timer);
+    } else {
+      // Reset: hide fill immediately, reset stroke
+      setDrawn(false);
+      paths.forEach(path => {
+        try {
+          const len = path.getTotalLength();
+          path.style.transition = 'none';
+          path.style.strokeDasharray = len;
+          path.style.strokeDashoffset = String(len);
+        } catch (e) {}
+      });
+    }
   }, [visible, strokeSvg]);
 
   return (
     <div className="pj-step__icon" style={{ position: 'relative' }}>
-      {/* Filled original — fades in after stroke draws */}
-      {originalSvg && (
-        <div
-          className="pj-icon-fill"
-          style={{
-            opacity: visible ? 1 : 0,
-            transition: 'opacity 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s',
-          }}
-          dangerouslySetInnerHTML={{ __html: originalSvg }}
-        />
-      )}
-      {/* Stroke overlay — draws in first */}
+      {/* Stroke layer — always on top, draws first, fades out after fill appears */}
       {strokeSvg && (
         <div
           ref={strokeRef}
           className="pj-icon-stroke"
           style={{
-            opacity: visible ? 0 : 1,
-            transition: 'opacity 0.5s ease 1.2s',
+            opacity: drawn ? 0 : 1,
+            transition: drawn ? 'opacity 0.6s ease 0.2s' : 'none',
           }}
           dangerouslySetInnerHTML={{ __html: strokeSvg }}
+        />
+      )}
+      {/* Filled original — fades in only after stroke is done drawing */}
+      {originalSvg && (
+        <div
+          className="pj-icon-fill"
+          style={{
+            opacity: drawn ? 1 : 0,
+            transition: drawn ? 'opacity 0.8s cubic-bezier(0.22,1,0.36,1)' : 'none',
+          }}
+          dangerouslySetInnerHTML={{ __html: originalSvg }}
         />
       )}
     </div>

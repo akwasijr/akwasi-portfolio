@@ -612,6 +612,14 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   inset: 0;
 }
 
+.pj-icon-stroke {
+  z-index: 2;
+}
+
+.pj-icon-fill {
+  z-index: 1;
+}
+
 .pj-icon-fill svg,
 .pj-icon-stroke svg {
   width: 100%;
