@@ -88,28 +88,32 @@ function StrokeIcon({ src, visible }) {
     const paths = el.querySelectorAll('path, circle, rect, line, polyline, polygon');
 
     if (visible) {
+      // Draw stroke left→right (offset from +len to 0)
       setDrawn(false);
       paths.forEach(path => {
         try {
           const len = path.getTotalLength();
           path.style.strokeDasharray = len;
+          path.style.transition = 'none';
+          path.style.strokeDashoffset = String(len);
+          // Force reflow then animate
+          path.getBoundingClientRect();
+          path.style.transition = 'stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1)';
           path.style.strokeDashoffset = '0';
-          path.style.transition = 'stroke-dashoffset 3s cubic-bezier(0.22, 1, 0.36, 1)';
         } catch (e) {}
       });
-      // After stroke finishes drawing, trigger fill
-      const timer = setTimeout(() => setDrawn(true), 2800);
+      const timer = setTimeout(() => setDrawn(true), 1300);
       return () => clearTimeout(timer);
     } else {
-      setDrawn(false);
+      // Close stroke right→left (offset from 0 to -len)
       paths.forEach(path => {
         try {
           const len = path.getTotalLength();
-          path.style.transition = 'none';
-          path.style.strokeDasharray = len;
-          path.style.strokeDashoffset = String(len);
+          path.style.transition = 'stroke-dashoffset 1s cubic-bezier(0.22, 1, 0.36, 1)';
+          path.style.strokeDashoffset = String(-len);
         } catch (e) {}
       });
+      setTimeout(() => setDrawn(false), 100);
     }
   }, [visible, strokeSvg]);
 
