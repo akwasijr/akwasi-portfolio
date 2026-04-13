@@ -9,20 +9,24 @@ const headingLines = ['From Vision', 'to Value', 'at Scale'];
 
 export default function HeroSection() {
   const sectionRef = useRef(null);
-  const [showIntro, setShowIntro] = useState(true);
+  const videoRef = useRef(null);
+  const [showVideo, setShowVideo] = useState(true);
   const [reveal, setReveal] = useState(false);
   const fired = useRef(false);
 
   const startReveal = useCallback(() => {
     if (fired.current) return;
     fired.current = true;
-    setShowIntro(false);
+    setShowVideo(false);
     setTimeout(() => setReveal(true), 400);
   }, []);
 
   useEffect(() => {
-    const timer = setTimeout(startReveal, 3500);
-    return () => clearTimeout(timer);
+    const video = videoRef.current;
+    if (!video) return;
+    const timer = setTimeout(startReveal, 4500);
+    video.addEventListener('ended', startReveal);
+    return () => { clearTimeout(timer); video.removeEventListener('ended', startReveal); };
   }, [startReveal]);
 
   // Get scroll container ref after mount
@@ -50,9 +54,9 @@ export default function HeroSection() {
         style={{ width: '400px', top: '-80px', right: '-60px' }} role="presentation" />
 
       <AnimatePresence>
-        {showIntro && (
+        {showVideo && (
           <motion.div
-            key="intro"
+            key="overlay"
             onClick={startReveal}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.6 }}
@@ -61,7 +65,8 @@ export default function HeroSection() {
               justifyContent: 'center', zIndex: 50, background: '#0C0E13', cursor: 'none',
             }}
           >
-            <LottieLogo width={320} autoplay loop={false} />
+            <video ref={videoRef} src="/assets/logo-anim.mp4" autoPlay muted playsInline
+              style={{ width: '100vw', height: '100vh', objectFit: 'contain' }} />
           </motion.div>
         )}
       </AnimatePresence>
