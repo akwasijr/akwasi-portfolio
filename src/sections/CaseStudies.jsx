@@ -97,29 +97,53 @@ function getFanTransform(offset) {
   return { x: sign * 420, rotate: sign * 14, scale: 0.78, zIndex: 1, opacity: 0.25 };
 }
 
-function ExpandedCard({ project, onClose }) {
+function ExpandedCard({ project, cardRect, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
+  // Animate from card position to fullscreen
+  const startX = cardRect ? cardRect.x + cardRect.width / 2 - window.innerWidth / 2 : 0;
+  const startY = cardRect ? cardRect.y + cardRect.height / 2 - window.innerHeight / 2 : 0;
+  const startScaleX = cardRect ? cardRect.width / window.innerWidth : 0.3;
+  const startScaleY = cardRect ? cardRect.height / window.innerHeight : 0.4;
+
   return (
     <motion.div
       className="case-expanded"
       style={{ background: project.color }}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.4, ease }}
+      initial={{
+        x: startX,
+        y: startY,
+        scaleX: startScaleX,
+        scaleY: startScaleY,
+        borderRadius: '20px',
+      }}
+      animate={{
+        x: 0,
+        y: 0,
+        scaleX: 1,
+        scaleY: 1,
+        borderRadius: '0px',
+      }}
+      exit={{
+        x: startX,
+        y: startY,
+        scaleX: startScaleX,
+        scaleY: startScaleY,
+        borderRadius: '20px',
+      }}
+      transition={{ duration: 0.55, ease }}
       onClick={onClose}
     >
       <motion.div
         className="case-expanded__inner"
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
-        transition={{ duration: 0.5, delay: 0.15, ease }}
+        transition={{ duration: 0.4, delay: 0.25, ease }}
         onClick={(e) => e.stopPropagation()}
       >
         <button className="case-expanded__close" onClick={onClose}>
@@ -142,6 +166,8 @@ function ExpandedCard({ project, onClose }) {
 export default function CaseStudiesSection() {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(null);
+  const [cardRect, setCardRect] = useState(null);
+  const frontCardRef = useRef(null);
   const timerRef = useRef(null);
 
   const go = useCallback((dir) => {
@@ -164,8 +190,10 @@ export default function CaseStudiesSection() {
     timerRef.current = setInterval(() => go(1), 5000);
   };
 
-  const handleCardClick = (i) => {
+  const handleCardClick = (i, e) => {
     if (i === active) {
+      const el = e.currentTarget;
+      setCardRect(el.getBoundingClientRect());
       setExpanded(i);
     } else {
       setActive(i);
@@ -194,7 +222,7 @@ export default function CaseStudiesSection() {
                 <motion.div
                   key={p.id}
                   className={'fan-card' + (isFront ? ' fan-card--front' : '')}
-                  onClick={() => handleCardClick(i)}
+                  onClick={(e) => handleCardClick(i, e)}
                   animate={{ x: t.x, rotate: t.rotate, scale: t.scale, opacity: t.opacity }}
                   whileHover={isFront ? { scale: 1.04, y: -8 } : {}}
                   transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
@@ -237,6 +265,7 @@ export default function CaseStudiesSection() {
         {expanded !== null && (
           <ExpandedCard
             project={projects[expanded]}
+            cardRect={cardRect}
             onClose={() => setExpanded(null)}
           />
         )}
