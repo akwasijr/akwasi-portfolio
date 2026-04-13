@@ -120,7 +120,12 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
                   {item.label}
                 </span>
                 <div className="toc-row__center">
-                  <span className="toc-row__title">{item.title}</span>
+                  <span
+                    className="toc-row__title"
+                    style={{ fontStyle: isHovered ? 'normal' : 'italic' }}
+                  >
+                    {item.title}
+                  </span>
                   <AnimatePresence>
                     {isHovered && (
                       <motion.p

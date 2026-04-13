@@ -6,13 +6,18 @@ import AnimatedGradient from '../components/AnimatedGradient';
 
 const ease = [0.22, 1, 0.36, 1];
 
-const headingLines = ['From Vision', 'to Value', 'at Scale'];
+const headingLines = [
+  { text: 'From Vision', hoverIcon: '🔭' },
+  { text: 'to Value', hoverIcon: '💎' },
+  { text: 'at Scale', hoverIcon: '📐' },
+];
 
 export default function HeroSection() {
   const sectionRef = useRef(null);
   const videoRef = useRef(null);
   const [showVideo, setShowVideo] = useState(true);
   const [reveal, setReveal] = useState(false);
+  const [hoveredLine, setHoveredLine] = useState(null);
   const fired = useRef(false);
 
   const startReveal = useCallback(() => {
@@ -92,15 +97,33 @@ export default function HeroSection() {
 
         <motion.h1 className="hero-mega" style={{ y: headingY }}>
           {headingLines.map((line, i) => (
-            <span key={i} style={{ overflow: 'hidden', display: 'block' }}>
+            <span
+              key={i}
+              style={{ overflow: 'hidden', display: 'block', position: 'relative' }}
+              onMouseEnter={() => setHoveredLine(i)}
+              onMouseLeave={() => setHoveredLine(null)}
+            >
               <motion.span
-                style={{ display: 'block' }}
+                style={{ display: 'inline-block' }}
                 initial={{ y: '120%' }}
                 animate={reveal ? { y: 0 } : {}}
                 transition={{ duration: 1, delay: 0.15 + i * 0.14, ease }}
               >
-                {line}
+                {line.text}
               </motion.span>
+              <AnimatePresence>
+                {hoveredLine === i && (
+                  <motion.span
+                    className="hero-hover-icon"
+                    initial={{ opacity: 0, scale: 0.4, x: -10 }}
+                    animate={{ opacity: 1, scale: 1, x: 0 }}
+                    exit={{ opacity: 0, scale: 0.4, x: 10 }}
+                    transition={{ duration: 0.3, ease }}
+                  >
+                    {line.hoverIcon}
+                  </motion.span>
+                )}
+              </AnimatePresence>
             </span>
           ))}
         </motion.h1>

@@ -188,6 +188,14 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   line-height: 1.6;
 }
 
+.hero-hover-icon {
+  display: inline-block;
+  margin-left: 16px;
+  font-size: 0.5em;
+  vertical-align: middle;
+  filter: saturate(0) brightness(2);
+}
+
 .hero-scroll-hint {
   position: absolute;
   bottom: 40px;
