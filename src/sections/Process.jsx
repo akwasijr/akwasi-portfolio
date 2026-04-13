@@ -1,101 +1,76 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
 import Starfield from '../components/Starfield';
 
 const steps = [
   {
     num: '01',
-    title: 'Business Envisioning',
-    subtitle: 'Develop and prioritize use cases',
-    duration: '1-2 days',
-    desc: 'Build your path to innovation through human-centered design thinking. We explore opportunities, uncover challenges, and define concrete next steps with your team.',
-    output: 'Use cases and prioritization matrix',
+    icon: '/assets/icons/01.svg',
+    title: 'Discovery and Alignment',
+    desc: 'We start by understanding your business goals, customer needs, and technical landscape. Together we define the challenge and align on what success looks like.',
   },
   {
     num: '02',
-    title: 'Solution Envisioning',
-    subtitle: 'Agree on technical direction',
-    duration: '1-2 days',
-    desc: 'A strategic business and technical discussion to understand goals, offer insights, and imagine the solution with Microsoft and partner capabilities.',
-    output: 'Solution mapping',
+    icon: '/assets/icons/02.svg',
+    title: 'Storytelling and Vision',
+    desc: 'We craft a compelling narrative that connects your goals to Microsoft capabilities, building a shared vision that resonates with stakeholders at every level.',
   },
   {
     num: '03',
-    title: 'Architecture Design',
-    subtitle: 'Architect your solution',
-    duration: '1-3 days',
-    desc: 'Synthesize the business and technical requirements including initial scope and alignment to reference architectures. Define the blueprint.',
-    output: 'Architecture blueprint',
+    icon: '/assets/icons/03.svg',
+    title: 'Solution Envisioning',
+    desc: 'Through collaborative workshops we explore possibilities, map user journeys, and define the solution space where technology meets real human needs.',
   },
   {
     num: '04',
-    title: 'Rapid Prototype',
-    subtitle: 'Validate capabilities',
-    duration: '2-5 days',
-    desc: 'Demonstrate key technical capabilities of a solution and address challenges to accelerate decision making. Working code, real results.',
-    output: 'Code and configuration',
+    icon: '/assets/icons/04.svg',
+    title: 'Vibe Prototyping',
+    desc: 'Using AI-paired development we rapidly build functional prototypes that bring ideas to life. Real code, real interactions, validated in days.',
+  },
+  {
+    num: '05',
+    icon: '/assets/icons/05.svg',
+    title: 'Architecture Design',
+    desc: 'We synthesize requirements into a scalable, Azure-native architecture blueprint. Security, performance, and integration built in from the start.',
+  },
+  {
+    num: '06',
+    icon: '/assets/icons/06.svg',
+    title: 'Delivery and Handoff',
+    desc: 'Production-grade code, documentation, and knowledge transfer. We ensure your team is empowered to own, extend, and scale the solution forward.',
   },
 ];
 
 export default function ProcessSection() {
-  const [active, setActive] = useState(0);
-  const step = steps[active];
-
   return (
     <section className="section section--blue" data-section="4">
       <Starfield count={40} />
       <div className="section-inner">
         <ScrollReveal blur>
-          <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.45)', marginBottom: '16px' }}>Our process</p>
-          <h2 style={{ fontSize: 'clamp(28px, 4vw, 44px)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em', maxWidth: '600px' }}>
+          <p className="proc-label">Our process</p>
+          <h2 className="proc-heading">
             From problem exploration to technical proof
           </h2>
         </ScrollReveal>
 
-        <ScrollReveal delay={0.15}>
-          <div className="process-tabs">
-            {steps.map((s, i) => (
-              <button
-                key={s.num}
-                className={"process-tab" + (i === active ? " process-tab--active" : "")}
-                onClick={() => setActive(i)}
-              >
-                <span className="process-tab__num">{s.num}</span>
-                <span className="process-tab__label">{s.title}</span>
-              </button>
-            ))}
-          </div>
-        </ScrollReveal>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={active}
-            className="process-content"
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
-          >
-            <div>
-              <h3 className="process-content__title">{step.title}</h3>
-              <p className="process-content__sub">{step.subtitle}</p>
-            </div>
-            <div>
-              <p className="process-content__desc">{step.desc}</p>
-              <div className="process-content__meta">
-                <div>
-                  <div className="process-meta__label">Duration</div>
-                  <div className="process-meta__value">{step.duration}</div>
+        <div className="proc-grid">
+          {steps.map((s, i) => (
+            <ScrollReveal key={s.num} delay={0.08 + i * 0.08} y={36}>
+              <div className="proc-item">
+                <div className="proc-item__top">
+                  <span className="proc-item__num">{s.num}</span>
+                  <img
+                    src={s.icon}
+                    alt=""
+                    className="proc-item__icon"
+                    loading="lazy"
+                  />
                 </div>
-                <div>
-                  <div className="process-meta__label">Output</div>
-                  <div className="process-meta__value">{step.output}</div>
-                </div>
+                <h3 className="proc-item__title">{s.title}</h3>
+                <p className="proc-item__desc">{s.desc}</p>
               </div>
-            </div>
-          </motion.div>
-        </AnimatePresence>
+            </ScrollReveal>
+          ))}
+        </div>
       </div>
     </section>
   );

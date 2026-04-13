@@ -9,46 +9,73 @@ export default function Starfield({ count = 60, color = 'rgba(255,255,255,0.5)' 
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
 
+    let w, h;
     const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+      w = canvas.offsetWidth;
+      h = canvas.offsetHeight;
+      canvas.width = w * window.devicePixelRatio;
+      canvas.height = h * window.devicePixelRatio;
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     };
     resize();
     window.addEventListener('resize', resize);
 
-    // Generate stars with varied sizes and twinkle speeds
+    // Stars with drift + twinkle + pulse
     const stars = Array.from({ length: count }, () => ({
       x: Math.random(),
       y: Math.random(),
       size: Math.random() * 2.5 + 0.5,
       twinkleSpeed: Math.random() * 0.8 + 0.3,
       twinkleOffset: Math.random() * Math.PI * 2,
-      type: Math.random(), // 0-0.3 = dot, 0.3-0.7 = cross, 0.7-1 = sparkle
+      driftX: (Math.random() - 0.5) * 0.003,
+      driftY: (Math.random() - 0.5) * 0.002,
+      pulseSpeed: Math.random() * 0.4 + 0.1,
+      pulseOffset: Math.random() * Math.PI * 2,
+      type: Math.random(),
     }));
 
-    const draw = (time) => {
-      const w = canvas.offsetWidth;
-      const h = canvas.offsetHeight;
-      ctx.clearRect(0, 0, w, h);
+    // Shooting stars
+    const shooters = [];
+    const spawnShooter = () => ({
+      x: Math.random() * 0.6 + 0.2,
+      y: Math.random() * 0.3,
+      vx: (Math.random() * 0.4 + 0.3) * (Math.random() > 0.5 ? 1 : -1),
+      vy: Math.random() * 0.2 + 0.15,
+      life: 1,
+      decay: Math.random() * 0.008 + 0.006,
+      length: Math.random() * 60 + 40,
+    });
 
+    let lastShooterTime = 0;
+
+    const draw = (time) => {
+      ctx.clearRect(0, 0, w, h);
+      const t = time * 0.001;
+
+      // Draw stars
       stars.forEach((star) => {
-        const t = time * 0.001;
-        const alpha = 0.15 + 0.55 * (0.5 + 0.5 * Math.sin(t * star.twinkleSpeed + star.twinkleOffset));
+        // Drift position slowly
+        star.x += star.driftX * 0.016;
+        star.y += star.driftY * 0.016;
+        if (star.x > 1.05) star.x = -0.05;
+        if (star.x < -0.05) star.x = 1.05;
+        if (star.y > 1.05) star.y = -0.05;
+        if (star.y < -0.05) star.y = 1.05;
+
+        const alpha = 0.15 + 0.6 * (0.5 + 0.5 * Math.sin(t * star.twinkleSpeed + star.twinkleOffset));
+        const pulse = 1 + 0.3 * Math.sin(t * star.pulseSpeed + star.pulseOffset);
         const x = star.x * w;
         const y = star.y * h;
-        const s = star.size;
+        const s = star.size * pulse;
 
         ctx.globalAlpha = alpha;
 
         if (star.type < 0.35) {
-          // Simple dot
           ctx.beginPath();
           ctx.arc(x, y, s * 0.6, 0, Math.PI * 2);
           ctx.fillStyle = color;
           ctx.fill();
         } else if (star.type < 0.7) {
-          // Cross / plus shape
           ctx.strokeStyle = color;
           ctx.lineWidth = 0.8;
           ctx.beginPath();
@@ -58,7 +85,6 @@ export default function Starfield({ count = 60, color = 'rgba(255,255,255,0.5)' 
           ctx.lineTo(x, y + s);
           ctx.stroke();
         } else {
-          // 4-point sparkle
           ctx.strokeStyle = color;
           ctx.lineWidth = 0.6;
           const len = s * 1.5;
@@ -68,7 +94,6 @@ export default function Starfield({ count = 60, color = 'rgba(255,255,255,0.5)' 
           ctx.lineTo(x + len, y);
           ctx.moveTo(x, y - len);
           ctx.lineTo(x, y + len);
-          // diagonal arms (shorter)
           ctx.moveTo(x - short, y - short);
           ctx.lineTo(x + short, y + short);
           ctx.moveTo(x + short, y - short);
@@ -76,6 +101,49 @@ export default function Starfield({ count = 60, color = 'rgba(255,255,255,0.5)' 
           ctx.stroke();
         }
       });
+
+      // Spawn shooting stars occasionally
+      if (time - lastShooterTime > 3000 + Math.random() * 5000) {
+        shooters.push(spawnShooter());
+        lastShooterTime = time;
+        if (shooters.length > 3) shooters.shift();
+      }
+
+      // Draw shooting stars
+      for (let i = shooters.length - 1; i >= 0; i--) {
+        const s = shooters[i];
+        s.x += s.vx * 0.016;
+        s.y += s.vy * 0.016;
+        s.life -= s.decay;
+
+        if (s.life <= 0) { shooters.splice(i, 1); continue; }
+
+        const sx = s.x * w;
+        const sy = s.y * h;
+        const angle = Math.atan2(s.vy, s.vx);
+        const tailX = sx - Math.cos(angle) * s.length * s.life;
+        const tailY = sy - Math.sin(angle) * s.length * s.life;
+
+        const grad = ctx.createLinearGradient(tailX, tailY, sx, sy);
+        grad.addColorStop(0, 'rgba(255,255,255,0)');
+        grad.addColorStop(1, 'rgba(255,255,255,' + (s.life * 0.7) + ')');
+
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = 1.5;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(tailX, tailY);
+        ctx.lineTo(sx, sy);
+        ctx.stroke();
+
+        // Head glow
+        ctx.globalAlpha = s.life * 0.5;
+        ctx.beginPath();
+        ctx.arc(sx, sy, 2, 0, Math.PI * 2);
+        ctx.fillStyle = '#fff';
+        ctx.fill();
+      }
 
       ctx.globalAlpha = 1;
       animRef.current = requestAnimationFrame(draw);
