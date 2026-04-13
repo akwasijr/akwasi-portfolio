@@ -73,9 +73,9 @@ function StrokeIcon({ src, visible }) {
         setOriginalSvg(text);
         const stroked = text
           .replace(/fill="(?!none)[^"]*"/g, 'fill="none"')
-          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="1.2"')
-          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="1.2"')
-          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="1.2"');
+          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="0.7"')
+          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="0.7"')
+          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="0.7"');
         setStrokeSvg(stroked);
       });
   }, [src]);

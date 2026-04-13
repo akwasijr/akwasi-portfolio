@@ -33,14 +33,14 @@ export default function FullPageOverlay({ pageId, pageTitle, originY, onClose, c
         transition={{ duration: 0.8, ease }}
       />
 
-      {/* Horizontal line at split origin */}
+      {/* Horizontal line draws left to right, then disappears */}
       <motion.div
         className="overlay__split-line"
         style={{ top: originY + 'vh' }}
-        initial={{ scaleX: 1, opacity: 1 }}
-        animate={{ scaleX: 0, opacity: 0 }}
-        exit={{ scaleX: 1, opacity: 1 }}
-        transition={{ duration: 0.6, delay: 0.3, ease }}
+        initial={{ scaleX: 0 }}
+        animate={{ scaleX: [0, 1, 1, 0] }}
+        exit={{ scaleX: 0 }}
+        transition={{ duration: 1.2, times: [0, 0.4, 0.7, 1], ease }}
       />
 
       {/* Back button */}

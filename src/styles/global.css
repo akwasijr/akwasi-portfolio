@@ -951,7 +951,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .overlay__curtain--top { top: 0; }
 .overlay__curtain--bottom { bottom: 0; }
 
-/* White line at the split point */
+/* White line at the split point — draws left to right */
 .overlay__split-line {
   position: fixed;
   left: 0;
@@ -959,7 +959,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   height: 2px;
   background: #fff;
   z-index: 209;
-  transform-origin: center;
+  transform-origin: left center;
   pointer-events: none;
 }
 
