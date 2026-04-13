@@ -968,3 +968,24 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .overlay__content .section {
   scroll-snap-align: none;
 }
+
+/* Title screen during page transition */
+.overlay__title-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 205;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.overlay__title {
+  font-size: clamp(48px, 12vw, 160px);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+}

@@ -38,6 +38,14 @@ const pageComponents = {
   'selected-work': () => <CaseStudiesSection />,
 };
 
+const pageTitles = {
+  'team': 'Team',
+  'process': 'Process',
+  'working-with-us': 'Working with Us',
+  'vibe-prototyping': 'Vibe Prototyping',
+  'selected-work': 'Selected Work',
+};
+
 export default function App() {
   const containerRef = useRef(null);
   const [activePage, setActivePage] = useState(null);
@@ -71,9 +79,14 @@ export default function App() {
         <CTASection />
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {activePage && PageContent && (
-          <FullPageOverlay pageId={activePage} onClose={handleClosePage}>
+          <FullPageOverlay
+            key={activePage}
+            pageId={activePage}
+            pageTitle={pageTitles[activePage] || ''}
+            onClose={handleClosePage}
+          >
             <PageContent />
           </FullPageOverlay>
         )}
