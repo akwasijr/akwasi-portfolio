@@ -422,6 +422,12 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   margin-left: auto;
 }
 
+.editorial-team-section__also {
+  font-size: 16px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 48px;
+}
+
 /* Team cards grid */
 .editorial-team-grid {
   display: grid;

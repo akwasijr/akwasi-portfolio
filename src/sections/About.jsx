@@ -6,9 +6,6 @@ const disciplines = [
   { abbr: 'PM', name: 'Product Management', color: '#F2A573' },
   { abbr: 'UXD', name: 'UX Designers', color: '#7E80EE' },
   { abbr: 'UXE', name: 'UX Engineers', color: '#1376BF' },
-  { abbr: 'DS', name: 'Data Science', color: '#F45A9B' },
-  { abbr: 'SEC', name: 'Security', color: '#4AA75F' },
-  { abbr: 'TA', name: 'Technical Architects', color: '#F2A573' },
 ];
 
 const ease = [0.22, 1, 0.36, 1];
@@ -144,9 +141,17 @@ function TeamSection() {
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.2, ease }}
         >
-          6 disciplines
+          3 disciplines
         </motion.span>
       </div>
+
+      <motion.p
+        className="editorial-team-section__also"
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.6, delay: 0.25, ease }}
+      >
+        Plus Data Science, Security, and Technical Architects
+      </motion.p>
 
       <div className="editorial-team-grid">
         {disciplines.map((d, i) => (
