@@ -14,10 +14,13 @@ import CaseStudiesSection from './sections/CaseStudies';
 import PositioningSection from './sections/Positioning';
 import CTASection from './sections/CTA';
 
+import TeamMap from './components/TeamMap';
+
 const pageComponents = {
   'team': () => (
     <>
       <AboutSection />
+      <TeamMap />
       <CapabilitiesSection />
     </>
   ),
