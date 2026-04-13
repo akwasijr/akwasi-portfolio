@@ -258,6 +258,8 @@ function JourneyIntro() {
   const ref = useRef(null);
   const visible = useScrollVisible(ref, 0.3);
 
+  const headingLines = ['From problem', 'exploration', 'to technical proof'];
+
   return (
     <div ref={ref} className="pj-intro">
       <motion.p
@@ -267,16 +269,19 @@ function JourneyIntro() {
       >
         Our process
       </motion.p>
-      <motion.h2
-        className="pj-intro__heading"
-        animate={visible
-          ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-          : { opacity: 0, y: 60, filter: 'blur(10px)' }
-        }
-        transition={{ duration: 0.8, delay: 0.1, ease }}
-      >
-        From problem exploration<br />to technical proof
-      </motion.h2>
+      <h2 className="pj-intro__heading">
+        {headingLines.map((line, i) => (
+          <span key={i} style={{ overflow: 'hidden', display: 'block' }}>
+            <motion.span
+              style={{ display: 'block' }}
+              animate={visible ? { y: 0 } : { y: '120%' }}
+              transition={{ duration: 1, delay: 0.1 + i * 0.14, ease }}
+            >
+              {line}
+            </motion.span>
+          </span>
+        ))}
+      </h2>
       <motion.p
         className="pj-intro__sub"
         animate={visible ? { opacity: 1 } : { opacity: 0 }}
