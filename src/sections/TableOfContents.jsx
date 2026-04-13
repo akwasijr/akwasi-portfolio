@@ -90,7 +90,11 @@ export default function TableOfContentsSection({ onOpenPage }) {
                 animate={visible ? "visible" : "hidden"}
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
-                onClick={() => onOpenPage && onOpenPage(item.id)}
+                onClick={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const y = rect.top + rect.height / 2;
+                  onOpenPage && onOpenPage(item.id, y);
+                }}
                 style={{
                   backgroundColor: isHovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)',
                   color: isHovered ? '#0C0E13' : '#ffffff',

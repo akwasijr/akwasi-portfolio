@@ -49,8 +49,11 @@ const pageTitles = {
 export default function App() {
   const containerRef = useRef(null);
   const [activePage, setActivePage] = useState(null);
+  const [originY, setOriginY] = useState(50);
 
-  const handleOpenPage = useCallback((pageId) => {
+  const handleOpenPage = useCallback((pageId, clickY) => {
+    const pct = clickY ? (clickY / window.innerHeight) * 100 : 50;
+    setOriginY(pct);
     setActivePage(pageId);
   }, []);
 
@@ -85,6 +88,7 @@ export default function App() {
             key={activePage}
             pageId={activePage}
             pageTitle={pageTitles[activePage] || ''}
+            originY={originY}
             onClose={handleClosePage}
           >
             <PageContent />
