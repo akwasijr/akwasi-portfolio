@@ -1,5 +1,5 @@
-import { useRef } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const disciplines = [
@@ -13,9 +13,25 @@ const disciplines = [
 
 const ease = [0.22, 1, 0.36, 1];
 
+function useScrollVisible(ref, threshold = 0.2) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const overlay = el.closest('.overlay');
+    const obs = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { root: overlay || null, threshold, rootMargin: '-8% 0px -8% 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ref, threshold]);
+  return visible;
+}
+
 function VennDiagram() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.3 });
+  const isInView = useScrollVisible(ref, 0.3);
 
   return (
     <div ref={ref} className="venn-wrap">
@@ -67,7 +83,7 @@ function VennDiagram() {
 
 function BigStatement() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.3 });
+  const isInView = useScrollVisible(ref, 0.3);
 
   return (
     <div ref={ref} className="editorial-statement">
@@ -90,7 +106,7 @@ function BigStatement() {
 
 function TeamSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.3 });
+  const isInView = useScrollVisible(ref, 0.3);
 
   return (
     <div ref={ref} className="editorial-team-section">

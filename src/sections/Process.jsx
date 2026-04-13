@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { useRef, useEffect, useState, useMemo } from 'react';
+import { motion } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const steps = [
@@ -37,9 +37,76 @@ const steps = [
 
 const ease = [0.22, 1, 0.36, 1];
 
+// Hook that works inside overlay scroll containers
+function useScrollVisible(ref, threshold = 0.2) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    // Find the scrollable overlay ancestor
+    const overlay = el.closest('.overlay');
+
+    const obs = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { root: overlay || null, threshold, rootMargin: '-8% 0px -8% 0px' }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [ref, threshold]);
+
+  return visible;
+}
+
+// SVG icon with stroke draw-in animation
+function StrokeIcon({ src, visible }) {
+  const [svgContent, setSvgContent] = useState(null);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    fetch(src)
+      .then(r => r.text())
+      .then(text => {
+        // Convert fills to strokes for draw animation
+        const modified = text
+          .replace(/fill="(?!none)[^"]*"/g, 'fill="none"')
+          .replace(/<path /g, '<path stroke="#7E80EE" stroke-width="1.2" ')
+          .replace(/<circle /g, '<circle stroke="#7E80EE" stroke-width="1.2" fill="none" ')
+          .replace(/<rect /g, '<rect stroke="#7E80EE" stroke-width="1.2" fill="none" ');
+        setSvgContent(modified);
+      });
+  }, [src]);
+
+  // Animate stroke-dashoffset on all paths when visible
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container || !svgContent) return;
+
+    const paths = container.querySelectorAll('path, circle, rect, line, polyline, polygon');
+    paths.forEach(path => {
+      try {
+        const len = path.getTotalLength();
+        path.style.strokeDasharray = len;
+        path.style.strokeDashoffset = visible ? '0' : len;
+        path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+      } catch (e) {
+        // Some elements don't support getTotalLength
+      }
+    });
+  }, [visible, svgContent]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="pj-step__icon"
+      dangerouslySetInnerHTML={svgContent ? { __html: svgContent } : undefined}
+    />
+  );
+}
+
 function ScrollPath({ wrapperRef }) {
   const pathRef = useRef(null);
-  const [dashOffset, setDashOffset] = useState(1);
 
   useEffect(() => {
     const path = pathRef.current;
@@ -59,9 +126,7 @@ function ScrollPath({ wrapperRef }) {
       const total = rect.height + viewH;
       const scrolled = viewH - rect.top;
       const progress = Math.max(0, Math.min(1, scrolled / total));
-      const offset = len * (1 - progress);
-      path.style.strokeDashoffset = offset;
-      setDashOffset(1 - progress);
+      path.style.strokeDashoffset = len * (1 - progress);
     };
 
     scroller.addEventListener('scroll', onScroll, { passive: true });
@@ -69,15 +134,12 @@ function ScrollPath({ wrapperRef }) {
     return () => scroller.removeEventListener('scroll', onScroll);
   }, [wrapperRef]);
 
-  // Build a curving S-path through 6 steps
-  // Each step is ~500px tall, alternating left/right
   const w = 1100;
   const stepH = 500;
   const totalH = stepH * 6;
-  const cx = w / 2; // center x
-  const amp = 200;  // curve amplitude
+  const cx = w / 2;
+  const amp = 200;
 
-  // Build cubic bezier S-curves
   const points = steps.map((_, i) => {
     const y = stepH * i + stepH * 0.4;
     const x = i % 2 === 0 ? cx - amp : cx + amp;
@@ -92,7 +154,6 @@ function ScrollPath({ wrapperRef }) {
     const cpY2 = prevY + (p.y - prevY) * 0.5;
     d += ` C ${prevX} ${cpY1}, ${p.x} ${cpY2}, ${p.x} ${p.y}`;
   });
-  // Extend to bottom
   const lastP = points[points.length - 1];
   d += ` C ${lastP.x} ${lastP.y + 100}, ${cx} ${totalH - 50}, ${cx} ${totalH}`;
 
@@ -103,9 +164,7 @@ function ScrollPath({ wrapperRef }) {
       preserveAspectRatio="none"
       style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}
     >
-      {/* Ghost line */}
-      <path d={d} fill="none" stroke="rgba(126,128,238,0.08)" strokeWidth="2" />
-      {/* Drawing line */}
+      <path d={d} fill="none" stroke="rgba(126,128,238,0.06)" strokeWidth="2" />
       <path ref={pathRef} d={d} fill="none" stroke="url(#pathGrad)" strokeWidth="2.5" strokeLinecap="round" />
       <defs>
         <linearGradient id="pathGrad" x1="0" y1="0" x2="0" y2="1">
@@ -120,37 +179,21 @@ function ScrollPath({ wrapperRef }) {
 
 function JourneyStep({ step, index }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.25, margin: '-5% 0px -5% 0px' });
+  const visible = useScrollVisible(ref, 0.2);
   const isEven = index % 2 === 0;
 
   return (
     <div ref={ref} className={'pj-step' + (isEven ? '' : ' pj-step--alt')}>
-      {/* Big animated icon */}
-      <motion.div
-        className="pj-step__icon-wrap"
-        animate={isInView
-          ? { opacity: 1, scale: 1, rotate: 0, y: 0 }
-          : { opacity: 0, scale: 0.3, rotate: -25, y: 40 }
-        }
-        transition={{ duration: 0.8, delay: 0.05, ease }}
-      >
-        <motion.img
-          src={step.icon}
-          alt=""
-          className="pj-step__icon"
-          animate={isInView ? { y: [0, -10, 0] } : { y: 0 }}
-          transition={isInView
-            ? { duration: 3.5, repeat: Infinity, ease: 'easeInOut' }
-            : { duration: 0.3 }
-          }
-        />
-      </motion.div>
+      {/* Stroke-animated SVG icon */}
+      <div className="pj-step__icon-wrap">
+        <StrokeIcon src={step.icon} visible={visible} />
+      </div>
 
       {/* Text content */}
       <div className="pj-step__content">
         <motion.h3
           className="pj-step__title"
-          animate={isInView
+          animate={visible
             ? { opacity: 1, y: 0, filter: 'blur(0px)' }
             : { opacity: 0, y: 70, filter: 'blur(12px)' }
           }
@@ -162,7 +205,7 @@ function JourneyStep({ step, index }) {
         </motion.h3>
         <motion.p
           className="pj-step__desc"
-          animate={isInView
+          animate={visible
             ? { opacity: 1, y: 0 }
             : { opacity: 0, y: 40 }
           }
@@ -177,20 +220,20 @@ function JourneyStep({ step, index }) {
 
 function JourneyIntro() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { amount: 0.4 });
+  const visible = useScrollVisible(ref, 0.3);
 
   return (
     <div ref={ref} className="pj-intro">
       <motion.p
         className="pj-intro__label"
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.6, ease }}
       >
         Our process
       </motion.p>
       <motion.h2
         className="pj-intro__heading"
-        animate={isInView
+        animate={visible
           ? { opacity: 1, y: 0, filter: 'blur(0px)' }
           : { opacity: 0, y: 60, filter: 'blur(10px)' }
         }
@@ -200,7 +243,7 @@ function JourneyIntro() {
       </motion.h2>
       <motion.p
         className="pj-intro__sub"
-        animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+        animate={visible ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.6, delay: 0.3, ease }}
       >
         Scroll to explore each stage of our journey
