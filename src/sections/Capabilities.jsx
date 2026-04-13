@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
+import { motion } from 'framer-motion';
 import * as THREE from 'three';
 import ScrollReveal from '../components/ScrollReveal';
 import Starfield from '../components/Starfield';
@@ -120,9 +121,10 @@ export default function CapabilitiesSection() {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+    const overlay = el.closest('.overlay');
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.2 }
+      { root: overlay || null, threshold: 0.15 }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -134,12 +136,19 @@ export default function CapabilitiesSection() {
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
         <div ref={ref} style={{ width: '100%', height: '100%' }}>
           {visible && (
-            <Canvas
-              camera={{ position: [0, 10, 20], fov: 40 }}
-              style={{ width: '100%', height: '100%', cursor: 'none' }}
+            <motion.div
+              style={{ width: '100%', height: '100%' }}
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.5, ease: [0.22, 1, 0.36, 1] }}
             >
-              <Scene />
-            </Canvas>
+              <Canvas
+                camera={{ position: [0, 10, 20], fov: 40 }}
+                style={{ width: '100%', height: '100%', cursor: 'none' }}
+              >
+                <Scene />
+              </Canvas>
+            </motion.div>
           )}
         </div>
       </div>
