@@ -434,147 +434,87 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .pj-timeline {
   position: relative;
   z-index: 2;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 0 32px;
-}
-
-/* Continuous center line running the full height */
-.pj-timeline__line {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(126,128,238,0.3) 5%,
-    rgba(126,128,238,0.15) 50%,
-    rgba(126,128,238,0.3) 95%,
-    transparent 100%
-  );
-  transform: translateX(-50%);
+  padding: 0 48px 80px;
 }
 
 .pj-step {
-  display: grid;
-  grid-template-columns: 1fr 80px 1fr;
-  gap: 0;
-  min-height: 420px;
-  align-items: start;
-  padding: 48px 0;
-}
-
-/* Even steps: icon left, content right */
-.pj-step .pj-step__icon-wrap { justify-self: end; padding-right: 40px; }
-.pj-step .pj-step__content { padding-left: 40px; }
-
-/* Odd steps: content left, icon right */
-.pj-step--alt { direction: rtl; }
-.pj-step--alt > * { direction: ltr; }
-.pj-step--alt .pj-step__icon-wrap { justify-self: start; padding-left: 40px; padding-right: 0; }
-.pj-step--alt .pj-step__content { padding-right: 40px; padding-left: 0; text-align: right; }
-
-/* Center dot on the line */
-.pj-step__line {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  gap: 64px;
+  min-height: 500px;
+  padding: 60px 0;
   position: relative;
-  padding-top: 24px;
-}
-
-.pj-step__dot {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: #7E80EE;
-  flex-shrink: 0;
-  box-shadow: 0 0 24px rgba(126,128,238,0.5);
   z-index: 2;
 }
 
-/* Icon */
+/* Even: icon left, content right */
+.pj-step .pj-step__icon-wrap { order: 1; }
+.pj-step .pj-step__content { order: 2; }
+
+/* Odd: content left, icon right */
+.pj-step--alt { flex-direction: row-reverse; }
+.pj-step--alt .pj-step__content { text-align: right; }
+.pj-step--alt .pj-step__desc { margin-left: auto; }
+
+/* Icon — BIG */
 .pj-step__icon-wrap {
-  padding-top: 8px;
+  flex-shrink: 0;
 }
 
 .pj-step__icon {
-  width: 100px;
-  height: 100px;
+  width: clamp(160px, 20vw, 260px);
+  height: clamp(160px, 20vw, 260px);
 }
 
 /* Content */
 .pj-step__content {
-  padding-top: 8px;
+  flex: 1;
+  min-width: 0;
 }
 
 .pj-step__title {
-  font-size: clamp(32px, 5vw, 56px);
+  font-size: clamp(36px, 6vw, 72px);
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  line-height: 1.0;
+  letter-spacing: -0.03em;
   color: #fff;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .pj-step__desc {
-  font-size: 17px;
+  font-size: 18px;
   line-height: 1.75;
   color: rgba(255,255,255,0.5);
-  max-width: 420px;
+  max-width: 480px;
 }
 
-.pj-step--alt .pj-step__desc {
-  margin-left: auto;
+/* SVG curved path */
+.pj-svg-path {
+  overflow: visible;
 }
 
 @media (max-width: 768px) {
-  .pj-timeline__line {
-    left: 24px;
-    transform: none;
-  }
+  .pj-timeline { padding: 0 24px 60px; }
 
   .pj-step,
   .pj-step--alt {
-    grid-template-columns: 48px 1fr;
-    direction: ltr;
+    flex-direction: column;
+    gap: 32px;
     min-height: auto;
-    padding: 24px 0;
+    padding: 40px 0;
+    text-align: center;
   }
 
-  .pj-step--alt > * { direction: ltr; }
+  .pj-step--alt .pj-step__content { text-align: center; }
+  .pj-step--alt .pj-step__desc { margin-left: auto; margin-right: auto; }
 
-  .pj-step .pj-step__icon-wrap,
-  .pj-step--alt .pj-step__icon-wrap {
-    display: none;
-  }
+  .pj-step__icon { width: 140px; height: 140px; }
+  .pj-step__title { font-size: clamp(32px, 10vw, 48px); }
+  .pj-step__desc { max-width: 100%; margin: 0 auto; }
 
-  .pj-step .pj-step__content,
-  .pj-step--alt .pj-step__content {
-    padding: 0 0 0 20px;
-    text-align: left;
-    grid-column: 2;
-  }
-
-  .pj-step__line {
-    grid-column: 1;
-    grid-row: 1 / -1;
-  }
-
-  .pj-step__title {
-    font-size: clamp(28px, 8vw, 40px);
-  }
-
-  .pj-step__desc {
-    max-width: 100%;
-  }
-
-  .pj-step--alt .pj-step__desc {
-    margin-left: 0;
-  }
+  .pj-svg-path { display: none; }
 }
 
 /* ══════════════════════════════════════
