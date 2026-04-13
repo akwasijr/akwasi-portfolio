@@ -145,14 +145,6 @@ function TeamSection() {
         </motion.span>
       </div>
 
-      <motion.p
-        className="editorial-team-section__also"
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-        transition={{ duration: 0.6, delay: 0.25, ease }}
-      >
-        Plus Data Science, Security, and Technical Architects
-      </motion.p>
-
       <div className="editorial-team-grid">
         {disciplines.map((d, i) => (
           <motion.div
