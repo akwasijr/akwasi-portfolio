@@ -78,7 +78,7 @@ export default function App() {
       <CustomCursor />
       <div ref={containerRef} className="scroll-container">
         <HeroSection />
-        <TableOfContentsSection onOpenPage={handleOpenPage} />
+        <TableOfContentsSection onOpenPage={handleOpenPage} pageOpen={!!activePage} />
         <CTASection />
       </div>
 

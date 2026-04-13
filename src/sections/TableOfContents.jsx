@@ -43,11 +43,23 @@ const rowVariants = {
   }),
 };
 
-export default function TableOfContentsSection({ onOpenPage }) {
+export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
   const [hoveredIdx, setHoveredIdx] = useState(null);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
 
+  // Reset animation when a sub-page opens, re-trigger when it closes
+  useEffect(() => {
+    if (pageOpen) {
+      setVisible(false);
+    } else {
+      // Small delay so curtain close animation plays first
+      const timer = setTimeout(() => setVisible(true), 600);
+      return () => clearTimeout(timer);
+    }
+  }, [pageOpen]);
+
+  // Initial entrance on first load
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
