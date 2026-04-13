@@ -131,7 +131,6 @@ export default function HeroSection() {
                         top: '50%',
                         display: 'inline-block',
                         fontSize: '0.65em',
-                        filter: 'saturate(0) brightness(2)',
                       }}
                       animate={isHovered
                         ? { opacity: 1, scale: 1, x: '-50%', y: '-50%', rotate: 0 }
