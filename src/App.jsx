@@ -20,8 +20,8 @@ const pageComponents = {
   'team': () => (
     <>
       <AboutSection />
-      <TeamMap />
       <CapabilitiesSection />
+      <TeamMap />
     </>
   ),
   'process': () => <ProcessSection />,
