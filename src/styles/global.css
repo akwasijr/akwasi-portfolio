@@ -279,7 +279,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 /* ══════════════════════════════════════
-   WHAT WE DO (formerly About)
+   TEAM (formerly What We Do / About)
    ══════════════════════════════════════ */
 .wwd-label {
   font-size: 14px;
@@ -296,68 +296,50 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   max-width: 800px;
 }
 
-.wwd-grid {
+.team-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 48px;
-  margin-top: 72px;
+  gap: 32px;
+  margin-top: 64px;
 }
 
-@media (max-width: 900px) { .wwd-grid { grid-template-columns: 1fr; gap: 40px; } }
+@media (max-width: 900px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 500px) { .team-grid { grid-template-columns: 1fr; } }
 
-.wwd-card {
+.team-card {
   display: flex;
-  flex-direction: column;
-  gap: 0;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-.wwd-card__num {
-  font-size: clamp(40px, 5vw, 64px);
-  font-weight: 700;
-  line-height: 1;
-  color: rgba(255,255,255,0.12);
-  margin-bottom: 16px;
+.team-card:hover {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.12);
 }
 
-.wwd-card__title {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #fff;
-  margin-bottom: 12px;
-}
-
-.wwd-card__desc {
-  font-size: 15px;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.6);
-}
-
-.wwd-card__bullets {
-  list-style: none;
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.wwd-card__bullets li {
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255,255,255,0.5);
-  padding-left: 16px;
-  position: relative;
-}
-
-.wwd-card__bullets li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 8px;
-  width: 6px;
-  height: 6px;
+.team-card__badge {
+  width: 52px;
+  height: 52px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.25);
+  border: 2.5px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.team-card__name {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
 }
 
 /* ══════════════════════════════════════
@@ -407,7 +389,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 /* ══════════════════════════════════════
-   PROCESS - 6-step grid
+   PROCESS - interactive journey
    ══════════════════════════════════════ */
 .proc-label {
   font-size: 14px;
@@ -424,55 +406,148 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   color: #fff;
 }
 
-.proc-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 48px 40px;
-  margin-top: 64px;
+.proc-journey {
+  display: flex;
+  gap: 48px;
+  margin-top: 56px;
+  align-items: flex-start;
 }
 
-@media (max-width: 900px) { .proc-grid { grid-template-columns: repeat(2, 1fr); gap: 40px 32px; } }
-@media (max-width: 600px) { .proc-grid { grid-template-columns: 1fr; gap: 36px; } }
+@media (max-width: 900px) { .proc-journey { flex-direction: column; gap: 40px; } }
 
-.proc-item {
+.proc-journey__steps {
   display: flex;
   flex-direction: column;
-  gap: 0;
-}
-
-.proc-item__top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 20px;
-}
-
-.proc-item__num {
-  font-size: clamp(36px, 4vw, 56px);
-  font-weight: 700;
-  line-height: 1;
-  color: rgba(255,255,255,0.12);
-}
-
-.proc-item__icon {
-  width: 48px;
-  height: 48px;
-  opacity: 0.7;
+  gap: 4px;
   flex-shrink: 0;
+  width: 260px;
 }
 
-.proc-item__title {
-  font-size: 20px;
+@media (max-width: 900px) {
+  .proc-journey__steps {
+    flex-direction: row;
+    width: 100%;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+}
+
+.proc-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  cursor: none;
+  transition: background 0.25s ease, opacity 0.25s ease;
+  opacity: 0.4;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.proc-step:hover { opacity: 0.7; background: rgba(255,255,255,0.04); }
+
+.proc-step--active {
+  opacity: 1;
+  background: rgba(255,255,255,0.08);
+}
+
+.proc-step--done { opacity: 0.55; }
+
+.proc-step__icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  filter: brightness(0) invert(1);
+}
+
+.proc-step--active .proc-step__icon {
+  filter: none;
+}
+
+.proc-step__title {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+}
+
+@media (max-width: 900px) {
+  .proc-step { flex-direction: column; gap: 8px; padding: 12px; min-width: 100px; }
+  .proc-step__title { font-size: 12px; white-space: normal; text-align: center; }
+}
+
+.proc-journey__detail {
+  flex: 1;
+  padding: 48px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.proc-detail__icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 28px;
+}
+
+.proc-detail__title {
+  font-size: clamp(24px, 3vw, 36px);
   font-weight: 700;
-  line-height: 1.25;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
   color: #fff;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
-.proc-item__desc {
-  font-size: 15px;
-  line-height: 1.7;
+.proc-detail__desc {
+  font-size: 17px;
+  line-height: 1.75;
   color: rgba(255,255,255,0.55);
+  max-width: 520px;
+}
+
+.proc-detail__nav {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.proc-detail__btn {
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: none;
+  transition: background 0.2s ease, opacity 0.2s ease;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+}
+
+.proc-detail__btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+.proc-detail__btn:disabled {
+  opacity: 0.2;
+  cursor: not-allowed;
+}
+
+.proc-detail__btn--next {
+  background: rgba(255,255,255,0.12);
+}
+
+.proc-detail__progress {
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+  font-weight: 500;
 }
 
 /* ══════════════════════════════════════

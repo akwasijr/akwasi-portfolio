@@ -1,64 +1,45 @@
 import ScrollReveal from '../components/ScrollReveal';
 import Starfield from '../components/Starfield';
 
-const pillars = [
-  {
-    num: '01',
-    title: 'Storytelling',
-    desc: 'We craft compelling narratives around Microsoft AI and Cloud capabilities that resonate with customers and inspire action.',
-    bullets: [
-      'Customer presentations and executive briefings',
-      'Vision videos and interactive demos',
-      'Narrative-driven solution showcases',
-    ],
-  },
-  {
-    num: '02',
-    title: 'Vibe Prototyping',
-    desc: 'Using AI-assisted development to rapidly prototype functional experiences that bring ideas to life in days, not months.',
-    bullets: [
-      'Functional prototypes in days',
-      'AI-paired programming workflows',
-      'Real working code, not mockups',
-    ],
-  },
-  {
-    num: '03',
-    title: 'Product Delivery',
-    desc: 'From prototype to production. We build scalable, enterprise-grade solutions on Microsoft technologies.',
-    bullets: [
-      'End-to-end development',
-      'Azure-native architecture',
-      'Production-grade code and handoff',
-    ],
-  },
+const disciplines = [
+  { abbr: 'PM', name: 'Product Management', color: '#F2A573' },
+  { abbr: 'UXD', name: 'UX Designers', color: '#7E80EE' },
+  { abbr: 'UXE', name: 'UX Engineers', color: '#1376BF' },
+  { abbr: 'DS', name: 'Data Science', color: '#F45A9B' },
+  { abbr: 'SEC', name: 'Security', color: '#4AA75F' },
+  { abbr: 'TA', name: 'Technical Architects', color: '#F2A573' },
 ];
 
 export default function AboutSection() {
   return (
-    <section className="section section--dark" data-section="2">
+    <section className="section section--dark">
       <Starfield count={50} />
       <div className="section-inner">
         <ScrollReveal blur>
-          <p className="wwd-label">What we do</p>
+          <p className="wwd-label">Our team</p>
           <h2 className="wwd-heading">
-            We turn complex AI capabilities into human-centered
-            experiences that inspire action.
+            A global, cross-functional team blending UX,
+            engineering, and data science to bring ideas to life.
           </h2>
         </ScrollReveal>
 
-        <div className="wwd-grid">
-          {pillars.map((p, i) => (
-            <ScrollReveal key={p.num} delay={0.1 + i * 0.12} y={40}>
-              <div className="wwd-card">
-                <span className="wwd-card__num">{p.num}</span>
-                <h3 className="wwd-card__title">{p.title}</h3>
-                <p className="wwd-card__desc">{p.desc}</p>
-                <ul className="wwd-card__bullets">
-                  {p.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
+        <ScrollReveal delay={0.15}>
+          <p style={{ fontSize: '17px', lineHeight: 1.75, color: 'rgba(255,255,255,0.55)', maxWidth: '640px', marginTop: '32px' }}>
+            We validate feasibility from day one. Our unique strength lies
+            in bridging early concepting with deep technical insight. From
+            visionary prototypes to complex custom-built solutions, we make
+            innovation tangible.
+          </p>
+        </ScrollReveal>
+
+        <div className="team-grid">
+          {disciplines.map((d, i) => (
+            <ScrollReveal key={d.abbr} delay={0.1 + i * 0.08} y={30}>
+              <div className="team-card">
+                <div className="team-card__badge" style={{ borderColor: d.color }}>
+                  {d.abbr}
+                </div>
+                <span className="team-card__name">{d.name}</span>
               </div>
             </ScrollReveal>
           ))}
