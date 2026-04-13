@@ -99,9 +99,10 @@ export default function HeroSection() {
           {headingLines.map((line, i) => (
             <span
               key={i}
-              style={{ overflow: 'hidden', display: 'block', position: 'relative' }}
+              className="hero-line"
               onMouseEnter={() => setHoveredLine(i)}
               onMouseLeave={() => setHoveredLine(null)}
+              style={{ overflow: reveal ? 'visible' : 'hidden', display: 'block', position: 'relative' }}
             >
               <motion.span
                 style={{ display: 'inline-block' }}
@@ -111,19 +112,16 @@ export default function HeroSection() {
               >
                 {line.text}
               </motion.span>
-              <AnimatePresence>
-                {hoveredLine === i && (
-                  <motion.span
-                    className="hero-hover-icon"
-                    initial={{ opacity: 0, scale: 0.4, x: -10 }}
-                    animate={{ opacity: 1, scale: 1, x: 0 }}
-                    exit={{ opacity: 0, scale: 0.4, x: 10 }}
-                    transition={{ duration: 0.3, ease }}
-                  >
-                    {line.hoverIcon}
-                  </motion.span>
-                )}
-              </AnimatePresence>
+              <motion.span
+                className="hero-hover-icon"
+                animate={hoveredLine === i
+                  ? { opacity: 1, scale: 1, rotate: 0 }
+                  : { opacity: 0, scale: 0.3, rotate: -20 }
+                }
+                transition={{ duration: 0.35, ease }}
+              >
+                {line.hoverIcon}
+              </motion.span>
             </span>
           ))}
         </motion.h1>
