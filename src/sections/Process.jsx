@@ -214,7 +214,7 @@ export default function ProcessSection() {
 
   return (
     <div className="pj-wrapper">
-      <Starfield count={50} />
+      <Starfield count={25} />
 
       <JourneyIntro />
 

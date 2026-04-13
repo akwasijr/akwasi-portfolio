@@ -75,7 +75,7 @@ export default function CaseStudiesSection() {
 
   return (
     <section className="section section--dark" data-section="5">
-      <Starfield count={45} />
+      <Starfield count={22} />
       <div className="section-inner">
         <ScrollReveal>
           <h2 className="cases-heading">Selected<br />projects</h2>

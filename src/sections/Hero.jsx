@@ -48,7 +48,7 @@ export default function HeroSection() {
 
   return (
     <section ref={sectionRef} className="section section--dark" data-section="0">
-      <Starfield count={50} />
+      <Starfield count={25} />
       <img src="/assets/patch-dark.svg" alt="" className="patch-decoration"
         style={{ width: '400px', top: '-80px', right: '-60px' }} role="presentation" />
 

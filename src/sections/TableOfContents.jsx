@@ -61,7 +61,7 @@ export default function TableOfContentsSection({ onOpenPage }) {
 
   return (
     <section ref={ref} className="section section--blue toc-section" data-section="1">
-      <Starfield count={35} />
+      <Starfield count={18} />
       <div className="section-inner">
         <motion.div
           className="toc-header"

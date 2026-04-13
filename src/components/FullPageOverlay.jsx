@@ -12,7 +12,7 @@ export default function FullPageOverlay({ pageId, onClose, children }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5, ease }}
     >
-      <Starfield count={50} />
+      <Starfield count={25} />
       <motion.button
         className="overlay__back"
         onClick={onClose}

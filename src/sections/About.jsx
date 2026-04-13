@@ -147,7 +147,7 @@ function TeamSection() {
 export default function AboutSection() {
   return (
     <div className="editorial-page">
-      <Starfield count={50} />
+      <Starfield count={25} />
 
       <section className="editorial-hero">
         <VennDiagram />

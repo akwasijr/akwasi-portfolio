@@ -13,7 +13,7 @@ const teams = [
 export default function PositioningSection() {
   return (
     <section className="section section--purple" data-section="6">
-      <Starfield count={40} />
+      <Starfield count={20} />
       <div className="section-inner">
         <div className="pos-layout">
           <ScrollReveal>
