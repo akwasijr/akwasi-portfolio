@@ -6,10 +6,28 @@ import AnimatedGradient from '../components/AnimatedGradient';
 
 const ease = [0.22, 1, 0.36, 1];
 
+const VisionIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#F2A573" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="3"/><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+  </svg>
+);
+
+const ValueIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#F45A9B" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+  </svg>
+);
+
+const ScaleIcon = () => (
+  <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="#7E80EE" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 3L3 21"/><path d="M21 3h-6"/><path d="M21 3v6"/><path d="M3 21h6"/><path d="M3 21v-6"/>
+  </svg>
+);
+
 const headingLines = [
-  { text: 'From ', word: 'Vision', hoverIcon: '🔭' },
-  { text: 'to ', word: 'Value', hoverIcon: '💎' },
-  { text: 'at ', word: 'Scale', hoverIcon: '📐' },
+  { text: 'From ', word: 'Vision', hoverIcon: <VisionIcon /> },
+  { text: 'to ', word: 'Value', hoverIcon: <ValueIcon /> },
+  { text: 'at ', word: 'Scale', hoverIcon: <ScaleIcon /> },
 ];
 
 export default function HeroSection() {
