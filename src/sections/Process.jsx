@@ -59,49 +59,69 @@ function useScrollVisible(ref, threshold = 0.2) {
   return visible;
 }
 
-// SVG icon with stroke draw-in animation
+// SVG icon: stroke draws in on scroll, then fills to original colors
 function StrokeIcon({ src, visible }) {
-  const [svgContent, setSvgContent] = useState(null);
+  const [originalSvg, setOriginalSvg] = useState(null);
+  const [strokeSvg, setStrokeSvg] = useState(null);
   const containerRef = useRef(null);
+  const strokeRef = useRef(null);
 
   useEffect(() => {
     fetch(src)
       .then(r => r.text())
       .then(text => {
-        // Convert fills to strokes for draw animation
-        const modified = text
+        setOriginalSvg(text);
+        // Create stroke-only version for draw animation
+        const stroked = text
           .replace(/fill="(?!none)[^"]*"/g, 'fill="none"')
-          .replace(/<path /g, '<path stroke="#7E80EE" stroke-width="1.2" ')
-          .replace(/<circle /g, '<circle stroke="#7E80EE" stroke-width="1.2" fill="none" ')
-          .replace(/<rect /g, '<rect stroke="#7E80EE" stroke-width="1.2" fill="none" ');
-        setSvgContent(modified);
+          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="1"')
+          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="1"')
+          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="1"');
+        setStrokeSvg(stroked);
       });
   }, [src]);
 
-  // Animate stroke-dashoffset on all paths when visible
+  // Set up stroke dash on the overlay layer
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container || !svgContent) return;
-
-    const paths = container.querySelectorAll('path, circle, rect, line, polyline, polygon');
+    const el = strokeRef.current;
+    if (!el || !strokeSvg) return;
+    const paths = el.querySelectorAll('path, circle, rect, line, polyline, polygon');
     paths.forEach(path => {
       try {
         const len = path.getTotalLength();
         path.style.strokeDasharray = len;
-        path.style.strokeDashoffset = visible ? '0' : len;
-        path.style.transition = 'stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
-      } catch (e) {
-        // Some elements don't support getTotalLength
-      }
+        path.style.strokeDashoffset = visible ? '0' : String(len);
+        path.style.transition = 'stroke-dashoffset 1.4s cubic-bezier(0.22, 1, 0.36, 1)';
+      } catch (e) {}
     });
-  }, [visible, svgContent]);
+  }, [visible, strokeSvg]);
 
   return (
-    <div
-      ref={containerRef}
-      className="pj-step__icon"
-      dangerouslySetInnerHTML={svgContent ? { __html: svgContent } : undefined}
-    />
+    <div className="pj-step__icon" style={{ position: 'relative' }}>
+      {/* Filled original — fades in after stroke draws */}
+      {originalSvg && (
+        <div
+          className="pj-icon-fill"
+          style={{
+            opacity: visible ? 1 : 0,
+            transition: 'opacity 0.8s cubic-bezier(0.22,1,0.36,1) 0.6s',
+          }}
+          dangerouslySetInnerHTML={{ __html: originalSvg }}
+        />
+      )}
+      {/* Stroke overlay — draws in first */}
+      {strokeSvg && (
+        <div
+          ref={strokeRef}
+          className="pj-icon-stroke"
+          style={{
+            opacity: visible ? 0 : 1,
+            transition: 'opacity 0.5s ease 1.2s',
+          }}
+          dangerouslySetInnerHTML={{ __html: strokeSvg }}
+        />
+      )}
+    </div>
   );
 }
 

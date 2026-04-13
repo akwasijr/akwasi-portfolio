@@ -598,9 +598,22 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .pj-step__icon {
   width: clamp(120px, 16vw, 200px);
   height: clamp(120px, 16vw, 200px);
+  position: relative;
 }
 
 .pj-step__icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pj-icon-fill,
+.pj-icon-stroke {
+  position: absolute;
+  inset: 0;
+}
+
+.pj-icon-fill svg,
+.pj-icon-stroke svg {
   width: 100%;
   height: 100%;
 }
