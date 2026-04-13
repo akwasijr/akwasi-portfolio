@@ -7,9 +7,9 @@ import AnimatedGradient from '../components/AnimatedGradient';
 const ease = [0.22, 1, 0.36, 1];
 
 const headingLines = [
-  { text: 'From Vision', hoverIcon: '🔭' },
-  { text: 'to Value', hoverIcon: '💎' },
-  { text: 'at Scale', hoverIcon: '📐' },
+  { text: 'From ', word: 'Vision', hoverIcon: '🔭' },
+  { text: 'to ', word: 'Value', hoverIcon: '💎' },
+  { text: 'at ', word: 'Scale', hoverIcon: '📐' },
 ];
 
 export default function HeroSection() {
@@ -96,34 +96,56 @@ export default function HeroSection() {
         </motion.div>
 
         <motion.h1 className="hero-mega" style={{ y: headingY }}>
-          {headingLines.map((line, i) => (
-            <span
-              key={i}
-              className="hero-line"
-              onMouseEnter={() => setHoveredLine(i)}
-              onMouseLeave={() => setHoveredLine(null)}
-              style={{ overflow: reveal ? 'visible' : 'hidden', display: 'block', position: 'relative' }}
-            >
-              <motion.span
-                style={{ display: 'inline-block' }}
-                initial={{ y: '120%' }}
-                animate={reveal ? { y: 0 } : {}}
-                transition={{ duration: 1, delay: 0.15 + i * 0.14, ease }}
+          {headingLines.map((line, i) => {
+            const isHovered = hoveredLine === i;
+            return (
+              <span
+                key={i}
+                className="hero-line"
+                onMouseEnter={() => setHoveredLine(i)}
+                onMouseLeave={() => setHoveredLine(null)}
+                style={{ overflow: reveal ? 'visible' : 'hidden', display: 'block' }}
               >
-                {line.text}
-              </motion.span>
-              <motion.span
-                className="hero-hover-icon"
-                animate={hoveredLine === i
-                  ? { opacity: 1, scale: 1, rotate: 0 }
-                  : { opacity: 0, scale: 0.3, rotate: -20 }
-                }
-                transition={{ duration: 0.35, ease }}
-              >
-                {line.hoverIcon}
-              </motion.span>
-            </span>
-          ))}
+                <motion.span
+                  style={{ display: 'inline-block' }}
+                  initial={{ y: '120%' }}
+                  animate={reveal ? { y: 0 } : {}}
+                  transition={{ duration: 1, delay: 0.15 + i * 0.14, ease }}
+                >
+                  {line.text}
+                  <span style={{ position: 'relative', display: 'inline-block' }}>
+                    <motion.span
+                      style={{ display: 'inline-block' }}
+                      animate={isHovered
+                        ? { opacity: 0, scale: 0.7, filter: 'blur(8px)' }
+                        : { opacity: 1, scale: 1, filter: 'blur(0px)' }
+                      }
+                      transition={{ duration: 0.4, ease }}
+                    >
+                      {line.word}
+                    </motion.span>
+                    <motion.span
+                      style={{
+                        position: 'absolute',
+                        left: '50%',
+                        top: '50%',
+                        display: 'inline-block',
+                        fontSize: '0.65em',
+                        filter: 'saturate(0) brightness(2)',
+                      }}
+                      animate={isHovered
+                        ? { opacity: 1, scale: 1, x: '-50%', y: '-50%', rotate: 0 }
+                        : { opacity: 0, scale: 0.3, x: '-50%', y: '-50%', rotate: -30 }
+                      }
+                      transition={{ duration: 0.4, ease }}
+                    >
+                      {line.hoverIcon}
+                    </motion.span>
+                  </span>
+                </motion.span>
+              </span>
+            );
+          })}
         </motion.h1>
 
         <motion.div
