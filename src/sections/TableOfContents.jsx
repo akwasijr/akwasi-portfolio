@@ -58,24 +58,24 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
   useEffect(() => {
     if (pageOpen) {
       setVisible(false);
-    } else {
-      // Small delay so curtain close animation plays first
-      const timer = setTimeout(() => setVisible(true), 600);
-      return () => clearTimeout(timer);
     }
   }, [pageOpen]);
 
-  // Initial entrance on first load
+  // Trigger when section enters viewport (initial + after returning from sub-page)
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.unobserve(el); } },
-      { threshold: 0.2 }
+      ([e]) => {
+        if (e.isIntersecting && !pageOpen) {
+          setVisible(true);
+        }
+      },
+      { threshold: 0.4 }
     );
     obs.observe(el);
     return () => obs.disconnect();
-  }, []);
+  }, [pageOpen]);
 
   return (
     <section ref={ref} className="section section--blue toc-section" data-section="1">

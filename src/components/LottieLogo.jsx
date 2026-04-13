@@ -27,11 +27,14 @@ export default function LottieLogo({ width = 180, loop = false, autoplay = true,
     };
   }, [loop, path]);
 
-  // Play only when autoplay becomes true
+  // Play only when autoplay becomes true, reset when false
   useEffect(() => {
     if (autoplay && animRef.current && !hasPlayed.current) {
       hasPlayed.current = true;
       animRef.current.goToAndPlay(0, true);
+    }
+    if (!autoplay) {
+      hasPlayed.current = false;
     }
   }, [autoplay]);
 
