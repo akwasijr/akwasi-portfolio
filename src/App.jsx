@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import './styles/global.css';
 
 import CustomCursor from './components/CustomCursor';
-import Navigation from './components/Navigation';
+import FullPageOverlay from './components/FullPageOverlay';
 import CircleWipe from './components/CircleWipe';
 import HeroSection from './sections/Hero';
 import TableOfContentsSection from './sections/TableOfContents';
@@ -13,78 +14,70 @@ import CaseStudiesSection from './sections/CaseStudies';
 import PositioningSection from './sections/Positioning';
 import CTASection from './sections/CTA';
 
-const TOTAL_SECTIONS = 8;
+const pageComponents = {
+  'team': () => (
+    <>
+      <AboutSection />
+      <CapabilitiesSection />
+    </>
+  ),
+  'process': () => <ProcessSection />,
+  'working-with-us': () => <PositioningSection />,
+  'vibe-prototyping': () => (
+    <section className="section section--dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="section-inner" style={{ textAlign: 'center' }}>
+        <h2 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
+          Vibe Prototyping
+        </h2>
+        <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.5)', marginTop: '24px', maxWidth: '500px', margin: '24px auto 0' }}>
+          Coming soon. We are building something exciting.
+        </p>
+      </div>
+    </section>
+  ),
+  'selected-work': () => <CaseStudiesSection />,
+};
 
 export default function App() {
   const containerRef = useRef(null);
-  const [currentSection, setCurrentSection] = useState(0);
+  const [activePage, setActivePage] = useState(null);
 
-  const scrollToSection = useCallback((index) => {
-    const container = containerRef.current;
-    if (!container) return;
-    const sections = container.querySelectorAll('.section');
-    if (sections[index]) {
-      sections[index].scrollIntoView({ behavior: 'smooth' });
-    }
+  const handleOpenPage = useCallback((pageId) => {
+    setActivePage(pageId);
   }, []);
 
-  // Track current section via IntersectionObserver
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    const sections = container.querySelectorAll('.section');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            const idx = Array.from(sections).indexOf(entry.target);
-            if (idx >= 0) setCurrentSection(idx);
-          }
-        });
-      },
-      { root: container, threshold: 0.5 }
-    );
-
-    sections.forEach(s => observer.observe(s));
-    return () => observer.disconnect();
+  const handleClosePage = useCallback(() => {
+    setActivePage(null);
   }, []);
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        e.preventDefault();
-        scrollToSection(Math.min(currentSection + 1, TOTAL_SECTIONS - 1));
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-        e.preventDefault();
-        scrollToSection(Math.max(currentSection - 1, 0));
+      if (e.key === 'Escape' && activePage) {
+        handleClosePage();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [currentSection, scrollToSection]);
+  }, [activePage, handleClosePage]);
+
+  const PageContent = activePage ? pageComponents[activePage] : null;
 
   return (
     <>
       <CustomCursor />
-      <Navigation
-        currentSection={currentSection}
-        totalSections={TOTAL_SECTIONS}
-        onDotClick={scrollToSection}
-      />
       <div ref={containerRef} className="scroll-container">
         <HeroSection />
-        <TableOfContentsSection onNavigate={scrollToSection} />
-        <CircleWipe>
-          <AboutSection />
-          <CapabilitiesSection />
-        </CircleWipe>
-        <ProcessSection />
-        <CaseStudiesSection />
-        <PositioningSection />
+        <TableOfContentsSection onOpenPage={handleOpenPage} />
         <CTASection />
       </div>
+
+      <AnimatePresence>
+        {activePage && PageContent && (
+          <FullPageOverlay pageId={activePage} onClose={handleClosePage}>
+            <PageContent />
+          </FullPageOverlay>
+        )}
+      </AnimatePresence>
     </>
   );
 }

@@ -199,7 +199,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .toc-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
   flex: 1;
   padding: 16px 0;
 }
@@ -210,7 +210,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   justify-content: center;
   padding: 0 64px;
   cursor: none;
-  border-top: 2px solid rgba(255,255,255,0.18);
+  border-top: 2px solid rgba(255,255,255,0.85);
   transition: background-color 0.35s ease, color 0.35s ease;
   border-radius: 0;
   margin: 0;
@@ -218,7 +218,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .toc-row:last-child {
-  border-bottom: 2px solid rgba(255,255,255,0.18);
+  border-bottom: 2px solid rgba(255,255,255,0.85);
 }
 
 .toc-row__label {
@@ -722,3 +722,51 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .cta-btn:hover .cta-btn__arrow { transform: translateX(4px); }
+
+/* ══════════════════════════════════════
+   FULL-PAGE OVERLAY
+   ══════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 200;
+  background: radial-gradient(ellipse at 50% 40%, #131620 0%, #0C0E13 70%);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.overlay__back {
+  position: fixed;
+  top: 32px;
+  left: 40px;
+  z-index: 210;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 100px;
+  padding: 10px 20px 10px 14px;
+  cursor: none;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.overlay__back:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+}
+
+.overlay__content {
+  position: relative;
+  z-index: 2;
+}
+
+.overlay__content .section {
+  scroll-snap-align: none;
+}

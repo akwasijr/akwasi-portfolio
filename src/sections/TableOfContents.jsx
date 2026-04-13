@@ -4,26 +4,33 @@ import Starfield from '../components/Starfield';
 
 const items = [
   {
-    title: 'Team', label: 'Who we are', section: 2, num: '01',
+    id: 'team',
+    title: 'Team', label: 'Who we are',
     detail: 'A global, cross-functional team blending UX, engineering, and data science to bring ideas to life.',
   },
   {
-    title: 'Process', label: 'How we work', section: 4, num: '02',
+    id: 'process',
+    title: 'Process', label: 'How we work',
     detail: 'From business envisioning to rapid prototype. We meet customers where they are and accelerate decisions.',
   },
   {
-    title: 'Working with Us', label: 'Studio 42 + You', section: 6, num: '03',
+    id: 'working-with-us',
+    title: 'Working with Us', label: 'Studio 42 + You',
     detail: 'Experience-led presales through storytelling and engineered prototypes. No NBUE required.',
   },
   {
-    title: 'Vibe Prototyping', label: 'Our approach', section: 3, num: '04',
+    id: 'vibe-prototyping',
+    title: 'Vibe Prototyping', label: 'Our approach',
     detail: 'Six disciplines orbiting one mission. Design, engineering, and product at the core.',
   },
   {
-    title: 'Selected Work', label: 'Case studies', section: 5, num: '05',
+    id: 'selected-work',
+    title: 'Selected Work', label: 'Case studies',
     detail: 'Heineken, Novartis, and more. Platform journeys to AI innovation.',
   },
 ];
+
+export { items as tocItems };
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -36,7 +43,7 @@ const rowVariants = {
   }),
 };
 
-export default function TableOfContentsSection({ onNavigate }) {
+export default function TableOfContentsSection({ onOpenPage }) {
   const [hoveredIdx, setHoveredIdx] = useState(null);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
@@ -75,7 +82,7 @@ export default function TableOfContentsSection({ onNavigate }) {
 
             return (
               <motion.div
-                key={item.num}
+                key={item.id}
                 className="toc-row"
                 custom={i}
                 variants={rowVariants}
@@ -83,12 +90,18 @@ export default function TableOfContentsSection({ onNavigate }) {
                 animate={visible ? "visible" : "hidden"}
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
-                onClick={() => onNavigate && onNavigate(item.section)}
+                onClick={() => onOpenPage && onOpenPage(item.id)}
                 style={{
                   backgroundColor: isHovered ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)',
                   color: isHovered ? '#0C0E13' : '#ffffff',
                 }}
               >
+                <span
+                  className="toc-row__label"
+                  style={{ color: isHovered ? 'rgba(12,14,19,0.4)' : undefined }}
+                >
+                  {item.label}
+                </span>
                 <div className="toc-row__center">
                   <span className="toc-row__title">{item.title}</span>
                   <AnimatePresence>
