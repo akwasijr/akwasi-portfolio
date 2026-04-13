@@ -9,6 +9,11 @@ const items = [
     detail: 'A global, cross-functional team blending UX, engineering, and data science to bring ideas to life.',
   },
   {
+    id: 'what-we-do',
+    title: 'What We Do', label: 'Our offering',
+    detail: 'Storytelling, VIBE prototyping, and product delivery that drives adoption and measurable consumption.',
+  },
+  {
     id: 'process',
     title: 'Process', label: 'How we work',
     detail: 'From business envisioning to rapid prototype. We meet customers where they are and accelerate decisions.',
@@ -21,7 +26,7 @@ const items = [
   {
     id: 'vibe-prototyping',
     title: 'Vibe Prototyping', label: 'Our approach',
-    detail: 'Six disciplines orbiting one mission. Design, engineering, and product at the core.',
+    detail: 'AI-first design thinking coupled with live AI-powered prototyping to validate concepts fast.',
   },
   {
     id: 'selected-work',

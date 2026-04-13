@@ -9,6 +9,7 @@ import HeroSection from './sections/Hero';
 import TableOfContentsSection from './sections/TableOfContents';
 import AboutSection from './sections/About';
 import CapabilitiesSection from './sections/Capabilities';
+import WhatWeDoSection from './sections/WhatWeDo';
 import ProcessSection from './sections/Process';
 import CaseStudiesSection from './sections/CaseStudies';
 import PositioningSection from './sections/Positioning';
@@ -25,6 +26,7 @@ const pageComponents = {
     </>
   ),
   'process': () => <ProcessSection />,
+  'what-we-do': () => <WhatWeDoSection />,
   'working-with-us': () => <PositioningSection />,
   'vibe-prototyping': () => (
     <section className="section section--dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -43,6 +45,7 @@ const pageComponents = {
 
 const pageTitles = {
   'team': 'Team',
+  'what-we-do': 'What We Do',
   'process': 'Process',
   'working-with-us': 'Working with Us',
   'vibe-prototyping': 'Vibe Prototyping',

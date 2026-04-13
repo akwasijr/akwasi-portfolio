@@ -293,7 +293,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .toc-row__title {
-  font-size: clamp(40px, 8vw, 100px);
+  font-size: clamp(32px, 6vw, 80px);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.03em;
@@ -671,6 +671,57 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   .team-map-header { gap: 12px; }
   .team-map-locate { margin-left: 0; }
   .team-map-container { aspect-ratio: 4 / 3; }
+}
+
+/* ══════════════════════════════════════
+   WHAT WE DO - 3 pillars
+   ══════════════════════════════════════ */
+.wwd-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+
+@media (max-width: 900px) { .wwd-pillars-grid { grid-template-columns: 1fr; gap: 40px; } }
+
+.wwd-pillar__title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.wwd-pillar__desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255,255,255,0.55);
+  margin-bottom: 24px;
+}
+
+.wwd-pillar__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wwd-pillar__list li {
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255,255,255,0.45);
+  padding-left: 16px;
+  position: relative;
+}
+
+.wwd-pillar__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.25);
 }
 
 /* ══════════════════════════════════════
