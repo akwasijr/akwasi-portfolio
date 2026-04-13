@@ -4,6 +4,7 @@ import lottie from 'lottie-web';
 export default function LottieLogo({ width = 180, loop = false, autoplay = true, variant = 'dark', style = {} }) {
   const containerRef = useRef(null);
   const animRef = useRef(null);
+  const hasPlayed = useRef(false);
 
   const path = variant === 'light'
     ? '/assets/logo-animation-light.json'
@@ -16,14 +17,23 @@ export default function LottieLogo({ width = 180, loop = false, autoplay = true,
       container: containerRef.current,
       renderer: 'svg',
       loop,
-      autoplay,
+      autoplay: false,
       path,
     });
 
     return () => {
       if (animRef.current) animRef.current.destroy();
+      hasPlayed.current = false;
     };
-  }, [loop, autoplay, path]);
+  }, [loop, path]);
+
+  // Play only when autoplay becomes true
+  useEffect(() => {
+    if (autoplay && animRef.current && !hasPlayed.current) {
+      hasPlayed.current = true;
+      animRef.current.goToAndPlay(0, true);
+    }
+  }, [autoplay]);
 
   return (
     <div
