@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Starfield from '../components/Starfield';
+import LottieLogo from '../components/LottieLogo';
 
 const items = [
   {
@@ -85,7 +86,7 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease }}
         >
-          <img src="/assets/logo.svg" alt="Studio 42" style={{ width: '180px', height: 'auto' }} />
+          <LottieLogo width={180} autoplay={visible} loop={false} />
         </motion.div>
 
         <div className="toc-list">
