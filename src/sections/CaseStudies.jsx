@@ -17,7 +17,7 @@ const projects = [
     id: 'heineken-bpm',
     client: 'Heineken',
     title: 'Business Performance Management',
-    color: '#1376BF',
+    color: '#0059A3',
     tags: ['Power BI', 'Finance'],
     stat: '3 use cases',
     desc: 'Modernized monthly reporting for Europe regional finance. Now expanding globally.',
@@ -38,7 +38,43 @@ const projects = [
     color: '#F45A9B',
     tags: ['AI Agents', 'Pharma'],
     stat: '4 UX paths',
-    desc: 'Synthetic patient and physician personas explored across multiple paradigms.',
+    desc: 'Synthetic patient and physician personas for early insight validation, prototyped end-to-end in Microsoft Teams.',
+  },
+  {
+    id: 'wsp',
+    client: 'WSP',
+    title: 'AI-Driven Impact Assessment',
+    color: '#7E80EE',
+    tags: ['AI Intelligence', 'Environment'],
+    stat: 'VIBE prototype',
+    desc: 'Reimagining environmental monitoring and impact assessment with AI-driven intelligence.',
+  },
+  {
+    id: 'enbridge',
+    client: 'Enbridge',
+    title: 'Voice-First Move Services',
+    color: '#4AA75F',
+    tags: ['Voice AI', 'Real-time'],
+    stat: 'VIBE prototype',
+    desc: 'Natural conversation interface for Move-In, Move-Out, and Transfer requests replacing complex multi-screen workflows.',
+  },
+  {
+    id: 'kantar',
+    client: 'Kantar',
+    title: 'AI Design Transformation',
+    color: '#F2A573',
+    tags: ['Design Leadership', 'AI'],
+    stat: 'Scalable innovation',
+    desc: 'Design leadership accelerating delivery, unifying experiences, and building scalable innovation across Kantar\'s AI ecosystem.',
+  },
+  {
+    id: 'ey',
+    client: 'EY',
+    title: 'AI Financial Statement Review',
+    color: '#0059A3',
+    tags: ['AI Review', 'Finance'],
+    stat: '8M hours saved',
+    desc: 'Re-imagined AI-driven financial review process saving 8 million hours and $32 million.',
   },
 ];
 
@@ -46,8 +82,9 @@ function getFanTransform(offset) {
   const abs = Math.abs(offset);
   const sign = offset > 0 ? 1 : offset < 0 ? -1 : 0;
   if (abs === 0) return { x: 0, rotate: 0, scale: 1, zIndex: 10, opacity: 1 };
-  if (abs === 1) return { x: sign * 200, rotate: sign * 6, scale: 0.92, zIndex: 5, opacity: 0.85 };
-  return { x: sign * 360, rotate: sign * 12, scale: 0.84, zIndex: 1, opacity: 0.5 };
+  if (abs === 1) return { x: sign * 180, rotate: sign * 5, scale: 0.92, zIndex: 5, opacity: 0.85 };
+  if (abs === 2) return { x: sign * 320, rotate: sign * 10, scale: 0.84, zIndex: 2, opacity: 0.5 };
+  return { x: sign * 420, rotate: sign * 14, scale: 0.78, zIndex: 1, opacity: 0.25 };
 }
 
 export default function CaseStudiesSection() {
@@ -85,8 +122,8 @@ export default function CaseStudiesSection() {
           <div className="fan-carousel">
             {projects.map((p, i) => {
               let offset = i - active;
-              if (offset > 2) offset -= projects.length;
-              if (offset < -2) offset += projects.length;
+              if (offset > 4) offset -= projects.length;
+              if (offset < -4) offset += projects.length;
               const t = getFanTransform(offset);
 
               return (
