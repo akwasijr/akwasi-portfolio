@@ -170,6 +170,8 @@ function TeamSection() {
   );
 }
 
+import TeamMap from '../components/TeamMap';
+
 export default function AboutSection() {
   return (
     <div className="editorial-page">
@@ -181,6 +183,7 @@ export default function AboutSection() {
 
       <BigStatement />
       <TeamSection />
+      <TeamMap />
     </div>
   );
 }
