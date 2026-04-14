@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
@@ -20,26 +20,87 @@ function useScrollVisible(ref, threshold = 0.2) {
   return visible;
 }
 
-function IntroSection() {
+/* Track scroll position within the overlay for parallax */
+function useOverlayScroll() {
+  const [scrollY, setScrollY] = useState(0);
+  useEffect(() => {
+    const overlay = document.querySelector('.overlay');
+    if (!overlay) return;
+    const onScroll = () => setScrollY(overlay.scrollTop);
+    overlay.addEventListener('scroll', onScroll, { passive: true });
+    return () => overlay.removeEventListener('scroll', onScroll);
+  }, []);
+  return scrollY;
+}
+
+/* Scattered image placeholders — lower half, no cutoff */
+const imagePlaceholders = [
+  { top: '35%', left: '4%',   w: 200, h: 260, rotate: -3, delay: 0.15, label: 'Vision workshop', parallaxSpeed: 0.04 },
+  { top: '28%', right: '5%',  w: 240, h: 170, rotate: 2,  delay: 0.25, label: 'AI prototype', parallaxSpeed: -0.03 },
+  { top: '58%', left: '3%',   w: 170, h: 220, rotate: 2,  delay: 0.35, label: 'User research', parallaxSpeed: 0.05 },
+  { top: '54%', right: '4%',  w: 220, h: 270, rotate: -2, delay: 0.2,  label: 'Design sprint', parallaxSpeed: -0.04 },
+  { top: '76%', left: '10%',  w: 190, h: 150, rotate: -2, delay: 0.4,  label: 'Customer demo', parallaxSpeed: 0.06 },
+  { top: '72%', right: '8%',  w: 250, h: 180, rotate: 1,  delay: 0.3,  label: 'Production build', parallaxSpeed: -0.05 },
+];
+
+function ImagePlaceholder({ style, w, h, rotate, delay, visible, label, parallaxY }) {
+  return (
+    <motion.div
+      className="wwd-img-placeholder"
+      style={{
+        ...style,
+        width: w,
+        height: h,
+        y: parallaxY,
+      }}
+      animate={visible
+        ? { opacity: 1, rotate, scale: 1 }
+        : { opacity: 0, rotate: rotate + 4, scale: 0.92 }
+      }
+      transition={{ duration: 0.9, delay, ease }}
+    >
+      <span className="wwd-img-placeholder__label">{label}</span>
+    </motion.div>
+  );
+}
+
+function HeroSection() {
   const ref = useRef(null);
-  const visible = useScrollVisible(ref, 0.3);
+  const visible = useScrollVisible(ref, 0.15);
+  const scrollY = useOverlayScroll();
 
   const headingLines = ['What', 'We Do'];
 
   return (
-    <section ref={ref} style={{ minHeight: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '120px 48px 60px', position: 'relative', zIndex: 2 }}>
-      <div style={{ maxWidth: '900px', textAlign: 'center' }}>
-        <h2 style={{ marginBottom: '48px' }}>
+    <section ref={ref} className="wwd-hero">
+      {imagePlaceholders.map((ph, i) => {
+        const { top, left, right, w, h, rotate, delay, label, parallaxSpeed } = ph;
+        const posStyle = {};
+        if (top !== undefined) posStyle.top = top;
+        if (left !== undefined) posStyle.left = left;
+        if (right !== undefined) posStyle.right = right;
+        const parallaxY = scrollY * parallaxSpeed;
+        return (
+          <ImagePlaceholder
+            key={i}
+            style={posStyle}
+            w={w}
+            h={h}
+            rotate={rotate}
+            delay={delay}
+            visible={visible}
+            label={label}
+            parallaxY={parallaxY}
+          />
+        );
+      })}
+
+      <div className="wwd-hero__center">
+        <h2 className="wwd-hero__heading">
           {headingLines.map((line, i) => (
             <span key={i} style={{ overflow: 'hidden', display: 'block' }}>
               <motion.span
-                style={{
-                  display: 'block',
-                  fontSize: 'clamp(56px, 12vw, 140px)',
-                  fontWeight: 700,
-                  lineHeight: 0.95,
-                  letterSpacing: '-0.04em',
-                }}
+                style={{ display: 'block' }}
                 animate={visible ? { y: 0 } : { y: '120%' }}
                 transition={{ duration: 1, delay: i * 0.12, ease }}
               >
@@ -49,86 +110,125 @@ function IntroSection() {
           ))}
         </h2>
         <motion.p
-          style={{ fontSize: '18px', lineHeight: 1.75, color: 'rgba(255,255,255,0.5)', maxWidth: '700px', margin: '0 auto' }}
+          className="wwd-hero__subtitle"
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.3, ease }}
         >
-          We turn complex AI capabilities into intuitive, human-centered
-          experiences that drive adoption, usage, and measurable consumption.
-          Design embedded from early deal shaping through implementation.
+          Turning complex AI capabilities into
+          human-centered experiences that inspire action
         </motion.p>
       </div>
     </section>
   );
 }
 
-function PillarBlock({ title, desc, bullets, flipped }) {
+/* Full-bleed pillar section — each pillar gets its own viewport */
+function PillarSection({ title, desc, bullets, flipped, imgLabel }) {
   const ref = useRef(null);
-  const visible = useScrollVisible(ref, 0.2);
+  const visible = useScrollVisible(ref, 0.15);
+  const scrollY = useOverlayScroll();
+  const sectionTop = useRef(0);
+
+  useEffect(() => {
+    if (ref.current) {
+      sectionTop.current = ref.current.offsetTop;
+    }
+  }, []);
+
+  const localProgress = Math.max(0, scrollY - sectionTop.current + 400);
+  const imgParallax = localProgress * -0.06;
 
   return (
-    <div ref={ref} className={'wwd-block' + (flipped ? ' wwd-block--flip' : '')}>
-      <div className="wwd-block__content">
+    <section ref={ref} className={'wwd-pillar' + (flipped ? ' wwd-pillar--flip' : '')}>
+      {/* Text side */}
+      <div className="wwd-pillar__text">
         <motion.h3
-          className="wwd-block__title"
-          animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
-          transition={{ duration: 0.7, delay: 0.1, ease }}
+          className="wwd-pillar__title"
+          animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 60 }}
+          transition={{ duration: 0.8, delay: 0.1, ease }}
         >
           {title}
         </motion.h3>
         <motion.p
-          className="wwd-block__desc"
+          className="wwd-pillar__desc"
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.6, delay: 0.2, ease }}
+          transition={{ duration: 0.7, delay: 0.25, ease }}
         >
           {desc}
         </motion.p>
-        <ul className="wwd-block__list">
+        <ul className="wwd-pillar__list">
           {bullets.map((b, i) => (
             <motion.li
               key={i}
-              animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
-              transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease }}
+              animate={visible ? { opacity: 1, x: 0 } : { opacity: 0, x: flipped ? -20 : 20 }}
+              transition={{ duration: 0.5, delay: 0.35 + i * 0.1, ease }}
             >
               {b}
             </motion.li>
           ))}
         </ul>
       </div>
-    </div>
+
+      {/* Image placeholder side */}
+      <motion.div
+        className="wwd-pillar__img"
+        style={{ y: imgParallax }}
+        animate={visible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+        transition={{ duration: 0.9, delay: 0.15, ease }}
+      >
+        <span className="wwd-pillar__img-label">{imgLabel}</span>
+      </motion.div>
+    </section>
   );
 }
 
 export default function WhatWeDoSection() {
+  const scrollY = useOverlayScroll();
+  const badgeY = scrollY * -0.08;
+
   return (
     <div style={{ position: 'relative', background: 'radial-gradient(ellipse at 50% 40%, #131620 0%, #0C0E13 70%)' }}>
       <Starfield count={25} />
 
-      <IntroSection />
+      {/* Circle badge — parallax + spin */}
+      <motion.div
+        className="wwd-badge-wrap"
+        style={{ y: badgeY }}
+      >
+        <img
+          src="/assets/circle-badge.svg"
+          alt=""
+          role="presentation"
+          className="wwd-badge"
+        />
+      </motion.div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 48px 120px', position: 'relative', zIndex: 2 }}>
-        <PillarBlock
-          title="Storytelling"
-          desc="We motivate customer action towards AI transformation by aligning outcomes, visualizing custom AI experiences, and crafting inspiring stories."
-          bullets={[
-            'Uncover real user problems early',
-            'Translate strategy into clear experiences',
-            'Demos and prototypes that make value tangible',
-            'Reduce deal risk and accelerate decisions',
-          ]}
-        />
-        <PillarBlock
-          title="Product Delivery"
-          desc="We collaboratively design and build production-ready solutions, grounded in the vision and strategies established in earlier phases."
-          bullets={[
-            'Design close to engineering and data science',
-            'Validate early to reduce rework',
-            'Experience intent survives to production',
-            'Scale consistent, production-ready experiences',
-          ]}
-          flipped
-        />
-      </div>
+      <HeroSection />
+
+      <PillarSection
+        title="Storytelling"
+        desc="We motivate customer action towards AI transformation by aligning outcomes, visualizing custom AI experiences, and crafting inspiring stories."
+        bullets={[
+          'Uncover real user problems early',
+          'Translate strategy into clear experiences',
+          'Demos and prototypes that make value tangible',
+          'Reduce deal risk and accelerate decisions',
+        ]}
+        imgLabel="Customer narrative"
+      />
+
+      <PillarSection
+        title="Product Delivery"
+        desc="We collaboratively design and build production-ready solutions, grounded in the vision and strategies established in earlier phases."
+        bullets={[
+          'Design close to engineering and data science',
+          'Validate early to reduce rework',
+          'Experience intent survives to production',
+          'Scale consistent, production-ready experiences',
+        ]}
+        flipped
+        imgLabel="Production build"
+      />
     </div>
   );
 }
