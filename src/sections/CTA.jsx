@@ -5,8 +5,8 @@ export default function CTASection() {
   return (
     <section className="section section--dark" data-section="7">
       <Starfield count={20} />
-      <img src="/assets/patch-light.svg" alt="" className="patch-decoration"
-        style={{ width: '500px', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', opacity: 0.03 }}
+      <img src="/assets/circle-badge.svg" alt="" className="hero-badge"
+        style={{ opacity: 0.12, right: '8%', bottom: '8%' }}
         role="presentation" />
 
       <div className="section-inner" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
