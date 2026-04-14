@@ -53,13 +53,15 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
   const [hoveredIdx, setHoveredIdx] = useState(null);
   const [visible, setVisible] = useState(false);
   const ref = useRef(null);
+  const hasOpened = useRef(false);
 
   // Reset when page opens, re-animate when it closes
   useEffect(() => {
     if (pageOpen) {
+      hasOpened.current = true;
       setVisible(false);
-    } else {
-      // Re-animate after curtains close
+    } else if (hasOpened.current) {
+      // Only re-trigger if we actually came back from a page
       const timer = setTimeout(() => setVisible(true), 700);
       return () => clearTimeout(timer);
     }
