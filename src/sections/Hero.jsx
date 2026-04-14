@@ -53,12 +53,26 @@ export default function HeroSection() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const contentScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.92]);
 
+  const badgeY = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const badgeRotate = useTransform(scrollYProgress, [0, 1], [0, 60]);
+  const badgeScale = useTransform(scrollYProgress, [0, 0.8], [1, 0.6]);
+
   return (
     <section ref={sectionRef} className="section section--hero-gradient" data-section="0">
       <AnimatedGradient />
       <Starfield count={25} />
-      <img src="/assets/patch-dark.svg" alt="" className="patch-decoration"
-        style={{ width: '400px', top: '-80px', right: '-60px' }} role="presentation" />
+
+      <motion.img
+        src="/assets/circle-badge.svg"
+        alt=""
+        role="presentation"
+        className="hero-badge"
+        style={{
+          y: badgeY,
+          rotate: badgeRotate,
+          scale: badgeScale,
+        }}
+      />
 
       <AnimatePresence>
         {showVideo && (

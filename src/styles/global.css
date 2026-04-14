@@ -216,6 +216,26 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   animation: float 2.5s ease-in-out infinite;
 }
 
+.hero-badge {
+  position: absolute;
+  right: 5%;
+  bottom: 10%;
+  width: clamp(200px, 25vw, 380px);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+  animation: heroSpin 40s linear infinite;
+}
+
+@keyframes heroSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .hero-badge { width: 160px; right: 5%; bottom: 5%; opacity: 0.5; }
+}
+
 @keyframes float {
   0%, 100% { transform: translateX(-50%) translateY(0); }
   50% { transform: translateX(-50%) translateY(8px); }
