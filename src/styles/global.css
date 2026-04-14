@@ -633,6 +633,44 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   color: rgba(255,255,255,0.3);
 }
 
+.map-cluster-members {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 12px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.map-cluster-member {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+  background: none;
+  border: none;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  cursor: none;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+}
+
+.map-cluster-member:hover { opacity: 1; }
+
+.map-cluster-member__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.map-cluster-member__name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
 @media (max-width: 768px) {
   .team-map-layout { flex-direction: column; gap: 20px; }
   .map-side-panel { width: 100%; }

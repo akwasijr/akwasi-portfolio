@@ -128,6 +128,33 @@ export default function TeamMap() {
     return dist < Math.PI / 2;
   }, [projection]);
 
+  // Cluster nearby visible markers
+  const clusters = useMemo(() => {
+    const result = [];
+    const used = new Set();
+    members.forEach((m, i) => {
+      if (used.has(i) || !isVisible(m.coords)) return;
+      const pt = projection(m.coords);
+      if (!pt) return;
+      const cluster = { x: pt[0], y: pt[1], members: [i], color: teamColors[m.team] };
+      members.forEach((m2, j) => {
+        if (i === j || used.has(j) || !isVisible(m2.coords)) return;
+        const pt2 = projection(m2.coords);
+        if (!pt2) return;
+        const dx = cluster.x - pt2[0];
+        const dy = cluster.y - pt2[1];
+        if (Math.sqrt(dx * dx + dy * dy) < 18) {
+          cluster.members.push(j);
+          used.add(j);
+        }
+      });
+      used.add(i);
+      result.push(cluster);
+    });
+    return result;
+  }, [projection, isVisible]);
+
+  const [expandedCluster, setExpandedCluster] = useState(null);
   const selectedMember = selected !== null ? members[selected] : null;
 
   return (
@@ -147,9 +174,9 @@ export default function TeamMap() {
       <div className="team-map-layout">
         <motion.div
           className="team-map-container team-map-container--globe"
-          animate={{ x: selected !== null ? -40 : 0 }}
+          animate={{ x: (selected !== null || expandedCluster !== null) ? -40 : 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          onClick={() => { setSelected(null); autoRotate.current = true; }}
+          onClick={() => { setSelected(null); setExpandedCluster(null); autoRotate.current = true; }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -161,15 +188,24 @@ export default function TeamMap() {
             {geoData && geoData.features.map((geo, i) => (
               <path key={i} d={pathGen(geo)} fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" strokeWidth={0.4} />
             ))}
-            {members.map((m, i) => {
-              if (!isVisible(m.coords)) return null;
-              const pt = projection(m.coords);
-              if (!pt) return null;
-              const [x, y] = pt;
+            {clusters.map((c, ci) => {
+              if (c.members.length === 1) {
+                const m = members[c.members[0]];
+                const mi = c.members[0];
+                return (
+                  <g key={ci} onClick={(e) => { e.stopPropagation(); setSelected(mi); autoRotate.current = false; }} style={{ cursor: 'pointer' }}>
+                    <circle cx={c.x} cy={c.y} r={4} fill={teamColors[m.team]} opacity={0.9} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
+                    {selected === mi && <circle cx={c.x} cy={c.y} r={9} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5} opacity={0.6} />}
+                  </g>
+                );
+              }
               return (
-                <g key={i} onClick={(e) => { e.stopPropagation(); setSelected(i); autoRotate.current = false; }} style={{ cursor: 'pointer' }}>
-                  <circle cx={x} cy={y} r={4} fill={teamColors[m.team]} opacity={0.9} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
-                  {selected === i && <circle cx={x} cy={y} r={9} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5} opacity={0.6} />}
+                <g key={ci} onClick={(e) => { e.stopPropagation(); setExpandedCluster(ci); autoRotate.current = false; }} style={{ cursor: 'pointer' }}>
+                  <circle cx={c.x} cy={c.y} r={14} fill={c.color} opacity={0.15} />
+                  <circle cx={c.x} cy={c.y} r={9} fill={c.color} opacity={0.9} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
+                  <text x={c.x} y={c.y + 3.5} textAnchor="middle" fill="#fff" fontSize={9} fontWeight="700" style={{ pointerEvents: 'none' }}>
+                    {c.members.length}
+                  </text>
                 </g>
               );
             })}
@@ -177,9 +213,10 @@ export default function TeamMap() {
         </motion.div>
 
         <AnimatePresence>
-          {selectedMember && (
+          {selectedMember && !expandedCluster && (
             <motion.div
               className="map-side-panel"
+              key="person"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 30 }}
@@ -190,6 +227,35 @@ export default function TeamMap() {
               <h4 className="map-side-panel__name">{selectedMember.name}</h4>
               <p className="map-side-panel__city">{selectedMember.city}</p>
               <p className="map-side-panel__time">{getLocalTime(selectedMember.tz)}</p>
+            </motion.div>
+          )}
+          {expandedCluster !== null && clusters[expandedCluster] && (
+            <motion.div
+              className="map-side-panel"
+              key="cluster"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span className="map-side-panel__team" style={{ color: clusters[expandedCluster].color }}>
+                {clusters[expandedCluster].members.length} team members
+              </span>
+              <div className="map-cluster-members">
+                {clusters[expandedCluster].members.map((mi) => {
+                  const m = members[mi];
+                  return (
+                    <button
+                      key={mi}
+                      className="map-cluster-member"
+                      onClick={() => { setSelected(mi); setExpandedCluster(null); }}
+                    >
+                      <span className="map-cluster-member__dot" style={{ background: teamColors[m.team] }} />
+                      <span className="map-cluster-member__name">{m.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
