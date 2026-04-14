@@ -598,7 +598,22 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   border-radius: 16px;
   background: rgba(255,255,255,0.04);
   border: none;
+  position: relative;
 }
+
+.map-side-panel__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  cursor: none;
+  padding: 4px;
+  transition: color 0.2s ease;
+}
+
+.map-side-panel__close:hover { color: #fff; }
 
 .map-side-panel__dot {
   width: 10px;
@@ -644,31 +659,39 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 
 .map-cluster-member {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   padding: 8px 0;
-  background: none;
-  border: none;
-  color: #fff;
-  font: inherit;
-  text-align: left;
-  cursor: none;
-  transition: opacity 0.2s ease;
-  opacity: 0.7;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
-.map-cluster-member:hover { opacity: 1; }
+.map-cluster-member:last-child { border-bottom: none; }
 
 .map-cluster-member__dot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
   flex-shrink: 0;
+  margin-top: 5px;
 }
 
 .map-cluster-member__name {
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  display: block;
+}
+
+.map-cluster-member__city {
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  display: block;
+}
+
+.map-cluster-member__time {
+  font-size: 12px;
+  color: rgba(255,255,255,0.25);
+  display: block;
 }
 
 @media (max-width: 768px) {

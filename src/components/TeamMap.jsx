@@ -213,49 +213,52 @@ export default function TeamMap() {
         </motion.div>
 
         <AnimatePresence>
-          {selectedMember && !expandedCluster && (
+          {(selectedMember || (expandedCluster !== null && clusters[expandedCluster])) && (
             <motion.div
               className="map-side-panel"
-              key="person"
+              key="panel"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 30 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
             >
-              <div className="map-side-panel__dot" style={{ background: teamColors[selectedMember.team] }} />
-              <span className="map-side-panel__team" style={{ color: teamColors[selectedMember.team] }}>{selectedMember.team}</span>
-              <h4 className="map-side-panel__name">{selectedMember.name}</h4>
-              <p className="map-side-panel__city">{selectedMember.city}</p>
-              <p className="map-side-panel__time">{getLocalTime(selectedMember.tz)}</p>
-            </motion.div>
-          )}
-          {expandedCluster !== null && clusters[expandedCluster] && (
-            <motion.div
-              className="map-side-panel"
-              key="cluster"
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 30 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <span className="map-side-panel__team" style={{ color: clusters[expandedCluster].color }}>
-                {clusters[expandedCluster].members.length} team members
-              </span>
-              <div className="map-cluster-members">
-                {clusters[expandedCluster].members.map((mi) => {
-                  const m = members[mi];
-                  return (
-                    <button
-                      key={mi}
-                      className="map-cluster-member"
-                      onClick={() => { setSelected(mi); setExpandedCluster(null); }}
-                    >
-                      <span className="map-cluster-member__dot" style={{ background: teamColors[m.team] }} />
-                      <span className="map-cluster-member__name">{m.name}</span>
-                    </button>
-                  );
-                })}
-              </div>
+              <button
+                className="map-side-panel__close"
+                onClick={() => { setSelected(null); setExpandedCluster(null); autoRotate.current = true; }}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+              </button>
+
+              {expandedCluster !== null && clusters[expandedCluster] ? (
+                <>
+                  <span className="map-side-panel__team" style={{ color: clusters[expandedCluster].color }}>
+                    {clusters[expandedCluster].members.length} team members
+                  </span>
+                  <div className="map-cluster-members">
+                    {clusters[expandedCluster].members.map((mi) => {
+                      const m = members[mi];
+                      return (
+                        <div key={mi} className="map-cluster-member">
+                          <span className="map-cluster-member__dot" style={{ background: teamColors[m.team] }} />
+                          <div>
+                            <span className="map-cluster-member__name">{m.name}</span>
+                            <span className="map-cluster-member__city">{m.city}</span>
+                            <span className="map-cluster-member__time">{getLocalTime(m.tz)}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              ) : selectedMember ? (
+                <>
+                  <div className="map-side-panel__dot" style={{ background: teamColors[selectedMember.team] }} />
+                  <span className="map-side-panel__team" style={{ color: teamColors[selectedMember.team] }}>{selectedMember.team}</span>
+                  <h4 className="map-side-panel__name">{selectedMember.name}</h4>
+                  <p className="map-side-panel__city">{selectedMember.city}</p>
+                  <p className="map-side-panel__time">{getLocalTime(selectedMember.tz)}</p>
+                </>
+              ) : null}
             </motion.div>
           )}
         </AnimatePresence>
