@@ -6,18 +6,16 @@ import { feature } from 'topojson-client';
 const GEO_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json';
 
 const teamColors = {
-  'S42': '#F2A573',
   'EMEA': '#7E80EE',
-  'ATZ': '#1376BF',
+  'ATZ': '#F2A573',
   'APJ': '#F45A9B',
-  'UX': '#4AA75F',
 };
 
 const members = [
-  { name: 'Cheri Harvey', city: 'Highland, Texas', team: 'S42', coords: [-97.06, 32.35], tz: 'America/Chicago' },
-  { name: 'Derick Berry', city: 'Cleveland, Ohio', team: 'S42', coords: [-81.69, 41.50], tz: 'America/New_York' },
-  { name: 'Jason Ng', city: 'Vancouver, Canada', team: 'S42', coords: [-123.12, 49.28], tz: 'America/Vancouver' },
-  { name: 'Brittany Travitz', city: 'Loveland, Ohio', team: 'S42', coords: [-84.26, 39.27], tz: 'America/New_York' },
+  { name: 'Cheri Harvey', city: 'Highland, Texas', team: 'ATZ', coords: [-97.06, 32.35], tz: 'America/Chicago' },
+  { name: 'Derick Berry', city: 'Cleveland, Ohio', team: 'ATZ', coords: [-81.69, 41.50], tz: 'America/New_York' },
+  { name: 'Jason Ng', city: 'Vancouver, Canada', team: 'ATZ', coords: [-123.12, 49.28], tz: 'America/Vancouver' },
+  { name: 'Brittany Travitz', city: 'Loveland, Ohio', team: 'ATZ', coords: [-84.26, 39.27], tz: 'America/New_York' },
   { name: 'Akwasi Fosuhene', city: 'Amsterdam', team: 'EMEA', coords: [4.90, 52.37], tz: 'Europe/Amsterdam' },
   { name: 'Josephine Scholtes', city: 'Amsterdam', team: 'EMEA', coords: [4.88, 52.36], tz: 'Europe/Amsterdam' },
   { name: 'Chloe Hales', city: 'Belfast, UK', team: 'EMEA', coords: [-5.93, 54.60], tz: 'Europe/London' },
@@ -42,6 +40,7 @@ const members = [
   { name: 'Frankie Garcia', city: 'Los Angeles, USA', team: 'ATZ', coords: [-118.24, 34.05], tz: 'America/Los_Angeles' },
   { name: 'Ganesh Gajjela', city: 'New Jersey, USA', team: 'ATZ', coords: [-74.41, 40.06], tz: 'America/New_York' },
   { name: 'Danielle Molinar', city: 'Austin, Texas', team: 'ATZ', coords: [-97.74, 30.27], tz: 'America/Chicago' },
+  { name: 'Jess Hines', city: 'Tucson, Arizona', team: 'ATZ', coords: [-110.93, 32.22], tz: 'America/Phoenix' },
   { name: 'ShanmugaDas C S.', city: 'Hyderabad, India', team: 'APJ', coords: [78.47, 17.38], tz: 'Asia/Kolkata' },
   { name: 'Asha Sanathana', city: 'Hyderabad, India', team: 'APJ', coords: [78.49, 17.39], tz: 'Asia/Kolkata' },
   { name: 'Satyanarayana Rao B', city: 'Hyderabad, India', team: 'APJ', coords: [78.45, 17.37], tz: 'Asia/Kolkata' },
@@ -52,7 +51,6 @@ const members = [
   { name: 'Naveen Kumar Korvi', city: 'Hyderabad, India', team: 'APJ', coords: [78.51, 17.42], tz: 'Asia/Kolkata' },
   { name: 'Mohammed Thaskeen', city: 'Hyderabad, India', team: 'APJ', coords: [78.43, 17.34], tz: 'Asia/Kolkata' },
   { name: 'Ryo Yoshida', city: 'Tokyo, Japan', team: 'APJ', coords: [139.69, 35.69], tz: 'Asia/Tokyo' },
-  { name: 'Jess Hines', city: 'Tucson, Arizona', team: 'UX', coords: [-110.93, 32.22], tz: 'America/Phoenix' },
 ];
 
 function getLocalTime(tz) {
