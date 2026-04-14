@@ -21,7 +21,7 @@ class Orb {
     this.radius = Math.max(w, h) * (0.3 + Math.random() * 0.25);
     this.vx = (Math.random() - 0.5) * 0.3;
     this.vy = (Math.random() - 0.5) * 0.2;
-    this.opacity = 0.4 + Math.random() * 0.3;
+    this.opacity = 0.2 + Math.random() * 0.15;
     this.targetOpacity = this.opacity;
     this.opacitySpeed = 0.002 + Math.random() * 0.003;
     this.opacityDir = 1;
@@ -37,8 +37,8 @@ class Orb {
     if (this.y > this.h + this.radius * 0.3) this.vy = -Math.abs(this.vy);
 
     this.opacity += this.opacitySpeed * this.opacityDir * ease;
-    if (this.opacity > 0.65) this.opacityDir = -1;
-    if (this.opacity < 0.25) this.opacityDir = 1;
+    if (this.opacity > 0.35) this.opacityDir = -1;
+    if (this.opacity < 0.12) this.opacityDir = 1;
   }
 
   draw(ctx) {
