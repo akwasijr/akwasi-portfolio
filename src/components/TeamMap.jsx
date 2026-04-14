@@ -130,6 +130,8 @@ export default function TeamMap() {
     return dist < Math.PI / 2;
   }, [projection]);
 
+  const selectedMember = selected !== null ? members[selected] : null;
+
   return (
     <div className="team-map-wrap">
       <div className="team-map-header">
@@ -144,59 +146,54 @@ export default function TeamMap() {
         </div>
       </div>
 
-      <div
-        className="team-map-container team-map-container--globe"
-        onClick={() => setSelected(null)}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
-      >
-        <svg viewBox={"0 0 " + String(SIZE) + " " + String(SIZE)} style={{ width: '100%', height: '100%' }}>
-          <circle cx={SIZE / 2} cy={SIZE / 2} r={230} fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" strokeWidth={0.5} />
-          <path d={pathGen(graticule)} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={0.5} />
-          {geoData && geoData.features.map((geo, i) => (
-            <path key={i} d={pathGen(geo)} fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" strokeWidth={0.4} />
-          ))}
-          {members.map((m, i) => {
-            if (!isVisible(m.coords)) return null;
-            const pt = projection(m.coords);
-            if (!pt) return null;
-            const [x, y] = pt;
-            return (
-              <g key={i} onClick={(e) => { e.stopPropagation(); setSelected(i); autoRotate.current = false; }} style={{ cursor: 'pointer' }}>
-                <circle cx={x} cy={y} r={4} fill={teamColors[m.team]} opacity={0.9} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
-                {selected === i && <circle cx={x} cy={y} r={9} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5} opacity={0.6} />}
-              </g>
-            );
-          })}
-        </svg>
+      <div className="team-map-layout">
+        <motion.div
+          className="team-map-container team-map-container--globe"
+          animate={{ x: selected !== null ? -40 : 0 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          onClick={() => setSelected(null)}
+          onMouseDown={handleMouseDown}
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseLeave={handleMouseUp}
+        >
+          <svg viewBox={"0 0 " + String(SIZE) + " " + String(SIZE)} style={{ width: '100%', height: '100%' }}>
+            <circle cx={SIZE / 2} cy={SIZE / 2} r={230} fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" strokeWidth={0.5} />
+            <path d={pathGen(graticule)} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth={0.5} />
+            {geoData && geoData.features.map((geo, i) => (
+              <path key={i} d={pathGen(geo)} fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" strokeWidth={0.4} />
+            ))}
+            {members.map((m, i) => {
+              if (!isVisible(m.coords)) return null;
+              const pt = projection(m.coords);
+              if (!pt) return null;
+              const [x, y] = pt;
+              return (
+                <g key={i} onClick={(e) => { e.stopPropagation(); setSelected(i); autoRotate.current = false; }} style={{ cursor: 'pointer' }}>
+                  <circle cx={x} cy={y} r={4} fill={teamColors[m.team]} opacity={0.9} stroke="rgba(0,0,0,0.3)" strokeWidth={0.5} />
+                  {selected === i && <circle cx={x} cy={y} r={9} fill="none" stroke={teamColors[m.team]} strokeWidth={1.5} opacity={0.6} />}
+                </g>
+              );
+            })}
+          </svg>
+        </motion.div>
 
         <AnimatePresence>
-          {selected !== null && (() => {
-            const m = members[selected];
-            if (!isVisible(m.coords)) return null;
-            const pt = projection(m.coords);
-            if (!pt) return null;
-            const pctX = (pt[0] / SIZE) * 100;
-            const pctY = (pt[1] / SIZE) * 100;
-            return (
-              <motion.div
-                className="map-popup"
-                style={{ left: pctX + '%', top: pctY + '%' }}
-                initial={{ opacity: 0, y: 8, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.2 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="map-popup__team" style={{ color: teamColors[m.team] }}>{m.team}</div>
-                <div className="map-popup__name">{m.name}</div>
-                <div className="map-popup__city">{m.city}</div>
-                <div className="map-popup__time">{getLocalTime(m.tz)}</div>
-              </motion.div>
-            );
-          })()}
+          {selectedMember && (
+            <motion.div
+              className="map-side-panel"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <div className="map-side-panel__dot" style={{ background: teamColors[selectedMember.team] }} />
+              <span className="map-side-panel__team" style={{ color: teamColors[selectedMember.team] }}>{selectedMember.team}</span>
+              <h4 className="map-side-panel__name">{selectedMember.name}</h4>
+              <p className="map-side-panel__city">{selectedMember.city}</p>
+              <p className="map-side-panel__time">{getLocalTime(selectedMember.tz)}</p>
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
     </div>

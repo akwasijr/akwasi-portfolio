@@ -581,6 +581,63 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 
 .team-map-container svg { cursor: none; }
 
+/* Layout: globe + side panel */
+.team-map-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  min-height: 500px;
+}
+
+/* Side panel */
+.map-side-panel {
+  width: 220px;
+  flex-shrink: 0;
+  padding: 24px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.map-side-panel__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.map-side-panel__team {
+  font-size: 12px;
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.map-side-panel__name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 8px;
+}
+
+.map-side-panel__city {
+  font-size: 14px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 4px;
+}
+
+.map-side-panel__time {
+  font-size: 14px;
+  color: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 768px) {
+  .team-map-layout { flex-direction: column; gap: 20px; }
+  .map-side-panel { width: 100%; }
+}
+
 /* Popup */
 .map-popup {
   position: absolute;
