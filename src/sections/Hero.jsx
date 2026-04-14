@@ -3,6 +3,7 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import Starfield from '../components/Starfield';
 import LottieLogo from '../components/LottieLogo';
 import AnimatedGradient from '../components/AnimatedGradient';
+import ShootingStars from '../components/ShootingStars';
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -61,6 +62,7 @@ export default function HeroSection() {
     <section ref={sectionRef} className="section section--hero-gradient" data-section="0">
       <AnimatedGradient />
       <Starfield count={25} />
+      <ShootingStars />
 
       <motion.img
         src="/assets/circle-badge.svg"
