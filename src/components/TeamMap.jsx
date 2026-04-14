@@ -151,7 +151,7 @@ export default function TeamMap() {
           className="team-map-container team-map-container--globe"
           animate={{ x: selected !== null ? -40 : 0 }}
           transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          onClick={() => setSelected(null)}
+          onClick={() => { setSelected(null); autoRotate.current = true; }}
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
