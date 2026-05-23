@@ -229,7 +229,7 @@ function AsciiSplash({ onComplete }) {
   );
 }
 
-/* Dot-matrix reveal — fine dots sweep from bottom-right to top-left, dissolving the black overlay */
+/* ASCII block dissolve — ████ → ▓▓▓▓ → ▒▒▒▒ → ░░░░ → gone, scanline by scanline */
 function CheckeredReveal({ onComplete }) {
   const canvasRef = useRef(null);
 
@@ -244,88 +244,90 @@ function CheckeredReveal({ onComplete }) {
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
 
-    // Fine dot grid — small tight dots
-    const dotSpacing = 6;
-    const maxRadius = 2;
-    const cols = Math.ceil(w / dotSpacing) + 1;
-    const rows = Math.ceil(h / dotSpacing) + 1;
-    // Distance from bottom-right corner
-    const maxDist = Math.hypot(w, h);
+    // Character cell grid (like a terminal)
+    const cellW = 10;
+    const cellH = 16;
+    const cols = Math.ceil(w / cellW) + 1;
+    const rows = Math.ceil(h / cellH) + 1;
 
-    const buildDuration = 600;
-    const holdDuration = 150;
-    const dissolveDuration = 600;
-    const totalDuration = buildDuration + holdDuration + dissolveDuration;
+    // Block density chars: full → dense → medium → light → gone
+    // We simulate this with fill opacity levels
+    const densityLevels = [1.0, 0.75, 0.5, 0.25, 0.12, 0];
+    const totalDuration = 1400;
     let start = null;
     let rafId;
 
-    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
-    function easeInCubic(t) { return t * t * t; }
+    // Pre-compute random noise per cell for organic feel
+    const noise = new Float32Array(cols * rows);
+    for (let i = 0; i < noise.length; i++) noise[i] = Math.random();
 
     function draw(timestamp) {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
+      const t = Math.min(elapsed / totalDuration, 1);
 
       ctx.clearRect(0, 0, w, h);
 
-      // Black background fades during dissolve
-      if (elapsed < buildDuration + holdDuration) {
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, w, h);
-      } else {
-        const dT = (elapsed - buildDuration - holdDuration) / dissolveDuration;
-        ctx.fillStyle = `rgba(0,0,0,${1 - easeInCubic(Math.min(dT, 1))})`;
-        ctx.fillRect(0, 0, w, h);
-      }
-
       for (let r = 0; r < rows; r++) {
+        // Each row has its own timing — top rows clear first (scanline wipe down)
+        const rowProgress = r / rows;
+        // Stagger: row 0 starts at t=0, last row starts at t=0.5
+        const rowStart = rowProgress * 0.5;
+        // Each row takes 0.5 of total to fully dissolve
+        const rowT = Math.max(0, Math.min((t - rowStart) / 0.5, 1));
+
         for (let c = 0; c < cols; c++) {
-          const x = c * dotSpacing;
-          const y = r * dotSpacing;
-          // Distance from bottom-right corner (sweep origin)
-          const dist = Math.hypot(w - x, h - y);
-          const normDist = dist / maxDist;
+          const idx = r * cols + c;
+          const n = noise[idx];
 
-          let radius = 0;
-          let alpha = 0;
+          // Add per-cell jitter so it's not perfectly uniform per row
+          const cellT = Math.max(0, Math.min(rowT + (n - 0.5) * 0.15, 1));
 
-          if (elapsed < buildDuration) {
-            // Build: dots appear from bottom-right sweeping to top-left
-            const t = elapsed / buildDuration;
-            const threshold = normDist * 0.8;
-            if (t > threshold) {
-              const localT = Math.min((t - threshold) / 0.2, 1);
-              radius = maxRadius * easeOutCubic(localT);
-              alpha = easeOutCubic(localT);
+          // Map progress to density level
+          const levelIdx = Math.min(Math.floor(cellT * densityLevels.length), densityLevels.length - 1);
+          const density = densityLevels[levelIdx];
+
+          if (density <= 0) continue;
+
+          const x = c * cellW;
+          const y = r * cellH;
+
+          // Draw block character as filled rect with varying density
+          // Use dithering pattern for ▒ and ░ feel
+          if (density >= 0.75) {
+            // █ or ▓ — solid or near-solid
+            ctx.fillStyle = `rgba(0,0,0,${density})`;
+            ctx.fillRect(x, y, cellW, cellH);
+          } else if (density >= 0.25) {
+            // ▒ — checkerboard dither
+            ctx.fillStyle = '#000';
+            for (let dy = 0; dy < cellH; dy += 2) {
+              for (let dx = (dy % 4 === 0 ? 0 : 1); dx < cellW; dx += 2) {
+                ctx.fillRect(x + dx, y + dy, 1, 1);
+              }
             }
-          } else if (elapsed < buildDuration + holdDuration) {
-            // Hold: all dots visible
-            radius = maxRadius;
-            alpha = 1;
           } else {
-            // Dissolve: dots vanish from bottom-right to top-left
-            const dT = (elapsed - buildDuration - holdDuration) / dissolveDuration;
-            const threshold = normDist * 0.8;
-            if (dT > threshold) {
-              const localT = Math.min((dT - threshold) / 0.2, 1);
-              radius = maxRadius * (1 - easeInCubic(localT));
-              alpha = 1 - easeInCubic(localT);
-            } else {
-              radius = maxRadius;
-              alpha = 1;
+            // ░ — sparse dots
+            ctx.fillStyle = '#000';
+            for (let dy = 0; dy < cellH; dy += 4) {
+              for (let dx = ((dy + (c % 2) * 2) % 4); dx < cellW; dx += 4) {
+                ctx.fillRect(x + dx, y + dy, 1, 1);
+              }
             }
           }
 
-          if (radius > 0.2 && alpha > 0.01) {
-            ctx.beginPath();
-            ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(198,239,77,${alpha * 0.85})`;
-            ctx.fill();
+          // Occasional lime "glitch" character during transition
+          if (cellT > 0.1 && cellT < 0.8 && n > 0.85) {
+            ctx.fillStyle = `rgba(198,239,77,${0.6 * (1 - cellT)})`;
+            ctx.font = `${cellH - 2}px "IBM Plex Mono", monospace`;
+            const glyphSet = '░▒▓█▄▀│─┤├┬┴┼';
+            const glyph = glyphSet[Math.floor((elapsed / 80 + idx) % glyphSet.length)];
+            ctx.fillText(glyph, x, y + cellH - 3);
           }
         }
       }
 
-      if (elapsed < totalDuration) {
+      if (t < 1) {
         rafId = requestAnimationFrame(draw);
       } else {
         onComplete();
