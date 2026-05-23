@@ -69,7 +69,7 @@ const projects = [
     id: 'gcha-dashboards',
     client: 'Gulf Cultural Heritage Authority',
     title: 'Operational Excellence Suite',
-    color: '#1e102e',
+    color: '#0e1614',
     image: '/assets/projects/aha-executive.png',
     tags: ['Enterprise AI', 'Government'],
     sections: [
@@ -103,7 +103,7 @@ const projects = [
     id: 'gcha-heritage',
     client: 'Gulf Cultural Heritage Authority',
     title: 'Cultural Guardians',
-    color: '#121014',
+    color: '#101412',
     image: '/assets/projects/aha-sanaa.png',
     tags: ['Immersive Design', 'Cultural Heritage'],
     sections: [
