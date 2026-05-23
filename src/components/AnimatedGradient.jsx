@@ -4,11 +4,11 @@ import { useRef, useEffect } from 'react';
 // Uses overlapping soft circles that drift slowly for an organic feel
 
 const COLORS = [
-  [126, 128, 238],  // purple
-  [19, 118, 191],   // blue
-  [244, 90, 155],   // pink
-  [242, 165, 115],  // orange
-  [74, 26, 138],    // deep purple
+  [119, 121, 240],  // purple
+  [198, 239, 77],   // lime
+  [165, 165, 246],  // lavender
+  [8, 84, 31],      // deep green
+  [0, 51, 15],      // dark green
 ];
 
 class Orb {
@@ -82,7 +82,7 @@ export default function AnimatedGradient() {
     const startTime = performance.now();
 
     const draw = (now) => {
-      ctx.fillStyle = '#1a0a2e';
+      ctx.fillStyle = '#001a08';
       ctx.fillRect(0, 0, w, h);
 
       const elapsed = now - startTime;

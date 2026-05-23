@@ -7,15 +7,15 @@ import ScrollReveal from '../components/ScrollReveal';
 import Starfield from '../components/Starfield';
 
 const disciplines = [
-  { abbr: 'PM',  name: 'Product Management',   color: '#F2A573', orbit: 3.0, speed: 0.3, offset: 0 },
-  { abbr: 'UXD', name: 'UX Designers',         color: '#7E80EE', orbit: 3.0, speed: 0.3, offset: Math.PI },
-  { abbr: 'UXE', name: 'UX Engineers',         color: '#1376BF', orbit: 4.5, speed: 0.2, offset: Math.PI * 0.4 },
-  { abbr: 'DS',  name: 'Data Science',         color: '#1376BF', orbit: 4.5, speed: 0.2, offset: Math.PI * 1.4, dimmed: true },
-  { abbr: 'SEC', name: 'Security',             color: '#4AA75F', orbit: 6.0, speed: 0.12, offset: Math.PI * 0.8, dimmed: true },
-  { abbr: 'TA',  name: 'Technical Architects', color: '#7E80EE', orbit: 6.0, speed: 0.12, offset: Math.PI * 1.8, dimmed: true },
+  { abbr: 'AI',  name: 'AI Experience Design',  color: '#c6ef4d', orbit: 3.0, speed: 0.3, offset: 0 },
+  { abbr: 'UX',  name: 'Product Design',        color: '#7779f0', orbit: 3.0, speed: 0.3, offset: Math.PI },
+  { abbr: 'DEV', name: 'Frontend Engineering',   color: '#a5a5f6', orbit: 4.5, speed: 0.2, offset: Math.PI * 0.4 },
+  { abbr: 'SYS', name: 'Design Systems',         color: '#a5a5f6', orbit: 4.5, speed: 0.2, offset: Math.PI * 1.4, dimmed: true },
+  { abbr: 'WRK', name: 'Workshop Facilitation',  color: '#c6ef4d', orbit: 6.0, speed: 0.12, offset: Math.PI * 0.8, dimmed: true },
+  { abbr: 'VIZ', name: 'Data Visualization',     color: '#7779f0', orbit: 6.0, speed: 0.12, offset: Math.PI * 1.8, dimmed: true },
 ];
 
-function OrbitRing({ radius, color = '#7E80EE' }) {
+function OrbitRing({ radius, color = '#7779f0' }) {
   const points = [];
   for (let i = 0; i <= 128; i++) {
     const angle = (i / 128) * Math.PI * 2;
@@ -57,7 +57,7 @@ function Satellite({ data }) {
             border: '2.5px solid ' + data.color,
             background: 'rgba(255,255,255,0.92)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '17px', fontWeight: 700, color: '#0C0E13',
+            fontSize: '17px', fontWeight: 700, color: '#00330f',
           }}>
             {data.abbr}
           </div>
@@ -76,8 +76,14 @@ function Satellite({ data }) {
 function CenterBadge() {
   return (
     <Html center style={{ pointerEvents: 'none' }}>
-      <div style={{ width: '100px', height: '100px' }}>
-        <img src="/assets/patch-dark.svg" alt="Studio 42" style={{ width: '100%', height: '100%' }} />
+      <div style={{
+        width: '80px', height: '80px', borderRadius: '50%',
+        background: '#00330f', border: '2px solid #c6ef4d',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700,
+        fontSize: '28px', color: '#c6ef4d',
+      }}>
+        AF
       </div>
     </Html>
   );
@@ -98,9 +104,9 @@ function Scene() {
       <directionalLight position={[5, 5, 5]} intensity={0.8} />
 
       <group ref={groupRef} rotation={[Math.PI * 0.22, 0.15, 0]}>
-        <OrbitRing radius={3.0} color="#F2A573" />
-        <OrbitRing radius={4.5} color="#1376BF" />
-        <OrbitRing radius={6.0} color="#7E80EE" />
+        <OrbitRing radius={3.0} color="#c6ef4d" />
+        <OrbitRing radius={4.5} color="#a5a5f6" />
+        <OrbitRing radius={6.0} color="#7779f0" />
 
         <group>
           <CenterBadge />
@@ -154,7 +160,7 @@ export default function CapabilitiesSection() {
       </div>
       <div style={{ position: 'relative', zIndex: 2, textAlign: 'center', paddingTop: '80px' }}>
         <ScrollReveal>
-          <h2 className="cap-heading-dark">Bringing global engineering skills</h2>
+          <h2 className="cap-heading-dark">My skills in orbit</h2>
         </ScrollReveal>
       </div>
     </section>

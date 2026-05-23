@@ -3,9 +3,9 @@ import { motion } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const disciplines = [
-  { abbr: 'PM', name: 'Product Management', color: '#F2A573' },
-  { abbr: 'UXD', name: 'UX Designers', color: '#7E80EE' },
-  { abbr: 'UXE', name: 'UX Engineers', color: '#1376BF' },
+  { abbr: 'AI', name: 'AI Experience Design', color: '#c6ef4d' },
+  { abbr: 'UX', name: 'Product Design', color: '#7779f0' },
+  { abbr: 'DEV', name: 'Frontend Engineering', color: '#a5a5f6' },
 ];
 
 const ease = [0.22, 1, 0.36, 1];
@@ -36,21 +36,21 @@ function VennDiagram() {
         {/* Left circle - Design */}
         <motion.circle
           cx="240" cy="200" r="160"
-          fill="none" stroke="rgba(126,128,238,0.3)" strokeWidth="1.5"
+          fill="none" stroke="rgba(198,239,77,0.3)" strokeWidth="1.5"
           animate={isInView ? { r: 160, opacity: 1 } : { r: 80, opacity: 0 }}
           transition={{ duration: 1, ease }}
         />
         {/* Right circle - Engineering */}
         <motion.circle
           cx="360" cy="200" r="160"
-          fill="none" stroke="rgba(126,128,238,0.3)" strokeWidth="1.5"
+          fill="none" stroke="rgba(119,121,240,0.3)" strokeWidth="1.5"
           animate={isInView ? { r: 160, opacity: 1 } : { r: 80, opacity: 0 }}
           transition={{ duration: 1, delay: 0.15, ease }}
         />
         {/* Intersection fill */}
         <motion.path
           d="M300,73.6 A160,160,0,0,1,300,326.4 A160,160,0,0,1,300,73.6Z"
-          fill="#7E80EE"
+          fill="#7779f0"
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease }}
         />
@@ -66,7 +66,7 @@ function VennDiagram() {
           fontSize="16" fontWeight="600"
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.6 }}
-        >S42</motion.text>
+        >AF</motion.text>
         <motion.text
           x="410" y="206" textAnchor="middle" fill="rgba(255,255,255,0.5)"
           fontSize="16" fontWeight="400"
@@ -83,13 +83,13 @@ function BigStatement() {
   const isInView = useScrollVisible(ref, 0.2);
 
   const lines = [
-    { text: 'The idea behind ', em: 'Studio 42', after: ' is simple:' },
+    { text: 'I work at the intersection of ' },
+    { text: '', em: 'AI, design and engineering', after: '.' },
     { text: 'Turning complex AI capabilities' },
-    { text: 'into human-centered experiences.' },
-    { text: 'We validate feasibility from day one,' },
-    { text: 'bridging vision with deep technical insight.' },
-    { text: 'We are fast-paced, precise and strategic.' },
-    { text: 'From pixel to production.' },
+    { text: 'into things people can actually use.' },
+    { text: 'Copilot experiences, agent interfaces,' },
+    { text: 'data dashboards, design frameworks.' },
+    { text: 'From concept to production.' },
   ];
 
   return (
@@ -127,14 +127,14 @@ function TeamSection() {
           }
           transition={{ duration: 0.7, ease }}
         >
-          Our Team
+         Experience
         </motion.h2>
         <motion.p
           className="editorial-team-section__sub"
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.15, ease }}
         >
-          Only the best in their field
+         11+ years across three chapters
         </motion.p>
         <motion.span
           className="editorial-team-section__count"

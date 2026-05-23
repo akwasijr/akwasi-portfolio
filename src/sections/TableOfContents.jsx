@@ -1,38 +1,27 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Starfield from '../components/Starfield';
-import LottieLogo from '../components/LottieLogo';
 
 const items = [
   {
-    id: 'team',
-    title: 'Team', label: 'Who we are',
-    detail: 'A global, cross-functional team blending UX, engineering, and data science to bring ideas to life.',
-  },
-  {
-    id: 'what-we-do',
-    title: 'What We Do', label: 'Our offering',
-    detail: 'Storytelling, VIBE prototyping, and product delivery that drives adoption and measurable consumption.',
-  },
-  {
-    id: 'process',
-    title: 'Process', label: 'How we work',
-    detail: 'From business envisioning to rapid prototype. We meet customers where they are and accelerate decisions.',
-  },
-  {
-    id: 'working-with-us',
-    title: 'Working with Us', label: 'Studio 42 + You',
-    detail: 'Experience-led presales through storytelling and engineered prototypes. No NBUE required.',
-  },
-  {
-    id: 'vibe-prototyping',
-    title: 'Vibe Prototyping', label: 'Our approach',
-    detail: 'AI-first design thinking coupled with live AI-powered prototyping to validate concepts fast.',
+    id: 'about',
+    title: 'About', label: 'Who I am',
+    detail: 'Design consultant at Microsoft. 11+ years in product design, the last 4 focused on AI experiences.',
   },
   {
     id: 'selected-work',
-    title: 'Selected Work', label: 'Case studies',
-    detail: 'Heineken, Novartis, and more. Platform journeys to AI innovation.',
+    title: 'Selected Work', label: 'Projects',
+    detail: 'DIFC Courts, Abu Dhabi Heritage Authority, Terminal 42, Starkit.',
+  },
+  {
+    id: 'how-i-work',
+    title: 'How I Work', label: 'Craft + Process + Tools',
+    detail: 'AI experience design, copilot interfaces, and the process from problem to prototype.',
+  },
+  {
+    id: 'contact',
+    title: 'Contact', label: 'Get in touch',
+    detail: 'Based in the Netherlands, working globally.',
   },
 ];
 
@@ -90,7 +79,15 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease }}
         >
-          <LottieLogo width={180} autoplay={visible} loop={false} variant="light" />
+          <div
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontWeight: 700, fontSize: '48px', color: '#c6ef4d',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            AF
+          </div>
         </motion.div>
 
         <div className="toc-list">
@@ -113,13 +110,13 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
                   onOpenPage && onOpenPage(item.id, y);
                 }}
                 style={{
-                  backgroundColor: isHovered ? '#ffffff' : 'rgba(255,255,255,0)',
-                  color: isHovered ? '#0059A3' : '#ffffff',
+                  backgroundColor: isHovered ? '#c6ef4d' : 'rgba(255,255,255,0)',
+                  color: isHovered ? '#00330f' : '#ffffff',
                 }}
               >
                 <span
                   className="toc-row__label"
-                  style={{ color: isHovered ? 'rgba(0,89,163,0.5)' : undefined }}
+                  style={{ color: isHovered ? 'rgba(0,51,15,0.5)' : undefined }}
                 >
                   {item.label}
                 </span>

@@ -8,48 +8,36 @@ import CircleWipe from './components/CircleWipe';
 import HeroSection from './sections/Hero';
 import TableOfContentsSection from './sections/TableOfContents';
 import AboutSection from './sections/About';
-import CapabilitiesSection from './sections/Capabilities';
-import WhatWeDoSection from './sections/WhatWeDo';
-import ProcessSection from './sections/Process';
+import HowIWorkSection from './sections/HowIWork';
 import CaseStudiesSection from './sections/CaseStudies';
-import PositioningSection from './sections/Positioning';
 import CTASection from './sections/CTA';
 
-import TeamMap from './components/TeamMap';
-
 const pageComponents = {
-  'team': () => (
-    <>
-      <AboutSection />
-      <CapabilitiesSection />
-      <TeamMap />
-    </>
-  ),
-  'process': () => <ProcessSection />,
-  'what-we-do': () => <WhatWeDoSection />,
-  'working-with-us': () => <PositioningSection />,
-  'vibe-prototyping': () => (
+  'about': () => <AboutSection />,
+  'how-i-work': () => <HowIWorkSection />,
+  'selected-work': () => <CaseStudiesSection />,
+  'contact': () => (
     <section className="section section--dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="section-inner" style={{ textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em' }}>
-          Vibe Prototyping
+        <h2 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 700, lineHeight: 1.1, letterSpacing: '-0.02em', fontFamily: 'var(--font-family-display)' }}>
+          Let's talk
         </h2>
         <p style={{ fontSize: '17px', color: 'rgba(255,255,255,0.5)', marginTop: '24px', maxWidth: '500px', margin: '24px auto 0' }}>
-          Coming soon. We are building something exciting.
+          akwasi@outlook.com
+        </p>
+        <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)', marginTop: '8px' }}>
+          +1 470 244 9539 / +31 6 340 15 149
         </p>
       </div>
     </section>
   ),
-  'selected-work': () => <CaseStudiesSection />,
 };
 
 const pageTitles = {
-  'team': 'Team',
-  'what-we-do': 'What We Do',
-  'process': 'Process',
-  'working-with-us': 'Working with Us',
-  'vibe-prototyping': 'Vibe Prototyping',
+  'about': 'About',
+  'how-i-work': 'How I Work',
   'selected-work': 'Selected Work',
+  'contact': 'Contact',
 };
 
 export default function App() {

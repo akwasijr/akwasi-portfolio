@@ -69,7 +69,7 @@ function HeroSection() {
   const visible = useScrollVisible(ref, 0.15);
   const scrollY = useOverlayScroll();
 
-  const headingLines = ['What', 'We Do'];
+  const headingLines = ['What', 'I Do'];
 
   return (
     <section ref={ref} className="wwd-hero">
@@ -114,8 +114,8 @@ function HeroSection() {
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.3, ease }}
         >
-          Turning complex AI capabilities into
-          human-centered experiences that inspire action
+          Translating complex AI capabilities into
+          experiences people can actually use
         </motion.p>
       </div>
     </section>
@@ -187,7 +187,7 @@ export default function WhatWeDoSection() {
   const badgeY = scrollY * -0.08;
 
   return (
-    <div style={{ position: 'relative', background: 'radial-gradient(ellipse at 50% 40%, #131620 0%, #0C0E13 70%)' }}>
+    <div style={{ position: 'relative', background: '#00330f' }}>
       <Starfield count={25} />
 
       {/* Circle badge — parallax + spin */}
@@ -195,39 +195,46 @@ export default function WhatWeDoSection() {
         className="wwd-badge-wrap"
         style={{ y: badgeY }}
       >
-        <img
-          src="/assets/circle-badge.svg"
-          alt=""
+        <div
           role="presentation"
           className="wwd-badge"
-        />
+          style={{
+            width: '100%', height: '100%', borderRadius: '50%',
+            background: '#00330f', border: '2px solid rgba(198,239,77,0.3)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700,
+            fontSize: '24px', color: '#c6ef4d',
+          }}
+        >
+          AF
+        </div>
       </motion.div>
 
       <HeroSection />
 
       <PillarSection
-        title="Storytelling"
-        desc="We motivate customer action towards AI transformation by aligning outcomes, visualizing custom AI experiences, and crafting inspiring stories."
+        title="AI Experience Design"
+        desc="I translate complex AI capabilities into experiences people can actually use: copilot interfaces, agent workflows, and intelligent dashboards for enterprise."
         bullets={[
-          'Uncover real user problems early',
-          'Translate strategy into clear experiences',
-          'Demos and prototypes that make value tangible',
-          'Reduce deal risk and accelerate decisions',
+          'Copilot and agent experience design',
+          'AI-powered dashboards and data visualization',
+          'Trust building and delegation models',
+          'Workshop facilitation for AI strategy',
         ]}
-        imgLabel="Customer narrative"
+        imgLabel="AI experience"
       />
 
       <PillarSection
-        title="Product Delivery"
-        desc="We collaboratively design and build production-ready solutions, grounded in the vision and strategies established in earlier phases."
+        title="Building Real Products"
+        desc="I bridge design and engineering: prototyping with code, building design systems, and shipping production-ready interfaces."
         bullets={[
-          'Design close to engineering and data science',
-          'Validate early to reduce rework',
-          'Experience intent survives to production',
-          'Scale consistent, production-ready experiences',
+          'React, TypeScript, Next.js, Tailwind',
+          'Design systems with Fluent UI and Figma',
+          'AI-first prototyping and vibe coding',
+          'Electron apps and desktop tools',
         ]}
         flipped
-        imgLabel="Production build"
+        imgLabel="Code + design"
       />
     </div>
   );

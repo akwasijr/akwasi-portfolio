@@ -5,33 +5,33 @@ import Starfield from '../components/Starfield';
 const steps = [
   {
     icon: '/assets/icons/01.svg',
-    title: 'Discovery\nand Alignment',
-    desc: 'We start by understanding your business goals, customer needs, and technical landscape. Together we define the challenge and align on what success looks like.',
+    title: 'Understand\nthe Problem',
+    desc: 'I start by understanding business goals, user needs, and the technical landscape. Together we define the challenge and align on what success looks like.',
   },
   {
     icon: '/assets/icons/02.svg',
-    title: 'Storytelling\nand Vision',
-    desc: 'We craft a compelling narrative that connects your goals to Microsoft capabilities, building a shared vision that resonates with stakeholders at every level.',
+    title: 'Story\nand Vision',
+    desc: 'I craft a compelling narrative that connects goals to capabilities, building a shared vision that resonates with stakeholders at every level.',
   },
   {
     icon: '/assets/icons/03.svg',
     title: 'Solution\nEnvisioning',
-    desc: 'Through collaborative workshops we explore possibilities, map user journeys, and define the solution space where technology meets real human needs.',
+    desc: 'Through workshops and design thinking I explore possibilities, map user journeys, and define the solution space where AI meets real human needs.',
   },
   {
     icon: '/assets/icons/04.svg',
-    title: 'Vibe\nPrototyping',
-    desc: 'Using AI-paired development we rapidly build functional prototypes that bring ideas to life. Real code, real interactions, validated in days.',
+    title: 'Rapid\nPrototyping',
+    desc: 'Using AI-paired development I rapidly build functional prototypes that bring ideas to life. Real code, real interactions, validated in days not months.',
   },
   {
     icon: '/assets/icons/05.svg',
-    title: 'Architecture\nDesign',
-    desc: 'We synthesize requirements into a scalable, Azure-native architecture blueprint. Security, performance, and integration built in from the start.',
+    title: 'Design\nSystem',
+    desc: 'I synthesize requirements into scalable design systems and component libraries. Consistency, accessibility, and brand alignment built in from the start.',
   },
   {
     icon: '/assets/icons/06.svg',
-    title: 'Delivery\nand Handoff',
-    desc: 'Production-grade code, documentation, and knowledge transfer. We ensure your team is empowered to own, extend, and scale the solution forward.',
+    title: 'Ship\nand Iterate',
+    desc: 'Production-grade code and pixel-perfect handoffs. I ensure the design intent survives to production and the team can extend and scale the experience.',
   },
 ];
 
@@ -73,9 +73,9 @@ function StrokeIcon({ src, visible }) {
         setOriginalSvg(text);
         const stroked = text
           .replace(/fill="(?!none)[^"]*"/g, 'fill="none"')
-          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7E80EE" stroke-width="0.7"')
-          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7E80EE" stroke-width="0.7"')
-          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7E80EE" stroke-width="0.7"');
+          .replace(/<path(?![^>]*stroke)/g, '<path stroke="#7779f0" stroke-width="0.7"')
+          .replace(/<circle(?![^>]*stroke)/g, '<circle stroke="#7779f0" stroke-width="0.7"')
+          .replace(/<rect(?![^>]*stroke)/g, '<rect stroke="#7779f0" stroke-width="0.7"');
         setStrokeSvg(stroked);
       });
   }, [src]);
@@ -204,15 +204,8 @@ function ScrollPath({ wrapperRef }) {
       preserveAspectRatio="none"
       style={{ position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)', width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }}
     >
-      <path d={d} fill="none" stroke="rgba(126,128,238,0.06)" strokeWidth="2" />
-      <path ref={pathRef} d={d} fill="none" stroke="url(#pathGrad)" strokeWidth="2.5" strokeLinecap="round" />
-      <defs>
-        <linearGradient id="pathGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#7E80EE" stopOpacity="0.8" />
-          <stop offset="50%" stopColor="#1376BF" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#7E80EE" stopOpacity="0.8" />
-        </linearGradient>
-      </defs>
+      <path d={d} fill="none" stroke="rgba(198,239,77,0.08)" strokeWidth="2" />
+      <path ref={pathRef} d={d} fill="none" stroke="#c6ef4d" strokeWidth="2.5" strokeLinecap="round" strokeOpacity="0.6" />
     </svg>
   );
 }
@@ -262,7 +255,7 @@ function JourneyIntro() {
   const ref = useRef(null);
   const visible = useScrollVisible(ref, 0.3);
 
-  const headingLines = ['From problem', 'exploration', 'to technical proof'];
+  const headingLines = ['From problem', 'exploration', 'to working product'];
 
   return (
     <div ref={ref} className="pj-intro">
@@ -271,7 +264,7 @@ function JourneyIntro() {
         animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
         transition={{ duration: 0.6, ease }}
       >
-        Our process
+        My process
       </motion.p>
       <h2 className="pj-intro__heading">
         {headingLines.map((line, i) => (

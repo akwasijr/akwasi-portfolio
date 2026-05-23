@@ -1,11 +1,11 @@
 :root {
   /* Brand Colors */
-  --color-dark-blue: #0C0E13;
-  --color-orange: #F2A573;
-  --color-pink: #F45A9B;
-  --color-purple: #7E80EE;
-  --color-blue: #1376BF;
-  --color-green: #4AA75F;
+  --color-deep-green: #00330f;
+  --color-lime: #c6ef4d;
+  --color-purple: #7779f0;
+  --color-lavender: #a5a5f6;
+  --color-tag-green: #08541f;
+  --color-divider: #7a7a7a;
 
   /* Base Colors */
   --color-black: #000000;
@@ -13,19 +13,19 @@
   --color-white: #FFFFFF;
 
   /* Surfaces */
-  --color-bg: var(--color-dark-blue);
+  --color-bg: var(--color-deep-green);
   --color-surface: rgba(255, 255, 255, 0.06);
   --color-surface-strong: rgba(255, 255, 255, 0.12);
   --color-border: rgba(255, 255, 255, 0.12);
 
   /* Text */
   --color-text-primary: var(--color-white);
-  --color-text-secondary: rgba(255, 255, 255, 0.7);
+  --color-text-secondary: rgba(255, 255, 255, 0.72);
   --color-text-muted: rgba(255, 255, 255, 0.4);
 
   /* Typography */
-  --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-  --font-family-display: 'Segoe UI', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-family-display: 'IBM Plex Mono', 'SF Mono', 'Menlo', monospace;
 
   --font-size-xs: 12px;
   --font-size-sm: 14px;
