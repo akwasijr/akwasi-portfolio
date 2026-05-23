@@ -287,7 +287,7 @@ export default function HowIWorkSection() {
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.7, ease }}
         >
-          I design AI experiences — copilot interfaces, agent workflows, intelligent dashboards — and build them in production-grade code. React, TypeScript, Electron, design systems with Fluent UI and Figma. From workshop facilitation and strategy through to shipped product.
+          I design AI experiences: copilot interfaces, agent workflows, intelligent dashboards, and build them in production-grade code. React, TypeScript, Electron, design systems with Fluent UI and Figma. From workshop facilitation and strategy through to shipped product.
         </motion.p>
       </section>
 

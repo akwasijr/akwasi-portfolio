@@ -49,11 +49,11 @@ const projects = [
       },
       {
         heading: 'Definition',
-        body: 'We identified the core bottleneck: information assembly. Judges and their teams needed to pull from case filings, precedents, external legal references, and internal documentation — then synthesize it all into a structured draft. The drafting itself followed repeatable patterns, but the research and compilation did not.',
+        body: 'We identified the core bottleneck: information assembly. Judges and their teams needed to pull from case filings, precedents, external legal references, and internal documentation, then synthesize it all into a structured draft. The drafting itself followed repeatable patterns, but the research and compilation did not.',
       },
       {
         heading: 'Output',
-        body: 'A guided drafting workflow where AI gathers information from multiple sources — case filings, uploaded documents, external references — and generates a first draft with proper legal formatting and citations. Judges review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and refine judicial reasoning. The human remains at the center — AI accelerates the assembly, the judge owns the decision.',
+        body: 'A guided drafting workflow where AI gathers information from multiple sources (case filings, uploaded documents, external references) and generates a first draft with proper legal formatting and citations. Judges review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and refine judicial reasoning. The human remains at the center. AI accelerates the assembly, the judge owns the decision.',
       },
     ],
     images: [
@@ -61,7 +61,7 @@ const projects = [
       { src: '/assets/projects/difc-workflow-step4.png', caption: 'Judicial reasoning guidance with structured prompts' },
       { src: '/assets/projects/difc-editor-resume.png', caption: 'Document editor with DIFC Courts formatting' },
       { src: '/assets/projects/difc-editor-content.png', caption: 'AI-drafted court order with legal citations' },
-      { src: '/assets/projects/difc-editor-assist.png', caption: 'AI Assist panel — verify citations, proofread' },
+      { src: '/assets/projects/difc-editor-assist.png', caption: 'AI Assist panel: verify citations, proofread' },
       { src: '/assets/projects/difc-editor-review.png', caption: 'Collaborative review with judicial comments' },
     ],
   },
