@@ -274,9 +274,6 @@ function ExpandedCard({ project, cardRect, onClose }) {
         style={hasImages ? { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', maxWidth: '1200px', alignItems: 'start' } : { maxWidth: '720px' }}
       >
         <div>
-          <button className="case-expanded__close" onClick={onClose}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M18 6L6 18M6 6l12 12" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>
-          </button>
           <div className="case-expanded__tags">
             {project.tags.map(t => <span key={t} className="case-expanded__tag">{t}</span>)}
           </div>
