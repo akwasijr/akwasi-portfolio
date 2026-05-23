@@ -10,7 +10,7 @@ const projects = [
     id: 'icc-cpo',
     client: 'International Commercial Court',
     title: 'CPO Case Assistant',
-    color: '#1e3a5f',
+    color: '#0f2e2a',
     image: '/assets/projects/difc-case-detail.png',
     tags: ['AI Experience', 'Legal Tech'],
     sections: [
@@ -39,7 +39,7 @@ const projects = [
     id: 'icc-drafting',
     client: 'International Commercial Court',
     title: 'Judicial Drafting',
-    color: '#2a4a7f',
+    color: '#142f2b',
     image: '/assets/projects/difc-editor-resume.png',
     tags: ['AI Drafting', 'Judicial'],
     sections: [
@@ -69,7 +69,7 @@ const projects = [
     id: 'gcha-dashboards',
     client: 'Gulf Cultural Heritage Authority',
     title: 'Operational Excellence Suite',
-    color: '#2c1810',
+    color: '#1e102e',
     image: '/assets/projects/aha-executive.png',
     tags: ['Enterprise AI', 'Government'],
     sections: [
@@ -103,7 +103,7 @@ const projects = [
     id: 'gcha-heritage',
     client: 'Gulf Cultural Heritage Authority',
     title: 'Cultural Guardians',
-    color: '#1a1510',
+    color: '#1a0f28',
     image: '/assets/projects/aha-sanaa.png',
     tags: ['Immersive Design', 'Cultural Heritage'],
     sections: [
