@@ -156,23 +156,31 @@ const projects = [
   },
   {
     id: 'terminal42',
-    client: 'Experiment',
+    client: 'Design Experiment',
     title: 'Terminal 42',
     color: '#1a1d23',
     image: '/assets/projects/terminal42-splash.png',
-    tags: ['Developer Tools', 'AI Workspace'],
+    tags: ['Design Experiment', 'AI Workspace', 'Developer Tools'],
     sections: [
       {
-        heading: 'Problem',
-        body: 'AI coding tools lived inside IDEs or browsers, disconnected from the terminal where developers think and build. Switching between a chat window and a terminal broke flow. No single workspace combined commands, design, and persistent AI context.',
+        heading: 'The experiment',
+        body: 'Terminal 42 is a design thought experiment exploring what happens when you rethink the developer workspace from scratch. Instead of adding AI to an existing IDE, the question was: what would a workspace look like if AI collaboration was the starting point, not an afterthought? The result is a fully designed and built Electron application that treats the terminal, design tools, and persistent memory as equal first-class surfaces.',
       },
       {
-        heading: 'Solution',
-        body: 'A native Electron app wrapping the Copilot CLI with a full studio experience. Terminal with xterm.js, a design workspace with live canvas preview and Figma export, a persistent brain/memory system for preferences and project context, and an activity dashboard for sessions and token usage.',
+        heading: 'Terminal workspace',
+        body: 'A full terminal environment built with xterm.js, with an integrated AI copilot panel. The copilot sits alongside the command line, not in a separate window. Conversations persist across sessions. The interface is designed so the AI feels like a collaborator sitting next to you, not a chatbot in another tab.',
       },
       {
-        heading: 'AI impact',
-        body: 'The brain system remembers coding style, project rules, and preferences across sessions. The design studio goes from prompt to live preview to Figma export without leaving the app. It collapses the gap between thinking, building, and shipping.',
+        heading: 'Design studio',
+        body: 'A built-in design canvas where you go from a text prompt to a live visual preview. Components render in real time as the AI generates them. From there you can refine, iterate, and export directly to Figma without leaving the app. The idea: code and design should live in the same space, not require context-switching between tools.',
+      },
+      {
+        heading: 'Brain and memory',
+        body: 'A persistent memory system that learns your preferences, coding patterns, project rules, and context over time. Instead of re-explaining your stack or style every session, the brain carries that forward. It surfaces relevant context automatically so the AI can make better suggestions from the start.',
+      },
+      {
+        heading: 'Activity and sessions',
+        body: 'A dashboard tracking session history, token usage, and activity patterns. It gives visibility into how you work with AI over time, what tasks you delegate most, and where the collaboration is most effective. Designed to make the human-AI working relationship transparent and reflective.',
       },
     ],
     images: [
