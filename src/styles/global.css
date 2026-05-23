@@ -210,9 +210,10 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  color: rgba(255,255,255,0.3);
+  color: #c6ef4d;
   font-size: 12px;
   letter-spacing: 0.08em;
+  z-index: 10;
   animation: float 2.5s ease-in-out infinite;
 }
 

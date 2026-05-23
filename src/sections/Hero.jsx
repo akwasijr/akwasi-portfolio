@@ -486,9 +486,9 @@ export default function HeroSection() {
             );
           })}
         </motion.h1>
-
-        <ScrollHint reveal={reveal} />
       </motion.div>
+
+      <ScrollHint reveal={reveal} />
     </section>
   );
 }
