@@ -229,63 +229,120 @@ function AsciiSplash({ onComplete }) {
   );
 }
 
-/* Checkered dissolve — grid of cells that vanish in a staggered pattern */
+/* Dot-matrix reveal — dots build up from center outward, then dissolve to show page */
 function CheckeredReveal({ onComplete }) {
-  const cols = 24;
-  const rows = 14;
-  const totalCells = cols * rows;
-  const duration = 1200; // total ms
-
-  const cellsRef = useRef(null);
+  const canvasRef = useRef(null);
 
   useEffect(() => {
-    const container = cellsRef.current;
-    if (!container) return;
-    const cells = container.children;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    ctx.scale(dpr, dpr);
 
-    // Build staggered order: checkerboard pattern (even cells first, then odd)
-    const indices = [];
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const idx = r * cols + c;
-        const isEven = (r + c) % 2 === 0;
-        if (isEven) indices.push(idx);
+    const dotSpacing = 18;
+    const maxRadius = dotSpacing * 0.38;
+    const cols = Math.ceil(w / dotSpacing) + 1;
+    const rows = Math.ceil(h / dotSpacing) + 1;
+    const cx = w / 2;
+    const cy = h / 2;
+    const maxDist = Math.hypot(cx, cy);
+
+    // Phase 1: dots build up from center (0–800ms)
+    // Phase 2: dots dissolve outward (800–1600ms)
+    const buildDuration = 800;
+    const dissolveDuration = 800;
+    const totalDuration = buildDuration + dissolveDuration;
+    let start = null;
+    let rafId;
+
+    function draw(timestamp) {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+      const progress = Math.min(elapsed / totalDuration, 1);
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Fill black background that fades during dissolve phase
+      if (elapsed < buildDuration) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        const dissolveT = (elapsed - buildDuration) / dissolveDuration;
+        const bgAlpha = 1 - easeInQuad(dissolveT);
+        ctx.fillStyle = `rgba(0,0,0,${bgAlpha})`;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = c * dotSpacing;
+          const y = r * dotSpacing;
+          const dist = Math.hypot(x - cx, y - cy);
+          const normDist = dist / maxDist;
+
+          let radius = 0;
+          let alpha = 0;
+
+          if (elapsed < buildDuration) {
+            // Build phase: dots appear from center outward
+            const buildT = elapsed / buildDuration;
+            const dotThreshold = normDist;
+            if (buildT > dotThreshold) {
+              const localT = Math.min((buildT - dotThreshold) / 0.3, 1);
+              radius = maxRadius * easeOutBack(localT);
+              alpha = localT;
+            }
+          } else {
+            // Dissolve phase: dots shrink from center outward
+            const dissolveT = (elapsed - buildDuration) / dissolveDuration;
+            const dotThreshold = normDist;
+            if (dissolveT > dotThreshold) {
+              const localT = Math.min((dissolveT - dotThreshold) / 0.3, 1);
+              radius = maxRadius * (1 - easeInQuad(localT));
+              alpha = 1 - easeInQuad(localT);
+            } else {
+              radius = maxRadius;
+              alpha = 1;
+            }
+          }
+
+          if (radius > 0.3 && alpha > 0.01) {
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(198,239,77,${alpha * 0.9})`;
+            ctx.fill();
+          }
+        }
+      }
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(draw);
+      } else {
+        onComplete();
       }
     }
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const idx = r * cols + c;
-        const isEven = (r + c) % 2 === 0;
-        if (!isEven) indices.push(idx);
-      }
+
+    function easeOutBack(t) {
+      const c1 = 1.70158;
+      const c3 = c1 + 1;
+      return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
     }
+    function easeInQuad(t) { return t * t; }
 
-    // Stagger each cell's disappearance
-    const half = totalCells / 2;
-    indices.forEach((idx, order) => {
-      const delay = (order / totalCells) * duration * 0.7;
-      const cell = cells[idx];
-      if (cell) {
-        cell.style.transition = `opacity 200ms ease ${delay}ms`;
-        cell.style.opacity = '0';
-      }
-    });
-
-    const timer = setTimeout(onComplete, duration);
-    return () => clearTimeout(timer);
+    rafId = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(rafId);
   }, [onComplete]);
 
   return (
-    <div style={{
+    <canvas ref={canvasRef} style={{
       position: 'fixed', inset: 0, zIndex: 45, pointerEvents: 'none',
-      display: 'grid',
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gridTemplateRows: `repeat(${rows}, 1fr)`,
-    }} ref={cellsRef}>
-      {Array.from({ length: totalCells }, (_, i) => (
-        <div key={i} style={{ background: '#000', opacity: 1 }} />
-      ))}
-    </div>
+      width: '100vw', height: '100vh',
+    }} />
   );
 }
 
