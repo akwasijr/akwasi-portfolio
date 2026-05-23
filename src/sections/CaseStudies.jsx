@@ -187,6 +187,8 @@ const projects = [
       { src: '/assets/projects/terminal42-workspace.png', caption: 'Terminal workspace with AI copilot' },
       { src: '/assets/projects/terminal42-design.png', caption: 'Design studio with live canvas preview' },
       { src: '/assets/projects/terminal42-brain.png', caption: 'Brain memory system for persistent context' },
+      { src: '/assets/projects/terminal42-activity.png', caption: 'AI design review with live site preview' },
+      { src: '/assets/projects/terminal42-sessions.png', caption: 'Design studio project type picker' },
     ],
   },
   {
