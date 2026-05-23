@@ -12,7 +12,7 @@ const items = [
   {
     id: 'selected-work',
     title: 'Selected Work', label: 'Projects',
-    detail: 'DIFC Courts, Abu Dhabi Heritage Authority, Terminal 42, Starkit.',
+    detail: 'International Commercial Court, Gulf Cultural Heritage Authority, Terminal 42, Starkit.',
   },
   {
     id: 'how-i-work',

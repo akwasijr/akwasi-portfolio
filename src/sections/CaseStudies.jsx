@@ -7,8 +7,8 @@ const ease = [0.22, 1, 0.36, 1];
 
 const projects = [
   {
-    id: 'difc-cpo',
-    client: 'DIFC Courts',
+    id: 'icc-cpo',
+    client: 'International Commercial Court',
     title: 'CPO Case Assistant',
     color: '#1e3a5f',
     image: '/assets/projects/difc-case-detail.png',
@@ -16,7 +16,7 @@ const projects = [
     sections: [
       {
         heading: 'Problem',
-        body: 'Case Progression Officers at the Dubai International Financial Centre managed active cases across spreadsheets, disconnected systems, and manual tracking. Finding case history, checking deadlines, and responding to party enquiries consumed hours daily. Officers had no unified view of their caseload or workload.',
+        body: 'Case Progression Officers at an international commercial court managed active cases across spreadsheets, disconnected systems, and manual tracking. Finding case history, checking deadlines, and responding to party enquiries consumed hours daily. Officers had no unified view of their caseload or workload.',
       },
       {
         heading: 'Definition',
@@ -24,20 +24,20 @@ const projects = [
       },
       {
         heading: 'Output',
-        body: 'A triage dashboard with KPI cards, case type breakdowns, and fee tracking charts. A filterable case list with status badges, deadline alerts, and AI "Explore Mode" for natural-language case queries. Context-aware CourtX copilot on every screen providing page-specific prompt packs: workload triage on the dashboard, case-specific queries in list views, and timeline analysis in detail views.',
+        body: 'A triage dashboard with KPI cards, case type breakdowns, and fee tracking charts. A filterable case list with status badges, deadline alerts, and AI "Explore Mode" for natural-language case queries. Context-aware AI copilot on every screen providing page-specific prompt packs: workload triage on the dashboard, case-specific queries in list views, and timeline analysis in detail views.',
       },
     ],
     images: [
       { src: '/assets/projects/difc-case-detail.png', caption: 'Case detail with claim data and sidebar' },
       { src: '/assets/projects/difc-ai-summary.png', caption: 'AI-generated case summary and next steps' },
-      { src: '/assets/projects/difc-courtx-ai.png', caption: 'CourtX AI assistant with suggested queries' },
+      { src: '/assets/projects/difc-courtx-ai.png', caption: 'AI assistant with suggested queries' },
       { src: '/assets/projects/difc-cases-list.png', caption: 'Case list with status filters and deadlines' },
       { src: '/assets/projects/difc-dashboard.png', caption: 'Dashboard with KPIs and analytics' },
     ],
   },
   {
-    id: 'difc-drafting',
-    client: 'DIFC Courts',
+    id: 'icc-drafting',
+    client: 'International Commercial Court',
     title: 'Judicial Drafting',
     color: '#2a4a7f',
     image: '/assets/projects/difc-editor-resume.png',
@@ -59,41 +59,15 @@ const projects = [
     images: [
       { src: '/assets/projects/difc-workflow-step3.png', caption: 'External sources: uploads, links, shared references' },
       { src: '/assets/projects/difc-workflow-step4.png', caption: 'Judicial reasoning guidance with structured prompts' },
-      { src: '/assets/projects/difc-editor-resume.png', caption: 'Document editor with DIFC Courts formatting' },
+      { src: '/assets/projects/difc-editor-resume.png', caption: 'Document editor with court formatting' },
       { src: '/assets/projects/difc-editor-content.png', caption: 'AI-drafted court order with legal citations' },
       { src: '/assets/projects/difc-editor-assist.png', caption: 'AI Assist panel: verify citations, proofread' },
       { src: '/assets/projects/difc-editor-review.png', caption: 'Collaborative review with judicial comments' },
     ],
   },
   {
-    id: 'difc-guide',
-    client: 'DIFC Courts',
-    title: 'Court Services Guide',
-    color: '#0f2744',
-    image: '/assets/projects/difc-guide-fullscreen.png',
-    tags: ['Conversational AI', 'Public Sector'],
-    sections: [
-      {
-        heading: 'Problem',
-        body: 'The public had no self-service way to get procedural guidance from DIFC Courts. Every question about filing requirements, fees, case status, or court services required staff time. The courts needed a way to handle routine enquiries without adding headcount.',
-      },
-      {
-        heading: 'Definition',
-        body: 'We categorized incoming enquiries by type: filing procedures, fee schedules, case status checks, and general court services. Most were repetitive and answerable from existing documentation, but finding the right answer required institutional knowledge.',
-      },
-      {
-        heading: 'Output',
-        body: 'A conversational AI assistant with user-type routing (lawyers, parties, public), contextual suggested questions, and clear legal-advice disclaimers. The guide uses retrieval-augmented generation grounded in official DIFC documentation, distinguishing procedural guidance from legal advice. The landing page presents all three DIFC AI services as distinct entry points.',
-      },
-    ],
-    images: [
-      { src: '/assets/projects/difc-guide-fullscreen.png', caption: 'Full-screen chat with topic sidebar' },
-      { src: '/assets/projects/difc-guide-chat.png', caption: 'Conversational AI with suggested questions' },
-    ],
-  },
-  {
-    id: 'aha-dashboards',
-    client: 'Abu Dhabi Heritage Authority',
+    id: 'gcha-dashboards',
+    client: 'Gulf Cultural Heritage Authority',
     title: 'Operational Excellence Suite',
     color: '#2c1810',
     image: '/assets/projects/aha-executive.png',
@@ -105,7 +79,7 @@ const projects = [
       },
       {
         heading: 'Discovery',
-        body: 'Each department had unique domain complexity: Finance needed COSO compliance automation, HR required cultural-knowledge screening for heritage roles, Legal dealt with high-volume contract review against UAE law, Procurement lacked demand forecasting, Strategy had no cross-department KPI visibility.',
+        body: 'Each department had unique domain complexity: Finance needed compliance automation, HR required cultural-knowledge screening for heritage roles, Legal dealt with high-volume contract review, Procurement lacked demand forecasting, Strategy had no cross-department KPI visibility.',
       },
       {
         heading: 'Solution',
@@ -126,8 +100,8 @@ const projects = [
     ],
   },
   {
-    id: 'aha-heritage',
-    client: 'Abu Dhabi Heritage Authority',
+    id: 'gcha-heritage',
+    client: 'Gulf Cultural Heritage Authority',
     title: 'Cultural Guardians',
     color: '#1a1510',
     image: '/assets/projects/aha-sanaa.png',
@@ -135,7 +109,7 @@ const projects = [
     sections: [
       {
         heading: 'Problem',
-        body: 'Emirati cultural heritage (Bedouin traditions, pearl diving, falconry, trade routes) was being lost to younger generations. Traditional education formats felt passive. The Authority needed immersive experiences for audiences who grew up on interactive media.',
+        body: 'Regional cultural heritage (Bedouin traditions, pearl diving, falconry, trade routes) was being lost to younger generations. Traditional education formats felt passive. The authority needed immersive experiences for audiences who grew up on interactive media.',
       },
       {
         heading: 'Discovery',
@@ -143,11 +117,11 @@ const projects = [
       },
       {
         heading: 'Solution',
-        body: 'An immersive simulation on public kiosks and web. Users create an avatar and enter a hub connecting cultural realms. Time-travel experiences drop users into historical moments with branching dilemma scenarios. A journey map tracks progress across all realms. An AI guide avatar (Sanaa) adapts narration to user choices.',
+        body: 'An immersive simulation on public kiosks and web. Users create an avatar and enter a hub connecting cultural realms. Time-travel experiences drop users into historical moments with branching dilemma scenarios. A journey map tracks progress across all realms. An AI guide avatar adapts narration to user choices.',
       },
       {
         heading: 'AI impact',
-        body: 'Sanaa provides contextual cultural knowledge and adapts to user choices. Speech recognition enables spoken interactions in Arabic. AI generates personalized reflection summaries connecting historical decisions to modern Emirati values. Engagement tracking identifies which cultural topics resonate most.',
+        body: 'The AI guide provides contextual cultural knowledge and adapts to user choices. Speech recognition enables spoken interactions in Arabic. AI generates personalized reflection summaries connecting historical decisions to modern values. Engagement tracking identifies which cultural topics resonate most.',
       },
     ],
     images: [
