@@ -12,7 +12,7 @@ const projects = [
     title: 'CPO Case Assistant',
     color: '#1e3a5f',
     image: '/assets/projects/difc-case-detail.png',
-    tags: ['AI Platform', 'Case Management'],
+    tags: ['AI Experience', 'Legal Tech'],
     sections: [
       {
         heading: 'Problem',
@@ -41,7 +41,7 @@ const projects = [
     title: 'Judicial Drafting',
     color: '#2a4a7f',
     image: '/assets/projects/difc-editor-resume.png',
-    tags: ['AI Drafting', 'Legal Documents'],
+    tags: ['AI Drafting', 'Judicial'],
     sections: [
       {
         heading: 'Problem',
@@ -71,7 +71,7 @@ const projects = [
     title: 'Court Services Guide',
     color: '#0f2744',
     image: '/assets/projects/difc-guide-fullscreen.png',
-    tags: ['Public AI', 'Conversational'],
+    tags: ['Conversational AI', 'Public Sector'],
     sections: [
       {
         heading: 'Problem',
@@ -97,7 +97,7 @@ const projects = [
     title: 'Operational Excellence Suite',
     color: '#2c1810',
     image: '/assets/projects/aha-executive.png',
-    tags: ['Enterprise AI', 'Dashboards'],
+    tags: ['Enterprise AI', 'Government'],
     sections: [
       {
         heading: 'Problem',
@@ -131,7 +131,7 @@ const projects = [
     title: 'Cultural Guardians',
     color: '#1a1510',
     image: '/assets/projects/aha-sanaa.png',
-    tags: ['Heritage Tech', 'Simulation'],
+    tags: ['Immersive Design', 'Cultural Heritage'],
     sections: [
       {
         heading: 'Problem',
@@ -160,7 +160,7 @@ const projects = [
     title: 'Terminal 42',
     color: '#1a1d23',
     image: '/assets/projects/terminal42-splash.png',
-    tags: ['Electron', 'AI Terminal'],
+    tags: ['Developer Tools', 'AI Workspace'],
     sections: [
       {
         heading: 'Problem',
@@ -183,7 +183,7 @@ const projects = [
     title: 'Starkit',
     color: '#1e293b',
     image: '/assets/projects/starkit-dashboard.png',
-    tags: ['Starter Kit', 'Next.js'],
+    tags: ['Design Systems', 'Rapid Prototyping'],
     sections: [
       {
         heading: 'Problem',
