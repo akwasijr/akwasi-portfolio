@@ -9,7 +9,7 @@ export default function AsciiHoverText({ text, className, style }) {
   const startRef = useRef(0);
 
   const scramble = useCallback(() => {
-    const duration = 400;
+    const duration = 700; // slower scramble
     const chars = text.split('');
 
     const tick = (now) => {
@@ -20,33 +20,7 @@ export default function AsciiHoverText({ text, className, style }) {
       const result = chars.map((ch, i) => {
         if (ch === ' ') return ' ';
         const charThreshold = i / chars.length;
-        if (progress > charThreshold + 0.3) return ch;
-        return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-      }).join('');
-
-      setDisplay(result);
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    startRef.current = 0;
-    rafRef.current = requestAnimationFrame(tick);
-  }, [text]);
-
-  const unscramble = useCallback(() => {
-    const duration = 250;
-    const chars = text.split('');
-
-    const tick = (now) => {
-      if (!startRef.current) startRef.current = now;
-      const elapsed = now - startRef.current;
-      const progress = Math.min(elapsed / duration, 1);
-
-      const result = chars.map((ch, i) => {
-        if (ch === ' ') return ' ';
-        const charThreshold = 1 - (i / chars.length);
-        if (progress > charThreshold) return ch;
+        if (progress > charThreshold + 0.4) return ch;
         return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
       }).join('');
 
@@ -62,10 +36,14 @@ export default function AsciiHoverText({ text, className, style }) {
 
   useEffect(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    if (hovered) scramble();
-    else unscramble();
+    if (hovered) {
+      scramble();
+    } else {
+      // Instantly revert to original text
+      setDisplay(text);
+    }
     return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [hovered, scramble, unscramble]);
+  }, [hovered, scramble, text]);
 
   return (
     <span
