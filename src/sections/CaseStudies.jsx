@@ -16,19 +16,15 @@ const projects = [
     sections: [
       {
         heading: 'Problem',
-        body: 'Case Progression Officers at the Dubai International Financial Centre managed 1,600+ active cases through email, spreadsheets, and manual tracking. Finding case history, checking deadlines, and responding to party enquiries consumed hours daily. Officers had no unified view of their caseload or workload.',
+        body: 'Case Progression Officers at the Dubai International Financial Centre managed active cases across spreadsheets, disconnected systems, and manual tracking. Finding case history, checking deadlines, and responding to party enquiries consumed hours daily. Officers had no unified view of their caseload or workload.',
       },
       {
-        heading: 'Discovery',
-        body: 'We mapped the CPO daily workflow: morning triage of new filings and deadlines, midday case research and status checks, afternoon party communications. Each step involved switching between 4-5 disconnected tools.',
+        heading: 'Definition',
+        body: 'We mapped the CPO daily workflow: morning triage of new filings and deadlines, midday case research and status checks, afternoon party communications. Each step involved switching between multiple disconnected tools with no single source of truth.',
       },
       {
-        heading: 'Solution',
-        body: 'A triage dashboard with KPI cards (hearings, open cases, applications, firm activity), case type breakdowns, and fee tracking charts. A filterable case list with status badges, deadline alerts, and AI "Explore Mode" for natural-language case queries. Context-aware CourtX copilot on every screen.',
-      },
-      {
-        heading: 'AI impact',
-        body: 'CourtX provides page-specific prompt packs: workload triage on the dashboard, case-specific queries in list views, and timeline analysis in detail views. Officers query their entire caseload in plain English instead of building manual filters.',
+        heading: 'Output',
+        body: 'A triage dashboard with KPI cards, case type breakdowns, and fee tracking charts. A filterable case list with status badges, deadline alerts, and AI "Explore Mode" for natural-language case queries. Context-aware CourtX copilot on every screen providing page-specific prompt packs: workload triage on the dashboard, case-specific queries in list views, and timeline analysis in detail views.',
       },
     ],
     images: [
@@ -49,19 +45,15 @@ const projects = [
     sections: [
       {
         heading: 'Problem',
-        body: 'Drafting court orders, judgments, and party communications required CPOs to manually assemble evidence, verify legal citations, and follow strict formatting rules. A single draft order could take a full day. Email communications to parties were repetitive but required case-specific details.',
+        body: 'Drafting court judgments and orders required Case Progression Officers to spend weeks manually gathering evidence, assembling legal references from multiple sources, and structuring complex reasoning into formal documents. The process was slow, repetitive, and left little room for officers to focus on the quality of their decisions.',
       },
       {
-        heading: 'Discovery',
-        body: 'We identified two drafting workflows: structured judicial documents (orders, judgments) following a 5-step evidence-to-draft pipeline, and templated communications (deadline reminders, hearing notices, status updates) that needed AI-powered personalization.',
+        heading: 'Definition',
+        body: 'We identified the core bottleneck: information assembly. Officers needed to pull from case filings, precedents, external legal references, and internal documentation — then synthesize it all into a structured draft. The drafting itself followed repeatable patterns, but the research and compilation did not.',
       },
       {
-        heading: 'Solution',
-        body: 'A guided draft-order workflow: select case, choose evidence documents, add external sources, provide decision instructions, then generate a formatted draft with proper citations. An email drafter with 6 template types (deadline reminder, hearing notice, document request, status update, confirmation, custom), case context auto-fill, and AI-assisted content suggestions.',
-      },
-      {
-        heading: 'AI impact',
-        body: 'AI generates first drafts of orders with proper legal formatting and citation placement. The email drafter pre-fills case details and suggests content based on template type and case history. Citation verification flags uncited claims before submission.',
+        heading: 'Output',
+        body: 'A guided drafting workflow where AI gathers information from multiple sources — case filings, uploaded documents, external references — and generates a first draft with proper legal formatting and citations. Officers review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and add judicial reasoning. The human remains at the center — AI accelerates the assembly, the officer owns the decision.',
       },
     ],
     images: [
@@ -86,16 +78,12 @@ const projects = [
         body: 'The public had no self-service way to get procedural guidance from DIFC Courts. Every question about filing requirements, fees, case status, or court services required staff time. The courts needed a way to handle routine enquiries without adding headcount.',
       },
       {
-        heading: 'Discovery',
+        heading: 'Definition',
         body: 'We categorized incoming enquiries by type: filing procedures, fee schedules, case status checks, and general court services. Most were repetitive and answerable from existing documentation, but finding the right answer required institutional knowledge.',
       },
       {
-        heading: 'Solution',
-        body: 'A conversational AI assistant with user-type routing (lawyers, parties, public), contextual suggested questions, and clear legal-advice disclaimers. The landing page presents all three DIFC AI services: CPO Case Assistant, Judicial Drafting, and Court Services Guide as distinct entry points.',
-      },
-      {
-        heading: 'AI impact',
-        body: 'The guide handles procedural questions that previously required staff, using retrieval-augmented generation grounded in official DIFC documentation. Clear disclaimers distinguish procedural guidance from legal advice. Response quality improves as the knowledge base grows.',
+        heading: 'Output',
+        body: 'A conversational AI assistant with user-type routing (lawyers, parties, public), contextual suggested questions, and clear legal-advice disclaimers. The guide uses retrieval-augmented generation grounded in official DIFC documentation, distinguishing procedural guidance from legal advice. The landing page presents all three DIFC AI services as distinct entry points.',
       },
     ],
     images: [
