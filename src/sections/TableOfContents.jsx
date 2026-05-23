@@ -7,7 +7,7 @@ const items = [
   {
     id: 'about',
     title: 'About', label: 'Who I am',
-    detail: 'Design consultant at Microsoft. 11+ years in product design, the last 4 focused on AI experiences.',
+    detail: 'At Microsoft. 11+ years in product design, the last 4 focused on AI experiences.',
   },
   {
     id: 'selected-work',

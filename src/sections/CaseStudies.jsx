@@ -401,7 +401,7 @@ export default function CaseStudiesSection() {
       <Starfield count={22} />
       <div className="section-inner">
         <ScrollReveal>
-          <h2 className="cases-heading">Selected projects</h2>
+          <h2 className="cases-heading">Selected work</h2>
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>

@@ -13,8 +13,8 @@ export default function CTASection() {
 
         <ScrollReveal delay={0.15}>
           <p className="cta-body">
-            From AI strategy to working product. Design consultant,<br />
-            available for enterprise engagements and collaborations.
+            From AI strategy to working product. Available for<br />
+            enterprise engagements and collaborations.
           </p>
         </ScrollReveal>
 
