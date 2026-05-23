@@ -9,7 +9,7 @@ export default function AsciiHoverText({ text, className, style }) {
   const startRef = useRef(0);
 
   const scramble = useCallback(() => {
-    const duration = 1400; // slow scramble
+    const duration = 2800; // very slow scramble
     const chars = text.split('');
 
     const tick = (now) => {
