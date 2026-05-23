@@ -239,7 +239,7 @@ function AsciiSplash({ onComplete }) {
   );
 }
 
-/* ASCII block dissolve — scanline wipe with ████→▓▓▓→▒▒▒→░░░→clear */
+/* ASCII block transition — lime characters build up then dissolve to reveal page */
 function CheckeredReveal({ onComplete }) {
   const canvasRef = useRef(null);
 
@@ -254,87 +254,95 @@ function CheckeredReveal({ onComplete }) {
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
 
-    const cellW = 8;
-    const cellH = 8;
+    const cellW = 12;
+    const cellH = 16;
     const cols = Math.ceil(w / cellW) + 1;
     const rows = Math.ceil(h / cellH) + 1;
-    const totalDuration = 1200;
+    const totalCells = cols * rows;
+
+    // ASCII chars that cycle during build-up
+    const chars = '░▒▓█▓▒░';
+    const glyphs = '╔═╗║█║╚═╝┬┴┤├┼─│';
+
+    // Phase 1: build up (black bg, green chars appear) 0–700ms
+    // Phase 2: hold solid 700–850ms  
+    // Phase 3: dissolve away (chars + bg fade) 850–1500ms
+    const buildDur = 700;
+    const holdDur = 150;
+    const dissolveDur = 650;
+    const totalDuration = buildDur + holdDur + dissolveDur;
     let start = null;
     let rafId;
 
-    // Small random offset per cell for organic edges
-    const jitter = new Float32Array(cols * rows);
-    for (let i = 0; i < jitter.length; i++) jitter[i] = Math.random() * 0.08;
+    const noise = new Float32Array(totalCells);
+    for (let i = 0; i < totalCells; i++) noise[i] = Math.random();
+
+    // Pre-pick a random glyph per cell
+    const cellGlyph = new Uint8Array(totalCells);
+    for (let i = 0; i < totalCells; i++) cellGlyph[i] = Math.floor(Math.random() * glyphs.length);
+
+    ctx.font = `${cellH - 2}px "IBM Plex Mono", monospace`;
+    ctx.textBaseline = 'top';
 
     function draw(timestamp) {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
-      const t = Math.min(elapsed / totalDuration, 1);
 
-      // Start fully black, then clear cells top-to-bottom
       ctx.clearRect(0, 0, w, h);
 
-      let anyVisible = false;
+      // Black background
+      if (elapsed < buildDur + holdDur) {
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        const dT = (elapsed - buildDur - holdDur) / dissolveDur;
+        const alpha = Math.max(0, 1 - dT * dT);
+        ctx.fillStyle = `rgba(0,0,0,${alpha})`;
+        ctx.fillRect(0, 0, w, h);
+      }
 
       for (let r = 0; r < rows; r++) {
-        const rowNorm = r / rows;
-        // Row starts dissolving at its position (top=0, bottom=0.55)
-        const rowStart = rowNorm * 0.55;
-        const rowT = Math.max(0, Math.min((t - rowStart) / 0.45, 1));
-
-        if (rowT <= 0) {
-          // Row hasn't started — draw solid black
-          ctx.fillStyle = '#000';
-          ctx.fillRect(0, r * cellH, w, cellH);
-          anyVisible = true;
-          continue;
-        }
-
         for (let c = 0; c < cols; c++) {
           const idx = r * cols + c;
-          const cellT = Math.min(rowT + jitter[idx], 1);
+          const n = noise[idx];
           const x = c * cellW;
           const y = r * cellH;
 
-          if (cellT >= 1) continue; // fully clear
+          // Distance from top-left for wave direction
+          const normDist = (r / rows * 0.6 + c / cols * 0.4);
 
-          anyVisible = true;
-
-          if (cellT < 0.25) {
-            // █ solid black
-            ctx.fillStyle = '#000';
-            ctx.fillRect(x, y, cellW, cellH);
-          } else if (cellT < 0.5) {
-            // ▓ dense dither — 75% filled
-            ctx.fillStyle = '#000';
-            for (let dy = 0; dy < cellH; dy++) {
-              for (let dx = 0; dx < cellW; dx++) {
-                if ((dx + dy) % 2 === 0 || (dx % 3 === 0)) {
-                  ctx.fillRect(x + dx, y + dy, 1, 1);
-                }
-              }
+          if (elapsed < buildDur) {
+            // Build phase: chars appear from top-left sweeping to bottom-right
+            const t = elapsed / buildDur;
+            const threshold = normDist * 0.7;
+            if (t > threshold + n * 0.1) {
+              const localT = Math.min((t - threshold) / 0.3, 1);
+              // Cycle through density chars as they appear
+              const charIdx = Math.min(Math.floor(localT * chars.length), chars.length - 1);
+              ctx.fillStyle = `rgba(198,239,77,${0.3 + localT * 0.6})`;
+              ctx.fillText(chars[charIdx], x + 1, y + 1);
             }
-          } else if (cellT < 0.75) {
-            // ▒ medium dither — checkerboard
-            ctx.fillStyle = '#000';
-            for (let dy = 0; dy < cellH; dy += 2) {
-              for (let dx = (dy % 4 === 0 ? 0 : 1); dx < cellW; dx += 2) {
-                ctx.fillRect(x + dx, y + dy, 1, 1);
-              }
-            }
+          } else if (elapsed < buildDur + holdDur) {
+            // Hold: all cells show a glyph
+            ctx.fillStyle = 'rgba(198,239,77,0.9)';
+            ctx.fillText(glyphs[cellGlyph[idx]], x + 1, y + 1);
           } else {
-            // ░ sparse dots
-            ctx.fillStyle = '#000';
-            for (let dy = 1; dy < cellH; dy += 4) {
-              for (let dx = 1; dx < cellW; dx += 4) {
-                ctx.fillRect(x + dx, y + dy, 1, 1);
+            // Dissolve: chars fade from top-left to bottom-right
+            const dT = (elapsed - buildDur - holdDur) / dissolveDur;
+            const threshold = normDist * 0.6;
+            if (dT < threshold + n * 0.15 + 0.4) {
+              const fadeT = Math.max(0, (dT - threshold) / 0.4);
+              const alpha = Math.max(0, 0.9 - fadeT);
+              if (alpha > 0.01) {
+                ctx.fillStyle = `rgba(198,239,77,${alpha})`;
+                ctx.fillText(glyphs[cellGlyph[idx]], x + 1, y + 1);
               }
             }
           }
         }
       }
 
-      if (anyVisible && t < 1) {
+      if (elapsed < totalDuration) {
         rafId = requestAnimationFrame(draw);
       } else {
         onComplete();
