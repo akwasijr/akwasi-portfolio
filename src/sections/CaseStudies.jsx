@@ -175,7 +175,11 @@ const projects = [
         body: 'The brain system remembers coding style, project rules, and preferences across sessions. The design studio goes from prompt to live preview to Figma export without leaving the app. It collapses the gap between thinking, building, and shipping.',
       },
     ],
-    images: [],
+    images: [
+      { src: '/assets/projects/terminal42-workspace.png', caption: 'Terminal workspace with AI copilot' },
+      { src: '/assets/projects/terminal42-design.png', caption: 'Design studio with live canvas preview' },
+      { src: '/assets/projects/terminal42-brain.png', caption: 'Brain memory system for persistent context' },
+    ],
   },
   {
     id: 'starkit',
