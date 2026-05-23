@@ -1721,6 +1721,29 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   color: #fff;
 }
 
+.overlay__close {
+  position: fixed;
+  top: 32px;
+  right: 40px;
+  z-index: 210;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  color: rgba(255,255,255,0.6);
+  background: none;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50%;
+  cursor: none;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.overlay__close:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.4);
+}
+
 .overlay__content {
   position: relative;
   z-index: 2;
