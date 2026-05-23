@@ -38,19 +38,24 @@ const headingLines = [
   { text: 'work for ', word: 'People', color: '#7779f0' },
 ];
 
-const scrollIcons = ['↓', '▼', '⬇', '⇣', '↡'];
+const scrollFrames = [
+  '  ║  \n  ║  \n  ╨  ',
+  '  │  \n  ║  \n  ▼  ',
+  '  ·  \n  │  \n  ▼  ',
+  '     \n  ·  \n  ▼  ',
+  '  ·  \n  │  \n  ▼  ',
+  '  │  \n  ║  \n  ▼  ',
+];
 
 function ScrollHint({ reveal }) {
-  const [iconIdx, setIconIdx] = useState(0);
-  const [hovered, setHovered] = useState(false);
+  const [frame, setFrame] = useState(0);
 
   useEffect(() => {
-    if (!hovered) return;
     const interval = setInterval(() => {
-      setIconIdx(i => (i + 1) % scrollIcons.length);
-    }, 300);
+      setFrame(f => (f + 1) % scrollFrames.length);
+    }, 400);
     return () => clearInterval(interval);
-  }, [hovered]);
+  }, []);
 
   return (
     <motion.div
@@ -58,18 +63,29 @@ function ScrollHint({ reveal }) {
       initial={{ opacity: 0 }}
       animate={reveal ? { opacity: 1 } : {}}
       transition={{ duration: 0.5, delay: 1.0 }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => { setHovered(false); setIconIdx(0); }}
-      style={{ cursor: 'pointer' }}
+      style={{
+        cursor: 'pointer',
+        display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+      }}
     >
-      <span style={{ fontFamily: "'IBM Plex Mono', monospace" }}>Scroll</span>
       <span style={{
-        fontSize: '20px', transition: 'transform 0.2s ease',
-        transform: hovered ? 'translateY(4px)' : 'translateY(0)',
         fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '11px',
+        letterSpacing: '0.15em',
+        opacity: 0.6,
       }}>
-        {scrollIcons[iconIdx]}
+        [ SCROLL ]
       </span>
+      <pre style={{
+        fontFamily: "'IBM Plex Mono', monospace",
+        fontSize: '14px',
+        lineHeight: 1.1,
+        margin: 0,
+        color: '#c6ef4d',
+        textAlign: 'center',
+      }}>
+        {scrollFrames[frame]}
+      </pre>
     </motion.div>
   );
 }
