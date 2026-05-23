@@ -229,7 +229,7 @@ function AsciiSplash({ onComplete }) {
   );
 }
 
-/* ASCII block dissolve — ████ → ▓▓▓▓ → ▒▒▒▒ → ░░░░ → gone, scanline by scanline */
+/* ASCII block dissolve — scanline wipe with ████→▓▓▓→▒▒▒→░░░→clear */
 function CheckeredReveal({ onComplete }) {
   const canvasRef = useRef(null);
 
@@ -244,62 +244,68 @@ function CheckeredReveal({ onComplete }) {
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
 
-    // Character cell grid (like a terminal)
-    const cellW = 10;
-    const cellH = 16;
+    const cellW = 8;
+    const cellH = 8;
     const cols = Math.ceil(w / cellW) + 1;
     const rows = Math.ceil(h / cellH) + 1;
-
-    // Block density chars: full → dense → medium → light → gone
-    // We simulate this with fill opacity levels
-    const densityLevels = [1.0, 0.75, 0.5, 0.25, 0.12, 0];
-    const totalDuration = 1400;
+    const totalDuration = 1200;
     let start = null;
     let rafId;
 
-    // Pre-compute random noise per cell for organic feel
-    const noise = new Float32Array(cols * rows);
-    for (let i = 0; i < noise.length; i++) noise[i] = Math.random();
+    // Small random offset per cell for organic edges
+    const jitter = new Float32Array(cols * rows);
+    for (let i = 0; i < jitter.length; i++) jitter[i] = Math.random() * 0.08;
 
     function draw(timestamp) {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
       const t = Math.min(elapsed / totalDuration, 1);
 
+      // Start fully black, then clear cells top-to-bottom
       ctx.clearRect(0, 0, w, h);
 
+      let anyVisible = false;
+
       for (let r = 0; r < rows; r++) {
-        // Each row has its own timing — top rows clear first (scanline wipe down)
-        const rowProgress = r / rows;
-        // Stagger: row 0 starts at t=0, last row starts at t=0.5
-        const rowStart = rowProgress * 0.5;
-        // Each row takes 0.5 of total to fully dissolve
-        const rowT = Math.max(0, Math.min((t - rowStart) / 0.5, 1));
+        const rowNorm = r / rows;
+        // Row starts dissolving at its position (top=0, bottom=0.55)
+        const rowStart = rowNorm * 0.55;
+        const rowT = Math.max(0, Math.min((t - rowStart) / 0.45, 1));
+
+        if (rowT <= 0) {
+          // Row hasn't started — draw solid black
+          ctx.fillStyle = '#000';
+          ctx.fillRect(0, r * cellH, w, cellH);
+          anyVisible = true;
+          continue;
+        }
 
         for (let c = 0; c < cols; c++) {
           const idx = r * cols + c;
-          const n = noise[idx];
-
-          // Add per-cell jitter so it's not perfectly uniform per row
-          const cellT = Math.max(0, Math.min(rowT + (n - 0.5) * 0.15, 1));
-
-          // Map progress to density level
-          const levelIdx = Math.min(Math.floor(cellT * densityLevels.length), densityLevels.length - 1);
-          const density = densityLevels[levelIdx];
-
-          if (density <= 0) continue;
-
+          const cellT = Math.min(rowT + jitter[idx], 1);
           const x = c * cellW;
           const y = r * cellH;
 
-          // Draw block character as filled rect with varying density
-          // Use dithering pattern for ▒ and ░ feel
-          if (density >= 0.75) {
-            // █ or ▓ — solid or near-solid
-            ctx.fillStyle = `rgba(0,0,0,${density})`;
+          if (cellT >= 1) continue; // fully clear
+
+          anyVisible = true;
+
+          if (cellT < 0.25) {
+            // █ solid black
+            ctx.fillStyle = '#000';
             ctx.fillRect(x, y, cellW, cellH);
-          } else if (density >= 0.25) {
-            // ▒ — checkerboard dither
+          } else if (cellT < 0.5) {
+            // ▓ dense dither — 75% filled
+            ctx.fillStyle = '#000';
+            for (let dy = 0; dy < cellH; dy++) {
+              for (let dx = 0; dx < cellW; dx++) {
+                if ((dx + dy) % 2 === 0 || (dx % 3 === 0)) {
+                  ctx.fillRect(x + dx, y + dy, 1, 1);
+                }
+              }
+            }
+          } else if (cellT < 0.75) {
+            // ▒ medium dither — checkerboard
             ctx.fillStyle = '#000';
             for (let dy = 0; dy < cellH; dy += 2) {
               for (let dx = (dy % 4 === 0 ? 0 : 1); dx < cellW; dx += 2) {
@@ -307,27 +313,18 @@ function CheckeredReveal({ onComplete }) {
               }
             }
           } else {
-            // ░ — sparse dots
+            // ░ sparse dots
             ctx.fillStyle = '#000';
-            for (let dy = 0; dy < cellH; dy += 4) {
-              for (let dx = ((dy + (c % 2) * 2) % 4); dx < cellW; dx += 4) {
+            for (let dy = 1; dy < cellH; dy += 4) {
+              for (let dx = 1; dx < cellW; dx += 4) {
                 ctx.fillRect(x + dx, y + dy, 1, 1);
               }
             }
           }
-
-          // Occasional lime "glitch" character during transition
-          if (cellT > 0.1 && cellT < 0.8 && n > 0.85) {
-            ctx.fillStyle = `rgba(198,239,77,${0.6 * (1 - cellT)})`;
-            ctx.font = `${cellH - 2}px "IBM Plex Mono", monospace`;
-            const glyphSet = '░▒▓█▄▀│─┤├┬┴┼';
-            const glyph = glyphSet[Math.floor((elapsed / 80 + idx) % glyphSet.length)];
-            ctx.fillText(glyph, x, y + cellH - 3);
-          }
         }
       }
 
-      if (t < 1) {
+      if (anyVisible && t < 1) {
         rafId = requestAnimationFrame(draw);
       } else {
         onComplete();
@@ -355,8 +352,11 @@ export default function HeroSection() {
 
   const startReveal = useCallback(() => {
     setShowSplash(false);
-    setShowCheckered(true);
-    setTimeout(() => setReveal(true), 300);
+    // Wait for splash to fully unmount before starting dissolve
+    setTimeout(() => {
+      setShowCheckered(true);
+      setTimeout(() => setReveal(true), 200);
+    }, 400);
   }, []);
 
   const onCheckeredDone = useCallback(() => {
