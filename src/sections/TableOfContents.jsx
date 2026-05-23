@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Starfield from '../components/Starfield';
+import AsciiHoverText from '../components/AsciiHoverText';
 
 const items = [
   {
@@ -79,15 +80,15 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
           transition={{ duration: 0.8, ease }}
         >
-          <div
+          <AsciiHoverText
+            text="AF"
             style={{
               fontFamily: "'IBM Plex Mono', monospace",
               fontWeight: 700, fontSize: '48px', color: '#c6ef4d',
               letterSpacing: '-0.02em',
+              display: 'block',
             }}
-          >
-            AF
-          </div>
+          />
         </motion.div>
 
         <div className="toc-list">
@@ -121,12 +122,11 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
                   {item.label}
                 </span>
                 <div className="toc-row__center">
-                  <span
+                  <AsciiHoverText
+                    text={item.title}
                     className="toc-row__title"
                     style={{ fontStyle: isHovered ? 'normal' : 'italic' }}
-                  >
-                    {item.title}
-                  </span>
+                  />
                   <AnimatePresence>
                     {isHovered && (
                       <motion.p
