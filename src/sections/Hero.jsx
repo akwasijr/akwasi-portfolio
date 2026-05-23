@@ -229,7 +229,7 @@ function AsciiSplash({ onComplete }) {
   );
 }
 
-/* Dot-matrix reveal — dots build up from center outward, then dissolve to show page */
+/* Dot-matrix reveal — fine dots sweep from bottom-right to top-left, dissolving the black overlay */
 function CheckeredReveal({ onComplete }) {
   const canvasRef = useRef(null);
 
@@ -244,37 +244,37 @@ function CheckeredReveal({ onComplete }) {
     canvas.height = h * dpr;
     ctx.scale(dpr, dpr);
 
-    const dotSpacing = 18;
-    const maxRadius = dotSpacing * 0.38;
+    // Fine dot grid — small tight dots
+    const dotSpacing = 6;
+    const maxRadius = 2;
     const cols = Math.ceil(w / dotSpacing) + 1;
     const rows = Math.ceil(h / dotSpacing) + 1;
-    const cx = w / 2;
-    const cy = h / 2;
-    const maxDist = Math.hypot(cx, cy);
+    // Distance from bottom-right corner
+    const maxDist = Math.hypot(w, h);
 
-    // Phase 1: dots build up from center (0–800ms)
-    // Phase 2: dots dissolve outward (800–1600ms)
-    const buildDuration = 800;
-    const dissolveDuration = 800;
-    const totalDuration = buildDuration + dissolveDuration;
+    const buildDuration = 600;
+    const holdDuration = 150;
+    const dissolveDuration = 600;
+    const totalDuration = buildDuration + holdDuration + dissolveDuration;
     let start = null;
     let rafId;
+
+    function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3); }
+    function easeInCubic(t) { return t * t * t; }
 
     function draw(timestamp) {
       if (!start) start = timestamp;
       const elapsed = timestamp - start;
-      const progress = Math.min(elapsed / totalDuration, 1);
 
       ctx.clearRect(0, 0, w, h);
 
-      // Fill black background that fades during dissolve phase
-      if (elapsed < buildDuration) {
+      // Black background fades during dissolve
+      if (elapsed < buildDuration + holdDuration) {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, w, h);
       } else {
-        const dissolveT = (elapsed - buildDuration) / dissolveDuration;
-        const bgAlpha = 1 - easeInQuad(dissolveT);
-        ctx.fillStyle = `rgba(0,0,0,${bgAlpha})`;
+        const dT = (elapsed - buildDuration - holdDuration) / dissolveDuration;
+        ctx.fillStyle = `rgba(0,0,0,${1 - easeInCubic(Math.min(dT, 1))})`;
         ctx.fillRect(0, 0, w, h);
       }
 
@@ -282,57 +282,55 @@ function CheckeredReveal({ onComplete }) {
         for (let c = 0; c < cols; c++) {
           const x = c * dotSpacing;
           const y = r * dotSpacing;
-          const dist = Math.hypot(x - cx, y - cy);
+          // Distance from bottom-right corner (sweep origin)
+          const dist = Math.hypot(w - x, h - y);
           const normDist = dist / maxDist;
 
           let radius = 0;
           let alpha = 0;
 
           if (elapsed < buildDuration) {
-            // Build phase: dots appear from center outward
-            const buildT = elapsed / buildDuration;
-            const dotThreshold = normDist;
-            if (buildT > dotThreshold) {
-              const localT = Math.min((buildT - dotThreshold) / 0.3, 1);
-              radius = maxRadius * easeOutBack(localT);
-              alpha = localT;
+            // Build: dots appear from bottom-right sweeping to top-left
+            const t = elapsed / buildDuration;
+            const threshold = normDist * 0.8;
+            if (t > threshold) {
+              const localT = Math.min((t - threshold) / 0.2, 1);
+              radius = maxRadius * easeOutCubic(localT);
+              alpha = easeOutCubic(localT);
             }
+          } else if (elapsed < buildDuration + holdDuration) {
+            // Hold: all dots visible
+            radius = maxRadius;
+            alpha = 1;
           } else {
-            // Dissolve phase: dots shrink from center outward
-            const dissolveT = (elapsed - buildDuration) / dissolveDuration;
-            const dotThreshold = normDist;
-            if (dissolveT > dotThreshold) {
-              const localT = Math.min((dissolveT - dotThreshold) / 0.3, 1);
-              radius = maxRadius * (1 - easeInQuad(localT));
-              alpha = 1 - easeInQuad(localT);
+            // Dissolve: dots vanish from bottom-right to top-left
+            const dT = (elapsed - buildDuration - holdDuration) / dissolveDuration;
+            const threshold = normDist * 0.8;
+            if (dT > threshold) {
+              const localT = Math.min((dT - threshold) / 0.2, 1);
+              radius = maxRadius * (1 - easeInCubic(localT));
+              alpha = 1 - easeInCubic(localT);
             } else {
               radius = maxRadius;
               alpha = 1;
             }
           }
 
-          if (radius > 0.3 && alpha > 0.01) {
+          if (radius > 0.2 && alpha > 0.01) {
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(198,239,77,${alpha * 0.9})`;
+            ctx.fillStyle = `rgba(198,239,77,${alpha * 0.85})`;
             ctx.fill();
           }
         }
       }
 
-      if (progress < 1) {
+      if (elapsed < totalDuration) {
         rafId = requestAnimationFrame(draw);
       } else {
         onComplete();
       }
     }
-
-    function easeOutBack(t) {
-      const c1 = 1.70158;
-      const c3 = c1 + 1;
-      return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
-    }
-    function easeInQuad(t) { return t * t; }
 
     rafId = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(rafId);
