@@ -1,49 +1,39 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 const GLYPHS = '░▒▓█╔╗╚╝═║┃┏┓┗┛━╋┣┫╬▀▄▐▌■□▪▫●○◆◇';
+
+function randomize(text) {
+  return text.split('').map(ch =>
+    ch === ' ' ? ' ' : GLYPHS[Math.floor(Math.random() * GLYPHS.length)]
+  ).join('');
+}
 
 export default function AsciiHoverText({ text, className, style }) {
   const [hovered, setHovered] = useState(false);
   const [display, setDisplay] = useState(text);
-  const rafRef = useRef(null);
-  const startRef = useRef(0);
-
-  const scramble = useCallback(() => {
-    const duration = 2800; // very slow scramble
-    const chars = text.split('');
-
-    const tick = (now) => {
-      if (!startRef.current) startRef.current = now;
-      const elapsed = now - startRef.current;
-      const progress = Math.min(elapsed / duration, 1);
-
-      const result = chars.map((ch, i) => {
-        if (ch === ' ') return ' ';
-        const charThreshold = i / chars.length;
-        if (progress > charThreshold + 0.4) return ch;
-        return GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
-      }).join('');
-
-      setDisplay(result);
-      if (progress < 1) {
-        rafRef.current = requestAnimationFrame(tick);
-      }
-    };
-
-    startRef.current = 0;
-    rafRef.current = requestAnimationFrame(tick);
-  }, [text]);
+  const timersRef = useRef([]);
 
   useEffect(() => {
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    // Clear any pending timers
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
     if (hovered) {
-      scramble();
+      // Frame 1: scrambled glyphs (immediate)
+      setDisplay(randomize(text));
+      // Frame 2: different scrambled glyphs (after 400ms)
+      timersRef.current.push(setTimeout(() => setDisplay(randomize(text)), 400));
+      // Frame 3: resolve to final text in monospace (after 800ms)
+      timersRef.current.push(setTimeout(() => setDisplay(text), 800));
     } else {
-      // Instantly revert to original text
       setDisplay(text);
     }
-    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
-  }, [hovered, scramble, text]);
+
+    return () => {
+      timersRef.current.forEach(clearTimeout);
+      timersRef.current = [];
+    };
+  }, [hovered, text]);
 
   return (
     <span
