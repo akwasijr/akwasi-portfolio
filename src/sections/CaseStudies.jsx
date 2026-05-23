@@ -103,7 +103,7 @@ const projects = [
     id: 'gcha-heritage',
     client: 'Gulf Cultural Heritage Authority',
     title: 'Cultural Guardians',
-    color: '#1a0f28',
+    color: '#121014',
     image: '/assets/projects/aha-sanaa.png',
     tags: ['Immersive Design', 'Cultural Heritage'],
     sections: [
