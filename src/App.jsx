@@ -52,7 +52,13 @@ export default function App() {
   }, []);
 
   const handleClosePage = useCallback(() => {
-    setActivePage(null);
+    // Dispatch a "try-close" event — if a nested view (e.g. expanded card)
+    // is open, it handles the event and prevents going all the way home
+    const event = new CustomEvent('overlay-back', { cancelable: true });
+    const cancelled = !window.dispatchEvent(event);
+    if (!cancelled) {
+      setActivePage(null);
+    }
   }, []);
 
   useEffect(() => {

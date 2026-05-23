@@ -45,15 +45,15 @@ const projects = [
     sections: [
       {
         heading: 'Problem',
-        body: 'Drafting court judgments and orders required Case Progression Officers to spend weeks manually gathering evidence, assembling legal references from multiple sources, and structuring complex reasoning into formal documents. The process was slow, repetitive, and left little room for officers to focus on the quality of their decisions.',
+        body: 'Drafting court judgments and orders required judges and their assistants to spend weeks manually gathering evidence, assembling legal references from multiple sources, and structuring complex reasoning into formal documents. The process was slow, repetitive, and left little room to focus on the quality of judicial decisions.',
       },
       {
         heading: 'Definition',
-        body: 'We identified the core bottleneck: information assembly. Officers needed to pull from case filings, precedents, external legal references, and internal documentation — then synthesize it all into a structured draft. The drafting itself followed repeatable patterns, but the research and compilation did not.',
+        body: 'We identified the core bottleneck: information assembly. Judges and their teams needed to pull from case filings, precedents, external legal references, and internal documentation — then synthesize it all into a structured draft. The drafting itself followed repeatable patterns, but the research and compilation did not.',
       },
       {
         heading: 'Output',
-        body: 'A guided drafting workflow where AI gathers information from multiple sources — case filings, uploaded documents, external references — and generates a first draft with proper legal formatting and citations. Officers review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and add judicial reasoning. The human remains at the center — AI accelerates the assembly, the officer owns the decision.',
+        body: 'A guided drafting workflow where AI gathers information from multiple sources — case filings, uploaded documents, external references — and generates a first draft with proper legal formatting and citations. Judges review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and refine judicial reasoning. The human remains at the center — AI accelerates the assembly, the judge owns the decision.',
       },
     ],
     images: [
@@ -350,6 +350,20 @@ export default function CaseStudiesSection() {
   const [cardRect, setCardRect] = useState(null);
   const frontCardRef = useRef(null);
   const timerRef = useRef(null);
+  const expandedRef = useRef(expanded);
+  expandedRef.current = expanded;
+
+  // Intercept overlay back/close — close expanded card first
+  useEffect(() => {
+    const handler = (e) => {
+      if (expandedRef.current !== null) {
+        e.preventDefault();
+        setExpanded(null);
+      }
+    };
+    window.addEventListener('overlay-back', handler);
+    return () => window.removeEventListener('overlay-back', handler);
+  }, []);
 
   const go = useCallback((dir) => {
     setActive(i => {

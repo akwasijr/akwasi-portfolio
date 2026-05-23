@@ -22,7 +22,7 @@ const items = [
   {
     id: 'contact',
     title: 'Contact', label: 'Get in touch',
-    detail: 'Based in the Netherlands, working globally.',
+    detail: 'Available for consulting and collaboration.',
   },
 ];
 
