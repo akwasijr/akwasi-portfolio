@@ -9,7 +9,7 @@ import Starfield from '../components/Starfield';
 const disciplines = [
   { abbr: 'AI',  name: 'AI Experience Design',  color: '#c6ef4d', orbit: 3.0, speed: 0.3, offset: 0 },
   { abbr: 'UX',  name: 'Product Design',        color: '#7779f0', orbit: 3.0, speed: 0.3, offset: Math.PI },
-  { abbr: 'DEV', name: 'Frontend Engineering',   color: '#a5a5f6', orbit: 4.5, speed: 0.2, offset: Math.PI * 0.4 },
+  { abbr: 'DEV', name: 'Product Development',    color: '#a5a5f6', orbit: 4.5, speed: 0.2, offset: Math.PI * 0.4 },
   { abbr: 'SYS', name: 'Design Systems',         color: '#a5a5f6', orbit: 4.5, speed: 0.2, offset: Math.PI * 1.4, dimmed: true },
   { abbr: 'WRK', name: 'Workshop Facilitation',  color: '#c6ef4d', orbit: 6.0, speed: 0.12, offset: Math.PI * 0.8, dimmed: true },
   { abbr: 'VIZ', name: 'Data Visualization',     color: '#7779f0', orbit: 6.0, speed: 0.12, offset: Math.PI * 1.8, dimmed: true },

@@ -226,7 +226,7 @@ export default function WhatWeDoSection() {
 
       <PillarSection
         title="Building Real Products"
-        desc="I bridge design and engineering: prototyping with code, building design systems, and shipping production-ready interfaces."
+        desc="I bridge design and product: prototyping with code, building design systems, and shipping production-ready interfaces."
         bullets={[
           'React, TypeScript, Next.js, Tailwind',
           'Design systems with Fluent UI and Figma',

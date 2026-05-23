@@ -5,7 +5,7 @@ import Starfield from '../components/Starfield';
 const disciplines = [
   { abbr: 'AI', name: 'AI Experience Design', color: '#c6ef4d' },
   { abbr: 'UX', name: 'Product Design', color: '#7779f0' },
-  { abbr: 'DEV', name: 'Frontend Engineering', color: '#a5a5f6' },
+  { abbr: 'DEV', name: 'Product Strategy', color: '#a5a5f6' },
 ];
 
 const ease = [0.22, 1, 0.36, 1];
@@ -40,7 +40,7 @@ function VennDiagram() {
           animate={isInView ? { r: 160, opacity: 1 } : { r: 80, opacity: 0 }}
           transition={{ duration: 1, ease }}
         />
-        {/* Right circle - Engineering */}
+        {/* Right circle - Product */}
         <motion.circle
           cx="360" cy="200" r="160"
           fill="none" stroke="rgba(119,121,240,0.3)" strokeWidth="1.5"
@@ -72,7 +72,7 @@ function VennDiagram() {
           fontSize="16" fontWeight="400"
           animate={isInView ? { opacity: 1 } : { opacity: 0 }}
           transition={{ duration: 0.6, delay: 0.5 }}
-        >Engineering</motion.text>
+        >Product</motion.text>
       </svg>
     </div>
   );
@@ -84,7 +84,7 @@ function BigStatement() {
 
   const lines = [
     { text: 'I work at the intersection of ' },
-    { text: '', em: 'AI, design and engineering', after: '.' },
+    { text: '', em: 'AI, design and product', after: '.' },
     { text: 'Turning complex AI capabilities' },
     { text: 'into things people can actually use.' },
     { text: 'Copilot experiences, agent interfaces,' },

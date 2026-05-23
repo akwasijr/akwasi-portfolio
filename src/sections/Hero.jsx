@@ -29,7 +29,7 @@ const ASCII_SURNAME = [
   ' ██       ██████  ███████  █████  ██  ██ ███████ ██   ███ ███████',
 ];
 
-const ROLE_LINE = '  >> DESIGN CONSULTANT  //  AI × UX × ENGINEERING';
+const ROLE_LINE = '  >> DESIGN CONSULTANT  //  AI × UX × PRODUCT';
 
 const headingLines = [
   { text: 'Making ', word: 'AI', color: '#c6ef4d' },
