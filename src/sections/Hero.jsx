@@ -3,6 +3,43 @@ import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import Starfield from '../components/Starfield';
 import ShootingStars from '../components/ShootingStars';
 
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*!?';
+
+function ShuffleText({ text, className }) {
+  const [display, setDisplay] = useState(text);
+  const rafRef = useRef(null);
+  const iterRef = useRef(0);
+
+  const scramble = useCallback(() => {
+    iterRef.current = 0;
+    const resolve = () => {
+      iterRef.current += 1;
+      const result = text.split('').map((char, i) => {
+        if (i < iterRef.current) return text[i];
+        return CHARS[Math.floor(Math.random() * CHARS.length)];
+      }).join('');
+      setDisplay(result);
+      if (iterRef.current < text.length) {
+        rafRef.current = setTimeout(resolve, 40);
+      }
+    };
+    resolve();
+  }, [text]);
+
+  const reset = useCallback(() => {
+    if (rafRef.current) clearTimeout(rafRef.current);
+    setDisplay(text);
+  }, [text]);
+
+  useEffect(() => () => { if (rafRef.current) clearTimeout(rafRef.current); }, []);
+
+  return (
+    <span className={className} onMouseEnter={scramble} onMouseLeave={reset} style={{ cursor: 'default' }}>
+      {display}
+    </span>
+  );
+}
+
 const ease = [0.22, 1, 0.36, 1];
 
 /* DOS-style blocky ASCII — built with ░▒▓█ characters */
@@ -427,8 +464,8 @@ export default function HeroSection() {
           animate={reveal ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.9, delay: 0.1, ease }}
         >
-          <span className="hero-name__first">Akwasi</span>
-          <span className="hero-name__last">Fosuhene</span>
+          <ShuffleText text="Akwasi" className="hero-name__first" />
+          <ShuffleText text="Fosuhene" className="hero-name__last" />
         </motion.div>
 
         {/* Interactive heading with hover effects — right-aligned */}
