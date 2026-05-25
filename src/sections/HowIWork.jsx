@@ -46,7 +46,7 @@ const steps = [
   {
     icon: '/assets/icons/02.svg',
     title: 'Define',
-    desc: 'Frame the challenge clearly. Align on what success looks like, who it serves, and what constraints matter. AI makes things faster — definition makes sure we\'re building the right thing.',
+    desc: 'Frame the challenge clearly. Align on what success looks like, who it serves, and what constraints matter. Speed is easy. Definition makes sure we\'re building the right thing.',
   },
   {
     icon: '/assets/icons/03.svg',
@@ -56,12 +56,12 @@ const steps = [
   {
     icon: '/assets/icons/04.svg',
     title: 'Prototype\n& Test',
-    desc: 'Tangible concepts people can react to — not decks, not wireframes in isolation. Test with real users early. In a world where AI can generate anything, knowing what to keep matters most.',
+    desc: 'Tangible concepts people can react to, not decks or wireframes in isolation. Test with real users early. When tools can generate anything, knowing what to keep matters most.',
   },
   {
     icon: '/assets/icons/05.svg',
     title: 'Refine',
-    desc: 'Iterate on what the testing reveals. Sweat the details that build trust — micro-interactions, error states, moments of delight. Good AI design is invisible until it isn\'t.',
+    desc: 'Iterate on what the testing reveals. Sweat the details that build trust: micro-interactions, error states, moments of delight. Good design is invisible until it isn\'t.',
   },
   {
     icon: '/assets/icons/06.svg',
@@ -274,7 +274,7 @@ export default function HowIWorkSection() {
         </h2>
       </div>
 
-      {/* What I do — single condensed block */}
+      {/* What I do */}
       <section ref={useRef(null)} style={{
         padding: 'clamp(24px, 5vw, 48px) clamp(24px, 5vw, 80px)',
         maxWidth: '800px',
@@ -287,7 +287,7 @@ export default function HowIWorkSection() {
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.7, ease }}
         >
-          I design AI experiences for enterprise — copilot interfaces, agent workflows, intelligent dashboards. AI makes it easy to build fast. My job is to make sure we build right. That means discovery before decisions, testing before shipping, and always designing for the person on the other side of the screen.
+          Every project starts the same way: understanding people. What they need, where they struggle, what would make their work feel effortless. I shape experiences through research, prototyping, and testing, making sure what gets built actually works for the people using it.
         </motion.p>
       </section>
 
