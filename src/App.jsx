@@ -11,11 +11,13 @@ import AboutSection from './sections/About';
 import HowIWorkSection from './sections/HowIWork';
 import CaseStudiesSection from './sections/CaseStudies';
 import CTASection from './sections/CTA';
+import BlogSection from './sections/Blog';
 
 const pageComponents = {
   'about': () => <AboutSection />,
   'how-i-work': () => <HowIWorkSection />,
   'selected-work': () => <CaseStudiesSection />,
+  'writing': () => <BlogSection />,
   'contact': () => (
     <section className="section section--dark" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div className="section-inner" style={{ textAlign: 'center' }}>
@@ -37,6 +39,7 @@ const pageTitles = {
   'about': 'About',
   'how-i-work': 'Process',
   'selected-work': 'Selected Work',
+  'writing': 'Writing',
   'contact': 'Contact',
 };
 

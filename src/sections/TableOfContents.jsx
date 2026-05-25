@@ -20,6 +20,11 @@ const items = [
     detail: 'AI experience design, copilot interfaces, and the process from problem to prototype.',
   },
   {
+    id: 'writing',
+    title: 'Writing', label: 'Thoughts + Frameworks',
+    detail: 'From UX to AX: a design framework for agent-managed experiences.',
+  },
+  {
     id: 'contact',
     title: 'Contact', label: 'Get in touch',
     detail: 'Available for consulting and collaboration.',
