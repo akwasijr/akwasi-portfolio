@@ -242,26 +242,29 @@ function PictogramDiscover({ visible }) {
 
   return (
     <AnimatedSVG visible={visible} onMouse={onMouse} cursor="none">
-      {/* Person silhouette (the researcher) */}
-      <circle cx="140" cy="130" r="22" stroke={lime} strokeWidth="1.2" className="draw" />
+      {/* Person silhouette — head tilts toward mouse */}
+      <g style={{ transform: `rotate(${x * 3}deg)`, transformOrigin: '140px 175px', transition: t }}>
+        <circle cx="140" cy="130" r="22" stroke={lime} strokeWidth="1.2" className="draw" />
+      </g>
       <path d="M100 220 Q100 175 140 175 Q180 175 180 220" stroke={lime} strokeWidth="1.2" className="draw-reverse" fill="none" />
 
       {/* Magnifying glass — follows mouse */}
       <g style={{ transform: `translate(${glassX}px, ${glassY}px) rotate(${glassR}deg)`, transformOrigin: '270px 170px', transition: t }}>
         <circle cx="270" cy="170" r="50" stroke={lav} strokeWidth="1.5" className="draw-reverse" />
         <line x1="305" y1="205" x2="340" y2="240" stroke={lav} strokeWidth="2" className="draw" />
-        {/* Inside: user face */}
         <circle cx="270" cy="160" r="10" stroke={lime} strokeWidth="0.8" className="draw-delay" />
         <path d="M255 182 Q255 172 270 172 Q285 172 285 182" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
       </g>
 
-      {/* Research notes / data points floating around */}
-      <line x1="60" y1="270" x2="130" y2="270" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
-      <line x1="60" y1="285" x2="110" y2="285" stroke={faint} strokeWidth="0.8" className="draw-delay" />
-      <line x1="60" y1="300" x2="120" y2="300" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
-      <circle cx="50" cy="270" r="3" className="dot" fill={lime} />
-      <circle cx="50" cy="285" r="3" className="dot" fill={lime} />
-      <circle cx="50" cy="300" r="3" className="dot" fill={lime} />
+      {/* Research notes — shift opposite to glass */}
+      <g style={{ transform: `translate(${x * -6}px, ${y * -4}px)`, transition: t }}>
+        <line x1="60" y1="270" x2="130" y2="270" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
+        <line x1="60" y1="285" x2="110" y2="285" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+        <line x1="60" y1="300" x2="120" y2="300" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
+        <circle cx="50" cy="270" r="3" className="dot" fill={lime} />
+        <circle cx="50" cy="285" r="3" className="dot" fill={lime} />
+        <circle cx="50" cy="300" r="3" className="dot" fill={lime} />
+      </g>
 
       {/* Connection lines from person to notes */}
       <path d="M140 220 Q100 260 70 265" stroke={dimLime} strokeWidth="0.5" className="draw-delay" fill="none" />
@@ -412,35 +415,58 @@ function PictogramDefine({ visible }) {
   Story: Collaborative workshops mapping out possibilities
 */
 function PictogramEnvision({ visible }) {
+  const { x, y, onMouse, active } = useMouseOffset();
+  const t = active ? 'transform 0.12s ease' : 'transform 0.5s ease';
+  // Each sticky note shifts differently based on mouse
+  const n1 = { x: x * 8, y: y * 6, r: x * 4 };
+  const n2 = { x: x * -5, y: y * 10, r: x * -3 };
+  const n3 = { x: x * 12, y: y * -4, r: x * 5 };
+  const n4 = { x: x * -10, y: y * 8, r: x * -6 };
+  const n5 = { x: x * 6, y: y * -8, r: x * 3 };
+
   return (
-    <AnimatedSVG visible={visible}>
+    <AnimatedSVG visible={visible} onMouse={onMouse} cursor="grab">
       {/* Whiteboard/canvas */}
       <rect x="100" y="80" width="200" height="140" rx="4" stroke={lav} strokeWidth="1" className="draw-reverse" />
 
-      {/* Sticky notes on the board — alternate directions */}
-      <rect x="120" y="100" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      <rect x="175" y="95" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
-      <rect x="230" y="100" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
-      <rect x="145" y="155" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" />
-      <rect x="205" y="150" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      {/* Sticky notes — each drifts independently with mouse */}
+      <g style={{ transform: `translate(${n1.x}px, ${n1.y}px) rotate(${n1.r}deg)`, transformOrigin: '140px 117px', transition: t }}>
+        <rect x="120" y="100" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+        <line x1="126" y1="112" x2="152" y2="112" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+        <line x1="126" y1="120" x2="148" y2="120" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${n2.x}px, ${n2.y}px) rotate(${n2.r}deg)`, transformOrigin: '195px 112px', transition: t }}>
+        <rect x="175" y="95" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
+        <line x1="181" y1="107" x2="207" y2="107" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+        <line x1="181" y1="115" x2="203" y2="115" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${n3.x}px, ${n3.y}px) rotate(${n3.r}deg)`, transformOrigin: '250px 117px', transition: t }}>
+        <rect x="230" y="100" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${n4.x}px, ${n4.y}px) rotate(${n4.r}deg)`, transformOrigin: '165px 172px', transition: t }}>
+        <rect x="145" y="155" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" />
+      </g>
+      <g style={{ transform: `translate(${n5.x}px, ${n5.y}px) rotate(${n5.r}deg)`, transformOrigin: '225px 167px', transition: t }}>
+        <rect x="205" y="150" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      </g>
 
-      {/* Lines inside sticky notes (text) */}
-      <line x1="126" y1="112" x2="152" y2="112" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
-      <line x1="126" y1="120" x2="148" y2="120" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
-      <line x1="181" y1="107" x2="207" y2="107" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
-      <line x1="181" y1="115" x2="203" y2="115" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
-
-      {/* Person 1 (left) */}
-      <circle cx="110" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
-      <path d="M85 330 Q85 300 110 300 Q135 300 135 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      {/* Person 1 (left) — leans toward mouse */}
+      <g style={{ transform: `translate(${x * 3}px, ${y * 2}px)`, transition: t }}>
+        <circle cx="110" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
+        <path d="M85 330 Q85 300 110 300 Q135 300 135 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      </g>
 
       {/* Person 2 (center) */}
-      <circle cx="200" cy="275" r="16" stroke={lav} strokeWidth="0.8" className="draw-delay" />
-      <path d="M175 325 Q175 295 200 295 Q225 295 225 325" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
+      <g style={{ transform: `translate(${x * -2}px, ${y * 3}px)`, transition: t }}>
+        <circle cx="200" cy="275" r="16" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+        <path d="M175 325 Q175 295 200 295 Q225 295 225 325" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
+      </g>
 
       {/* Person 3 (right) */}
-      <circle cx="290" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      <path d="M265 330 Q265 300 290 300 Q315 300 315 330" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
+      <g style={{ transform: `translate(${x * 4}px, ${y * -2}px)`, transition: t }}>
+        <circle cx="290" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+        <path d="M265 330 Q265 300 290 300 Q315 300 315 330" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
+      </g>
 
       {/* Connection lines from people to board */}
       <path d="M110 265 L140 220" stroke={dimLime} strokeWidth="0.5" strokeDasharray="3 2" className="draw-delay" />
@@ -455,37 +481,58 @@ function PictogramEnvision({ visible }) {
   Story: Building something tangible and putting it in front of real users
 */
 function PictogramPrototype({ visible }) {
+  const { x, y, onMouse, active } = useMouseOffset();
+  const t = active ? 'transform 0.12s ease' : 'transform 0.5s ease';
+  // Tap indicator follows mouse within screen bounds
+  const tapX = 107 + x * 40;
+  const tapY = 175 + y * 50;
+  // Feedback arrow sways
+  const arrowShift = x * 10;
+  // Speech bubbles float up with mouse
+  const bubbleY = y * -12;
+
   return (
-    <AnimatedSVG visible={visible}>
+    <AnimatedSVG visible={visible} onMouse={onMouse} cursor="pointer">
       {/* Device screen */}
       <rect x="60" y="70" width="170" height="240" rx="6" stroke={lav} strokeWidth="1.2" className="draw-reverse" />
-      {/* Screen top bar */}
       <line x1="60" y1="100" x2="230" y2="100" stroke={dimLav} strokeWidth="0.6" className="draw" />
 
-      {/* UI elements on screen */}
-      <rect x="80" y="115" width="130" height="12" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
-      <rect x="80" y="140" width="130" height="50" rx="2" stroke={dimLime} strokeWidth="0.6" className="draw-delay" />
-      <rect x="80" y="205" width="55" height="20" rx="3" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
-      <rect x="145" y="205" width="55" height="20" rx="3" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      {/* UI elements on screen — shift subtly */}
+      <g style={{ transform: `translate(${x * 3}px, ${y * 2}px)`, transition: t }}>
+        <rect x="80" y="115" width="130" height="12" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
+      </g>
+      <g style={{ transform: `translate(${x * -2}px, ${y * 3}px)`, transition: t }}>
+        <rect x="80" y="140" width="130" height="50" rx="2" stroke={dimLime} strokeWidth="0.6" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${x * 4}px, ${y * -1}px)`, transition: t }}>
+        <rect x="80" y="205" width="55" height="20" rx="3" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
+        <rect x="145" y="205" width="55" height="20" rx="3" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      </g>
 
-      {/* Touch/click indicator (finger tap) */}
-      <circle cx="107" cy="215" r="12" stroke={lime} strokeWidth="0.6" className="pulse" fill="none" />
-      <circle cx="107" cy="215" r="4" fill={lime} className="dot" />
+      {/* Touch/click indicator — follows mouse */}
+      <g style={{ transform: `translate(${tapX - 107}px, ${tapY - 215}px)`, transition: t }}>
+        <circle cx="107" cy="215" r="12" stroke={lime} strokeWidth="0.6" className="pulse" fill="none" />
+        <circle cx="107" cy="215" r="4" fill={lime} className="dot" />
+      </g>
 
-      {/* Person (tester) on the right */}
+      {/* Person (tester) */}
       <circle cx="310" cy="160" r="20" stroke={lav} strokeWidth="0.8" className="draw-delay" />
       <path d="M282 220 Q282 185 310 185 Q338 185 338 220" stroke={lav} strokeWidth="0.8" className="draw-delay" fill="none" />
 
-      {/* Feedback loop arrow from person back to screen */}
-      <path d="M285 230 Q200 310 100 310 Q60 310 60 280" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" strokeDasharray="4 3" />
-      <polyline points="55,288 60,275 68,286" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      {/* Feedback loop arrow — sways with mouse */}
+      <g style={{ transform: `translate(${arrowShift}px, ${y * 5}px)`, transition: t }}>
+        <path d="M285 230 Q200 310 100 310 Q60 310 60 280" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" strokeDasharray="4 3" />
+        <polyline points="55,288 60,275 68,286" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      </g>
 
-      {/* Feedback speech bubbles */}
-      <circle cx="330" cy="120" r="3" fill={lime} className="dot-delay" />
-      <circle cx="345" cy="108" r="3" fill={lime} className="dot-delay" />
-      <circle cx="355" cy="90" r="8" stroke={lime} strokeWidth="0.6" className="draw-delay" />
-      <line x1="350" y1="88" x2="360" y2="88" stroke={lime} strokeWidth="0.5" className="draw-delay" />
-      <line x1="349" y1="93" x2="358" y2="93" stroke={lime} strokeWidth="0.5" className="draw-delay" />
+      {/* Speech bubbles — float with mouse */}
+      <g style={{ transform: `translate(${x * 6}px, ${bubbleY}px)`, transition: t }}>
+        <circle cx="330" cy="120" r="3" fill={lime} className="dot-delay" />
+        <circle cx="345" cy="108" r="3" fill={lime} className="dot-delay" />
+        <circle cx="355" cy="90" r="8" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+        <line x1="350" y1="88" x2="360" y2="88" stroke={lime} strokeWidth="0.5" className="draw-delay" />
+        <line x1="349" y1="93" x2="358" y2="93" stroke={lime} strokeWidth="0.5" className="draw-delay" />
+      </g>
     </AnimatedSVG>
   );
 }
@@ -495,37 +542,50 @@ function PictogramPrototype({ visible }) {
   Story: Sweating the details, polishing micro-interactions
 */
 function PictogramRefine({ visible }) {
+  const { x, y, onMouse, active } = useMouseOffset();
+  const t = active ? 'transform 0.12s ease' : 'transform 0.5s ease';
+  // Slider thumb moves left/right with mouse
+  const sliderX = x * 30;
+  // Before panel shifts away, after panel shifts in
+  const beforeX = x * -8;
+  const afterX = x * 8;
+  // Sparkle rotates
+  const sparkleR = x * 20;
+
   return (
-    <AnimatedSVG visible={visible}>
-      {/* "Before" rough shape (left) */}
-      <rect x="40" y="100" width="130" height="180" rx="4" stroke={faint} strokeWidth="0.8" className="draw-reverse" />
-      <text x="105" y="90" textAnchor="middle" fill={faint} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">before</text>
-      {/* Rough content */}
-      <rect x="55" y="125" width="100" height="10" rx="2" stroke={faint} strokeWidth="0.4" className="draw-reverse-delay" />
-      <rect x="55" y="150" width="100" height="40" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
-      <rect x="55" y="205" width="60" height="14" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
-      {/* Rough edges (jagged line) */}
-      <polyline points="55,245 70,240 80,250 95,238 110,248 125,240 140,245" stroke={faint} strokeWidth="0.5" className="draw-delay" fill="none" />
+    <AnimatedSVG visible={visible} onMouse={onMouse} cursor="col-resize">
+      {/* "Before" rough shape — shifts left with mouse */}
+      <g style={{ transform: `translate(${beforeX}px, 0)`, transition: t }}>
+        <rect x="40" y="100" width="130" height="180" rx="4" stroke={faint} strokeWidth="0.8" className="draw-reverse" />
+        <text x="105" y="90" textAnchor="middle" fill={faint} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">before</text>
+        <rect x="55" y="125" width="100" height="10" rx="2" stroke={faint} strokeWidth="0.4" className="draw-reverse-delay" />
+        <rect x="55" y="150" width="100" height="40" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
+        <rect x="55" y="205" width="60" height="14" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
+        <polyline points="55,245 70,240 80,250 95,238 110,248 125,240 140,245" stroke={faint} strokeWidth="0.5" className="draw-delay" fill="none" />
+      </g>
 
-      {/* Center divider / slider */}
-      <line x1="200" y1="80" x2="200" y2="300" stroke={lime} strokeWidth="1" className="draw" />
-      <circle cx="200" cy="190" r="8" stroke={lime} strokeWidth="1" fill="#00330f" className="draw" />
-      <polyline points="195,188 199,192 195,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
-      <polyline points="205,188 201,192 205,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
+      {/* Center divider / slider — moves with mouse X */}
+      <g style={{ transform: `translate(${sliderX}px, 0)`, transition: t }}>
+        <line x1="200" y1="80" x2="200" y2="300" stroke={lime} strokeWidth="1" className="draw" />
+        <circle cx="200" cy="190" r="8" stroke={lime} strokeWidth="1" fill="#00330f" className="draw" />
+        <polyline points="195,188 199,192 195,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
+        <polyline points="205,188 201,192 205,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
+      </g>
 
-      {/* "After" polished shape (right) */}
-      <rect x="230" y="100" width="130" height="180" rx="8" stroke={lav} strokeWidth="1.2" className="draw" />
-      <text x="295" y="90" textAnchor="middle" fill={lav} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">after</text>
-      {/* Clean content */}
-      <rect x="248" y="125" width="95" height="10" rx="3" stroke={lav} strokeWidth="0.6" className="draw-delay" />
-      <rect x="248" y="150" width="95" height="40" rx="4" stroke={lav} strokeWidth="0.6" className="draw-delay" />
-      <rect x="248" y="205" width="55" height="14" rx="7" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      {/* Sparkle/polish indicator */}
-      <line x1="320" y1="210" x2="320" y2="222" stroke={lime} strokeWidth="0.6" className="draw-delay" />
-      <line x1="314" y1="216" x2="326" y2="216" stroke={lime} strokeWidth="0.6" className="draw-delay" />
-
-      {/* Smooth curve (refined) */}
-      <path d="M248 245 Q270 235 295 245 Q320 255 343 245" stroke={lav} strokeWidth="0.6" className="draw-delay" fill="none" />
+      {/* "After" polished shape — shifts right with mouse */}
+      <g style={{ transform: `translate(${afterX}px, 0)`, transition: t }}>
+        <rect x="230" y="100" width="130" height="180" rx="8" stroke={lav} strokeWidth="1.2" className="draw" />
+        <text x="295" y="90" textAnchor="middle" fill={lav} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">after</text>
+        <rect x="248" y="125" width="95" height="10" rx="3" stroke={lav} strokeWidth="0.6" className="draw-delay" />
+        <rect x="248" y="150" width="95" height="40" rx="4" stroke={lav} strokeWidth="0.6" className="draw-delay" />
+        <rect x="248" y="205" width="55" height="14" rx="7" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+        {/* Sparkle rotates */}
+        <g style={{ transform: `rotate(${sparkleR}deg)`, transformOrigin: '320px 216px', transition: t }}>
+          <line x1="320" y1="210" x2="320" y2="222" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+          <line x1="314" y1="216" x2="326" y2="216" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+        </g>
+        <path d="M248 245 Q270 235 295 245 Q320 255 343 245" stroke={lav} strokeWidth="0.6" className="draw-delay" fill="none" />
+      </g>
     </AnimatedSVG>
   );
 }
@@ -535,43 +595,68 @@ function PictogramRefine({ visible }) {
   Story: Measuring, learning, the experience keeps growing
 */
 function PictogramEvolve({ visible }) {
+  const { x, y, onMouse, active } = useMouseOffset();
+  const t = active ? 'transform 0.12s ease' : 'transform 0.5s ease';
+  // Data points lift/drop based on mouse — each more than the last
+  const d1 = y * -5;
+  const d2 = y * -10;
+  const d3 = y * -16;
+  const d4 = y * -22;
+  // Arrow at end tilts
+  const arrowR = x * 15;
+  // People along bottom spread out
+  const spread = x * 6;
+
   return (
-    <AnimatedSVG visible={visible}>
+    <AnimatedSVG visible={visible} onMouse={onMouse} cursor="ns-resize">
       {/* Axis lines */}
       <line x1="70" y1="330" x2="350" y2="330" stroke={faint} strokeWidth="0.8" className="draw" />
       <line x1="70" y1="330" x2="70" y2="70" stroke={faint} strokeWidth="0.8" className="draw" />
 
       {/* Grid lines */}
-      {[130, 195, 260].map(y => (
-        <line key={y} x1="70" y1={y} x2="350" y2={y} stroke={faint} strokeWidth="0.3" strokeDasharray="3 4" className="draw-delay" />
+      {[130, 195, 260].map(gy => (
+        <line key={gy} x1="70" y1={gy} x2="350" y2={gy} stroke={faint} strokeWidth="0.3" strokeDasharray="3 4" className="draw-delay" />
       ))}
 
       {/* Growth curve */}
       <path d="M80 310 Q130 300 160 280 Q200 250 230 200 Q260 160 290 130 Q310 110 340 85"
         stroke={lime} strokeWidth="1.8" className="draw-slow" fill="none" strokeLinecap="round" />
 
-      {/* Data points on the curve */}
-      <circle cx="160" cy="280" r="4" fill={lime} className="dot" />
-      <circle cx="230" cy="200" r="4" fill={lime} className="dot-delay" />
-      <circle cx="290" cy="130" r="5" fill={lime} className="dot-delay" />
-      <circle cx="340" cy="85" r="6" fill={lime} className="dot-delay" />
+      {/* Data points — each lifts independently */}
+      <g style={{ transform: `translate(0, ${d1}px)`, transition: t }}>
+        <circle cx="160" cy="280" r="4" fill={lime} className="dot" />
+        <text x="160" y="300" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v1</text>
+      </g>
+      <g style={{ transform: `translate(0, ${d2}px)`, transition: t }}>
+        <circle cx="230" cy="200" r="4" fill={lime} className="dot-delay" />
+        <text x="230" y="220" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v2</text>
+      </g>
+      <g style={{ transform: `translate(0, ${d3}px)`, transition: t }}>
+        <circle cx="290" cy="130" r="5" fill={lime} className="dot-delay" />
+        <text x="290" y="150" textAnchor="middle" fill={lime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v3</text>
+      </g>
+      <g style={{ transform: `translate(0, ${d4}px)`, transition: t }}>
+        <circle cx="340" cy="85" r="6" fill={lime} className="dot-delay" />
+        <text x="340" y="75" textAnchor="middle" fill={lime} fontSize="10" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">v4</text>
+        {/* Arrow tilts with mouse */}
+        <g style={{ transform: `rotate(${arrowR}deg)`, transformOrigin: '340px 74px', transition: t }}>
+          <polyline points="335,80 340,68 345,80" stroke={lime} strokeWidth="0.8" fill="none" className="draw-delay" />
+        </g>
+      </g>
 
-      {/* Iteration markers (version labels) */}
-      <text x="160" y="300" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v1</text>
-      <text x="230" y="220" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v2</text>
-      <text x="290" y="150" textAnchor="middle" fill={lime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v3</text>
-      <text x="340" y="75" textAnchor="middle" fill={lime} fontSize="10" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">v4</text>
-
-      {/* Small upward arrow at the end */}
-      <polyline points="335,80 340,68 345,80" stroke={lime} strokeWidth="0.8" fill="none" className="draw-delay" />
-
-      {/* User count growing (small person icons along bottom) */}
-      <circle cx="130" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
-      <circle cx="200" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
-      <circle cx="210" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
-      <circle cx="275" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
-      <circle cx="285" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
-      <circle cx="295" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+      {/* User count growing — spread with mouse */}
+      <g style={{ transform: `translate(${-spread * 2}px, 0)`, transition: t }}>
+        <circle cx="130" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${-spread}px, 0)`, transition: t }}>
+        <circle cx="200" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+        <circle cx="210" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+      </g>
+      <g style={{ transform: `translate(${spread}px, 0)`, transition: t }}>
+        <circle cx="275" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+        <circle cx="285" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+        <circle cx="295" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+      </g>
     </AnimatedSVG>
   );
 }
