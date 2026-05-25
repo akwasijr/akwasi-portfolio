@@ -1208,11 +1208,11 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .process-intro {
-  min-height: 60vh;
+  min-height: 40vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(40px, 8vw, 120px) clamp(32px, 5vw, 80px);
+  padding: clamp(40px, 6vw, 80px) clamp(32px, 5vw, 80px);
   position: relative;
   z-index: 2;
 }
@@ -1225,32 +1225,6 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   letter-spacing: -0.03em;
   color: rgba(255,255,255,0.85);
   text-align: center;
-}
-
-.process-scroll-hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: clamp(40px, 6vh, 80px);
-  animation: hintBounce 2.4s ease-in-out infinite;
-}
-
-.process-scroll-hint__label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.15em;
-  color: rgba(198,239,77,0.4);
-  text-transform: uppercase;
-}
-
-.process-scroll-hint__arrow {
-  opacity: 0.6;
-}
-
-@keyframes hintBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(10px); }
 }
 
 .process-panel {

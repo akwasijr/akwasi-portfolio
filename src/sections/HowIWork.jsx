@@ -759,18 +759,6 @@ export default function HowIWorkSection() {
         >
           People-first<br />design process
         </motion.h2>
-
-        <motion.div
-          className="process-scroll-hint"
-          animate={introVisible ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.8, delay: 1.2 }}
-        >
-          <span className="process-scroll-hint__label">scroll</span>
-          <svg className="process-scroll-hint__arrow" width="20" height="28" viewBox="0 0 20 28" fill="none">
-            <line x1="10" y1="0" x2="10" y2="22" stroke="rgba(198,239,77,0.5)" strokeWidth="1" />
-            <polyline points="4,17 10,23 16,17" stroke="rgba(198,239,77,0.5)" strokeWidth="1" fill="none" />
-          </svg>
-        </motion.div>
       </div>
 
       {steps.map((step, i) => (
