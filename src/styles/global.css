@@ -1219,13 +1219,12 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 
 .process-intro__heading {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(40px, 7vw, 90px);
+  font-size: clamp(36px, 6vw, 76px);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
   color: rgba(255,255,255,0.85);
   text-align: center;
-  text-transform: uppercase;
 }
 
 .process-panel {
@@ -1248,13 +1247,12 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 
 .process-panel__title {
   font-family: 'Syne', sans-serif;
-  font-size: clamp(32px, 5.5vw, 72px);
+  font-size: clamp(26px, 4.5vw, 56px);
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: rgba(255,255,255,0.9);
   margin-bottom: clamp(20px, 3vw, 40px);
-  text-transform: uppercase;
 }
 
 .process-panel__title-line {
@@ -1267,10 +1265,10 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .process-panel__desc {
-  font-size: clamp(14px, 1.2vw, 17px);
+  font-size: clamp(15px, 1.4vw, 19px);
   line-height: 1.7;
-  color: rgba(255,255,255,0.45);
-  max-width: 440px;
+  color: rgba(255,255,255,0.5);
+  max-width: 460px;
 }
 
 .process-panel__pictogram {

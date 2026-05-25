@@ -5,20 +5,20 @@ import Starfield from '../components/Starfield';
 const ease = [0.22, 1, 0.36, 1];
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
 
-/* ShuffleText — gentle letter scramble on hover */
-function ShuffleText({ text, className }) {
+/* ShuffleText — gentle letter scramble on hover + scroll trigger */
+function ShuffleText({ text, className, triggerOnVisible }) {
   const [display, setDisplay] = useState(text);
   const rafRef = useRef(null);
   const iterRef = useRef(0);
+  const hasTriggered = useRef(false);
 
   const scramble = useCallback(() => {
     iterRef.current = 0;
     const resolve = () => {
-      iterRef.current += 2; // resolve 2 chars at a time
+      iterRef.current += 2;
       const result = text.split('').map((char, i) => {
         if (char === ' ') return ' ';
         if (i < iterRef.current) return text[i];
-        // only scramble ~25% of remaining chars each tick
         if (Math.random() > 0.25) return text[i];
         return CHARS[Math.floor(Math.random() * CHARS.length)];
       }).join('');
@@ -34,6 +34,17 @@ function ShuffleText({ text, className }) {
     if (rafRef.current) clearTimeout(rafRef.current);
     setDisplay(text);
   }, [text]);
+
+  // Auto-trigger on scroll visibility
+  useEffect(() => {
+    if (triggerOnVisible && !hasTriggered.current) {
+      hasTriggered.current = true;
+      scramble();
+    }
+    if (!triggerOnVisible) {
+      hasTriggered.current = false;
+    }
+  }, [triggerOnVisible, scramble]);
 
   useEffect(() => () => { if (rafRef.current) clearTimeout(rafRef.current); }, []);
 
@@ -101,8 +112,8 @@ function useScrollVisible(ref, threshold = 0.15) {
   return visible;
 }
 
-/* Animated SVG wrapper: measures real stroke lengths and draws them on */
-function AnimatedSVG({ visible, children, className }) {
+/* Animated SVG wrapper: measures real stroke lengths, draws them on, tracks mouse */
+function AnimatedSVG({ visible, children, className, onMouse, cursor }) {
   const svgRef = useRef(null);
   const measuredRef = useRef(false);
 
@@ -111,7 +122,7 @@ function AnimatedSVG({ visible, children, className }) {
     if (!svg || measuredRef.current) return;
     measuredRef.current = true;
 
-    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow');
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow, .draw-reverse, .draw-reverse-delay');
     drawEls.forEach(el => {
       let len;
       try {
@@ -152,8 +163,9 @@ function AnimatedSVG({ visible, children, className }) {
         }
       }
 
+      const isReverse = el.classList.contains('draw-reverse') || el.classList.contains('draw-reverse-delay');
       el.style.strokeDasharray = len;
-      el.style.strokeDashoffset = len;
+      el.style.strokeDashoffset = isReverse ? -len : len;
       el.dataset.len = len;
     });
   }, []);
@@ -162,11 +174,12 @@ function AnimatedSVG({ visible, children, className }) {
     const svg = svgRef.current;
     if (!svg) return;
 
-    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow');
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow, .draw-reverse, .draw-reverse-delay');
     drawEls.forEach(el => {
-      const len = el.dataset.len || '1000';
+      const len = parseFloat(el.dataset.len || '1000');
+      const isReverse = el.classList.contains('draw-reverse') || el.classList.contains('draw-reverse-delay');
       if (visible) {
-        const isDelay = el.classList.contains('draw-delay');
+        const isDelay = el.classList.contains('draw-delay') || el.classList.contains('draw-reverse-delay');
         const isSlow = el.classList.contains('draw-slow');
         const dur = isSlow ? '2.5s' : '1.8s';
         const delay = isDelay ? '0.7s' : isSlow ? '0.3s' : '0s';
@@ -174,10 +187,23 @@ function AnimatedSVG({ visible, children, className }) {
         el.style.strokeDashoffset = '0';
       } else {
         el.style.transition = 'none';
-        el.style.strokeDashoffset = len;
+        el.style.strokeDashoffset = isReverse ? -len : len;
       }
     });
   }, [visible]);
+
+  // Mouse tracking: normalized -1..1 from center of SVG
+  const handleMouseMove = useCallback((e) => {
+    if (!onMouse) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    onMouse({ x: nx, y: ny, clientX: e.clientX, clientY: e.clientY, rect });
+  }, [onMouse]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (onMouse) onMouse(null);
+  }, [onMouse]);
 
   return (
     <svg
@@ -185,10 +211,22 @@ function AnimatedSVG({ visible, children, className }) {
       viewBox="0 0 400 400"
       fill="none"
       className={`process-pictogram ${visible ? 'process-pictogram--visible' : ''} ${className || ''}`}
+      onMouseMove={onMouse ? handleMouseMove : undefined}
+      onMouseLeave={onMouse ? handleMouseLeave : undefined}
+      style={cursor ? { cursor } : undefined}
     >
       {children}
     </svg>
   );
+}
+
+/* Hook for mouse-reactive pictograms */
+function useMouseOffset() {
+  const [m, setM] = useState(null);
+  const onMouse = useCallback((v) => setM(v), []);
+  const x = m ? m.x : 0;
+  const y = m ? m.y : 0;
+  return { x, y, onMouse, active: !!m };
 }
 
 /*
@@ -196,24 +234,31 @@ function AnimatedSVG({ visible, children, className }) {
   Story: You're looking closely at real people to understand their needs
 */
 function PictogramDiscover({ visible }) {
+  const { x, y, onMouse, active } = useMouseOffset();
+  const glassX = x * 15;
+  const glassY = y * 15;
+  const glassR = active ? -x * 5 : 0;
+  const t = active ? 'transform 0.15s ease' : 'transform 0.5s ease';
+
   return (
-    <AnimatedSVG visible={visible}>
+    <AnimatedSVG visible={visible} onMouse={onMouse} cursor="none">
       {/* Person silhouette (the researcher) */}
       <circle cx="140" cy="130" r="22" stroke={lime} strokeWidth="1.2" className="draw" />
-      <path d="M100 220 Q100 175 140 175 Q180 175 180 220" stroke={lime} strokeWidth="1.2" className="draw" fill="none" />
+      <path d="M100 220 Q100 175 140 175 Q180 175 180 220" stroke={lime} strokeWidth="1.2" className="draw-reverse" fill="none" />
 
-      {/* Magnifying glass */}
-      <circle cx="270" cy="170" r="50" stroke={lav} strokeWidth="1.5" className="draw" />
-      <line x1="305" y1="205" x2="340" y2="240" stroke={lav} strokeWidth="2" className="draw" />
-
-      {/* Inside magnifying glass: a simplified user face being examined */}
-      <circle cx="270" cy="160" r="10" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      <path d="M255 182 Q255 172 270 172 Q285 172 285 182" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      {/* Magnifying glass — follows mouse */}
+      <g style={{ transform: `translate(${glassX}px, ${glassY}px) rotate(${glassR}deg)`, transformOrigin: '270px 170px', transition: t }}>
+        <circle cx="270" cy="170" r="50" stroke={lav} strokeWidth="1.5" className="draw-reverse" />
+        <line x1="305" y1="205" x2="340" y2="240" stroke={lav} strokeWidth="2" className="draw" />
+        {/* Inside: user face */}
+        <circle cx="270" cy="160" r="10" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+        <path d="M255 182 Q255 172 270 172 Q285 172 285 182" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
+      </g>
 
       {/* Research notes / data points floating around */}
-      <line x1="60" y1="270" x2="130" y2="270" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="60" y1="270" x2="130" y2="270" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
       <line x1="60" y1="285" x2="110" y2="285" stroke={faint} strokeWidth="0.8" className="draw-delay" />
-      <line x1="60" y1="300" x2="120" y2="300" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="60" y1="300" x2="120" y2="300" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
       <circle cx="50" cy="270" r="3" className="dot" fill={lime} />
       <circle cx="50" cy="285" r="3" className="dot" fill={lime} />
       <circle cx="50" cy="300" r="3" className="dot" fill={lime} />
@@ -229,30 +274,97 @@ function PictogramDiscover({ visible }) {
   Story: Setting direction, aligning on where to go
 */
 function PictogramDefine({ visible }) {
+  const svgRef = useRef(null);
+  const measuredRef = useRef(false);
+  const [needleAngle, setNeedleAngle] = useState(0);
+
+  // Measure stroke lengths
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || measuredRef.current) return;
+    measuredRef.current = true;
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow, .draw-reverse, .draw-reverse-delay');
+    drawEls.forEach(el => {
+      let len;
+      try { if (typeof el.getTotalLength === 'function') len = el.getTotalLength(); } catch (e) {}
+      if (!len) {
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'circle') len = 2 * Math.PI * parseFloat(el.getAttribute('r') || 50);
+        else if (tag === 'line') {
+          const x1 = parseFloat(el.getAttribute('x1')||0), y1 = parseFloat(el.getAttribute('y1')||0);
+          const x2 = parseFloat(el.getAttribute('x2')||0), y2 = parseFloat(el.getAttribute('y2')||0);
+          len = Math.sqrt((x2-x1)**2 + (y2-y1)**2);
+        } else if (tag === 'polygon' || tag === 'polyline') {
+          const pts = el.getAttribute('points').trim().split(/[\s,]+/).map(Number);
+          len = 0;
+          for (let i = 0; i < pts.length - 2; i += 2) len += Math.sqrt((pts[i+2]-pts[i])**2 + (pts[i+3]-pts[i+1])**2);
+          if (tag === 'polygon' && pts.length >= 4) len += Math.sqrt((pts[0]-pts[pts.length-2])**2 + (pts[1]-pts[pts.length-1])**2);
+        } else len = 1000;
+      }
+      const isReverse = el.classList.contains('draw-reverse') || el.classList.contains('draw-reverse-delay');
+      el.style.strokeDasharray = len;
+      el.style.strokeDashoffset = isReverse ? -len : len;
+      el.dataset.len = len;
+    });
+  }, []);
+
+  // Animate strokes on visibility
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow, .draw-reverse, .draw-reverse-delay');
+    drawEls.forEach(el => {
+      const len = parseFloat(el.dataset.len || '1000');
+      const isReverse = el.classList.contains('draw-reverse') || el.classList.contains('draw-reverse-delay');
+      if (visible) {
+        const isDelay = el.classList.contains('draw-delay') || el.classList.contains('draw-reverse-delay');
+        const isSlow = el.classList.contains('draw-slow');
+        const dur = isSlow ? '2.5s' : '1.8s';
+        const delay = isDelay ? '0.7s' : isSlow ? '0.3s' : '0s';
+        el.style.transition = `stroke-dashoffset ${dur} cubic-bezier(0.22, 1, 0.36, 1) ${delay}`;
+        el.style.strokeDashoffset = '0';
+      } else {
+        el.style.transition = 'none';
+        el.style.strokeDashoffset = isReverse ? -len : len;
+      }
+    });
+  }, [visible]);
+
+  const onMouseMove = useCallback((e) => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const rect = svg.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    const angle = Math.atan2(dx, -dy) * (180 / Math.PI);
+    setNeedleAngle(angle);
+  }, []);
+
+  const onMouseLeave = useCallback(() => {
+    setNeedleAngle(0); // return to north
+  }, []);
+
   return (
-    <AnimatedSVG visible={visible}>
-      {/* Compass outer ring */}
-      <circle cx="200" cy="200" r="140" stroke={faint} strokeWidth="0.8" className="draw" />
+    <svg
+      ref={svgRef}
+      viewBox="0 0 400 400"
+      fill="none"
+      className={`process-pictogram ${visible ? 'process-pictogram--visible' : ''}`}
+      onMouseMove={onMouseMove}
+      onMouseLeave={onMouseLeave}
+      style={{ cursor: 'crosshair' }}
+    >
+      {/* Compass outer rings — draw in opposite directions */}
+      <circle cx="200" cy="200" r="140" stroke={faint} strokeWidth="0.8" className="draw-reverse" />
       <circle cx="200" cy="200" r="100" stroke={lav} strokeWidth="1" className="draw" />
 
       {/* Cardinal marks */}
       <line x1="200" y1="55" x2="200" y2="75" stroke={lime} strokeWidth="1.2" className="draw-delay" />
-      <line x1="200" y1="325" x2="200" y2="345" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="200" y1="325" x2="200" y2="345" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
       <line x1="55" y1="200" x2="75" y2="200" stroke={faint} strokeWidth="0.8" className="draw-delay" />
-      <line x1="325" y1="200" x2="345" y2="200" stroke={faint} strokeWidth="0.8" className="draw-delay" />
-
-      {/* Compass needle pointing up/north */}
-      <polygon points="200,100 188,210 200,190 212,210" stroke={lime} strokeWidth="1" className="draw-delay" fill="none" />
-      <polygon points="200,100 200,190 212,210" fill={dimLime} className="fade" />
-
-      {/* South half of needle */}
-      <polygon points="200,300 188,190 200,210 212,190" stroke={dimLav} strokeWidth="0.6" className="draw-delay" fill="none" />
-
-      {/* Center pivot */}
-      <circle cx="200" cy="200" r="6" fill={lime} className="dot" />
-
-      {/* "N" label */}
-      <text x="200" y="48" textAnchor="middle" fill={lime} fontSize="14" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">N</text>
+      <line x1="325" y1="200" x2="345" y2="200" stroke={faint} strokeWidth="0.8" className="draw-reverse-delay" />
 
       {/* Tick marks */}
       {[45, 90, 135, 180, 225, 270, 315].map((deg) => {
@@ -262,11 +374,36 @@ function PictogramDefine({ visible }) {
           <line key={deg}
             x1={200 + r1 * Math.sin(rad)} y1={200 - r1 * Math.cos(rad)}
             x2={200 + r2 * Math.sin(rad)} y2={200 - r2 * Math.cos(rad)}
-            stroke={faint} strokeWidth="0.6" className="draw-delay"
+            stroke={faint} strokeWidth="0.6" className={deg % 90 === 0 ? 'draw-delay' : 'draw-reverse-delay'}
           />
         );
       })}
-    </AnimatedSVG>
+
+      {/* Needle group — rotates with mouse */}
+      <g style={{
+        transformOrigin: '200px 200px',
+        transform: `rotate(${needleAngle}deg)`,
+        transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>
+        {/* North needle */}
+        <polygon points="200,100 188,210 200,190 212,210" stroke={lime} strokeWidth="1" className="draw-delay" fill="none" />
+        <polygon points="200,100 200,190 212,210" fill={dimLime} className="fade" />
+        {/* South needle */}
+        <polygon points="200,300 188,190 200,210 212,190" stroke={dimLav} strokeWidth="0.6" className="draw-reverse-delay" fill="none" />
+      </g>
+
+      {/* Center pivot */}
+      <circle cx="200" cy="200" r="6" fill={lime} className="dot" />
+
+      {/* "N" label — also rotates */}
+      <g style={{
+        transformOrigin: '200px 200px',
+        transform: `rotate(${needleAngle}deg)`,
+        transition: 'transform 0.6s cubic-bezier(0.22, 1, 0.36, 1)',
+      }}>
+        <text x="200" y="48" textAnchor="middle" fill={lime} fontSize="14" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">N</text>
+      </g>
+    </svg>
   );
 }
 
@@ -278,13 +415,13 @@ function PictogramEnvision({ visible }) {
   return (
     <AnimatedSVG visible={visible}>
       {/* Whiteboard/canvas */}
-      <rect x="100" y="80" width="200" height="140" rx="4" stroke={lav} strokeWidth="1" className="draw" />
+      <rect x="100" y="80" width="200" height="140" rx="4" stroke={lav} strokeWidth="1" className="draw-reverse" />
 
-      {/* Sticky notes on the board */}
+      {/* Sticky notes on the board — alternate directions */}
       <rect x="120" y="100" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      <rect x="175" y="95" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <rect x="175" y="95" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
       <rect x="230" y="100" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
-      <rect x="145" y="155" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      <rect x="145" y="155" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" />
       <rect x="205" y="150" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
 
       {/* Lines inside sticky notes (text) */}
@@ -294,16 +431,16 @@ function PictogramEnvision({ visible }) {
       <line x1="181" y1="115" x2="203" y2="115" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
 
       {/* Person 1 (left) */}
-      <circle cx="110" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <circle cx="110" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
       <path d="M85 330 Q85 300 110 300 Q135 300 135 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
 
       {/* Person 2 (center) */}
       <circle cx="200" cy="275" r="16" stroke={lav} strokeWidth="0.8" className="draw-delay" />
-      <path d="M175 325 Q175 295 200 295 Q225 295 225 325" stroke={lav} strokeWidth="0.8" className="draw-delay" fill="none" />
+      <path d="M175 325 Q175 295 200 295 Q225 295 225 325" stroke={lav} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
 
       {/* Person 3 (right) */}
       <circle cx="290" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
-      <path d="M265 330 Q265 300 290 300 Q315 300 315 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+      <path d="M265 330 Q265 300 290 300 Q315 300 315 330" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" fill="none" />
 
       {/* Connection lines from people to board */}
       <path d="M110 265 L140 220" stroke={dimLime} strokeWidth="0.5" strokeDasharray="3 2" className="draw-delay" />
@@ -321,14 +458,14 @@ function PictogramPrototype({ visible }) {
   return (
     <AnimatedSVG visible={visible}>
       {/* Device screen */}
-      <rect x="60" y="70" width="170" height="240" rx="6" stroke={lav} strokeWidth="1.2" className="draw" />
+      <rect x="60" y="70" width="170" height="240" rx="6" stroke={lav} strokeWidth="1.2" className="draw-reverse" />
       {/* Screen top bar */}
       <line x1="60" y1="100" x2="230" y2="100" stroke={dimLav} strokeWidth="0.6" className="draw" />
 
       {/* UI elements on screen */}
-      <rect x="80" y="115" width="130" height="12" rx="2" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      <rect x="80" y="115" width="130" height="12" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
       <rect x="80" y="140" width="130" height="50" rx="2" stroke={dimLime} strokeWidth="0.6" className="draw-delay" />
-      <rect x="80" y="205" width="55" height="20" rx="3" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <rect x="80" y="205" width="55" height="20" rx="3" stroke={lime} strokeWidth="0.8" className="draw-reverse-delay" />
       <rect x="145" y="205" width="55" height="20" rx="3" stroke={faint} strokeWidth="0.5" className="draw-delay" />
 
       {/* Touch/click indicator (finger tap) */}
@@ -361,12 +498,12 @@ function PictogramRefine({ visible }) {
   return (
     <AnimatedSVG visible={visible}>
       {/* "Before" rough shape (left) */}
-      <rect x="40" y="100" width="130" height="180" rx="4" stroke={faint} strokeWidth="0.8" className="draw" />
+      <rect x="40" y="100" width="130" height="180" rx="4" stroke={faint} strokeWidth="0.8" className="draw-reverse" />
       <text x="105" y="90" textAnchor="middle" fill={faint} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">before</text>
       {/* Rough content */}
-      <rect x="55" y="125" width="100" height="10" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
+      <rect x="55" y="125" width="100" height="10" rx="2" stroke={faint} strokeWidth="0.4" className="draw-reverse-delay" />
       <rect x="55" y="150" width="100" height="40" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
-      <rect x="55" y="205" width="60" height="14" rx="2" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      <rect x="55" y="205" width="60" height="14" rx="2" stroke={faint} strokeWidth="0.5" className="draw-reverse-delay" />
       {/* Rough edges (jagged line) */}
       <polyline points="55,245 70,240 80,250 95,238 110,248 125,240 140,245" stroke={faint} strokeWidth="0.5" className="draw-delay" fill="none" />
 
@@ -499,7 +636,7 @@ function ProcessPanel({ step, index }) {
         >
           {titleLines.map((line, i) => (
             <span key={i}>
-              <ShuffleText text={line} className="process-panel__title-line" />
+              <ShuffleText text={line} className="process-panel__title-line" triggerOnVisible={visible} />
               {i < titleLines.length - 1 && <br />}
             </span>
           ))}
