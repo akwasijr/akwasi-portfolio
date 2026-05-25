@@ -1202,61 +1202,90 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 /* Timeline */
-/* ── Process Grid ── */
-.process-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 clamp(24px, 5vw, 80px) 80px;
+/* ── Process Section ── */
+.process-section {
+  background: #1a1a1a;
   position: relative;
-  z-index: 2;
 }
 
-.process-card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  padding: clamp(24px, 4vw, 40px);
+.process-intro {
+  min-height: 60vh;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(40px, 8vw, 120px) clamp(32px, 5vw, 80px);
 }
 
-.process-card:hover {
-  background: rgba(255,255,255,0.07);
-  border-color: rgba(198,239,77,0.15);
+.process-intro__heading {
+  font-size: clamp(40px, 7vw, 90px);
+  font-weight: 300;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+  color: rgba(255,255,255,0.85);
+  text-align: center;
 }
 
-.process-card__num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
-  font-weight: 500;
-  color: #c6ef4d;
-  opacity: 0.6;
+.process-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: clamp(60px, 10vw, 120px) clamp(32px, 5vw, 80px);
+  max-width: 1400px;
+  margin: 0 auto;
+  gap: clamp(40px, 6vw, 120px);
 }
 
-.process-card__title {
-  font-size: clamp(20px, 3vw, 28px);
-  font-weight: 700;
-  line-height: 1.15;
+.process-panel__text {
+  flex: 1;
+  max-width: 560px;
+}
+
+.process-panel__title {
+  font-size: clamp(32px, 5.5vw, 72px);
+  font-weight: 300;
+  line-height: 1.1;
   letter-spacing: -0.02em;
-  color: #fff;
+  color: rgba(255,255,255,0.9);
+  margin-bottom: clamp(20px, 3vw, 40px);
 }
 
-.process-card__desc {
-  font-size: 15px;
+.process-panel__desc {
+  font-size: clamp(14px, 1.2vw, 17px);
   line-height: 1.7;
   color: rgba(255,255,255,0.45);
+  max-width: 440px;
 }
 
-@media (max-width: 640px) {
-  .process-grid {
-    grid-template-columns: 1fr;
-    padding: 0 24px 60px;
+.process-panel__pictogram {
+  flex-shrink: 0;
+  width: clamp(240px, 30vw, 420px);
+  height: clamp(240px, 30vw, 420px);
+}
+
+.process-pictogram {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 768px) {
+  .process-panel {
+    flex-direction: column;
+    min-height: auto;
+    padding: 60px 24px;
+    gap: 40px;
   }
+
+  .process-panel__text { max-width: 100%; }
+  .process-panel__desc { max-width: 100%; }
+
+  .process-panel__pictogram {
+    width: 220px;
+    height: 220px;
+    order: -1;
+  }
+
+  .process-intro { min-height: 40vh; }
 }
 
 /* ══════════════════════════════════════
