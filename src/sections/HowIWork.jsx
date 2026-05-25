@@ -99,10 +99,87 @@ function useScrollVisible(ref, threshold = 0.15) {
   return visible;
 }
 
-/* Animated SVG wrapper: draws strokes on when visible */
+/* Animated SVG wrapper: measures real stroke lengths and draws them on */
 function AnimatedSVG({ visible, children, className }) {
+  const svgRef = useRef(null);
+  const measuredRef = useRef(false);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg || measuredRef.current) return;
+    measuredRef.current = true;
+
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow');
+    drawEls.forEach(el => {
+      let len;
+      try {
+        if (typeof el.getTotalLength === 'function') {
+          len = el.getTotalLength();
+        }
+      } catch (e) { /* fallback below */ }
+
+      if (!len) {
+        const tag = el.tagName.toLowerCase();
+        if (tag === 'circle') {
+          len = 2 * Math.PI * parseFloat(el.getAttribute('r') || 50);
+        } else if (tag === 'rect') {
+          const w = parseFloat(el.getAttribute('width') || 100);
+          const h = parseFloat(el.getAttribute('height') || 100);
+          len = 2 * (w + h);
+        } else if (tag === 'line') {
+          const x1 = parseFloat(el.getAttribute('x1') || 0);
+          const y1 = parseFloat(el.getAttribute('y1') || 0);
+          const x2 = parseFloat(el.getAttribute('x2') || 0);
+          const y2 = parseFloat(el.getAttribute('y2') || 0);
+          len = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+        } else if (tag === 'ellipse') {
+          const rx = parseFloat(el.getAttribute('rx') || 50);
+          const ry = parseFloat(el.getAttribute('ry') || 50);
+          len = Math.PI * (3 * (rx + ry) - Math.sqrt((3 * rx + ry) * (rx + 3 * ry)));
+        } else if (tag === 'polygon' || tag === 'polyline') {
+          const pts = el.getAttribute('points').trim().split(/[\s,]+/).map(Number);
+          len = 0;
+          for (let i = 0; i < pts.length - 2; i += 2) {
+            len += Math.sqrt((pts[i + 2] - pts[i]) ** 2 + (pts[i + 3] - pts[i + 1]) ** 2);
+          }
+          if (tag === 'polygon' && pts.length >= 4) {
+            len += Math.sqrt((pts[0] - pts[pts.length - 2]) ** 2 + (pts[1] - pts[pts.length - 1]) ** 2);
+          }
+        } else {
+          len = 1000;
+        }
+      }
+
+      el.style.strokeDasharray = len;
+      el.style.strokeDashoffset = len;
+      el.dataset.len = len;
+    });
+  }, []);
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+
+    const drawEls = svg.querySelectorAll('.draw, .draw-delay, .draw-slow');
+    drawEls.forEach(el => {
+      const len = el.dataset.len || '1000';
+      if (visible) {
+        const isDelay = el.classList.contains('draw-delay');
+        const isSlow = el.classList.contains('draw-slow');
+        const dur = isSlow ? '2.5s' : '1.8s';
+        const delay = isDelay ? '0.7s' : isSlow ? '0.3s' : '0s';
+        el.style.transition = `stroke-dashoffset ${dur} cubic-bezier(0.22, 1, 0.36, 1) ${delay}`;
+        el.style.strokeDashoffset = '0';
+      } else {
+        el.style.transition = 'none';
+        el.style.strokeDashoffset = len;
+      }
+    });
+  }, [visible]);
+
   return (
     <svg
+      ref={svgRef}
       viewBox="0 0 400 400"
       fill="none"
       className={`process-pictogram ${visible ? 'process-pictogram--visible' : ''} ${className || ''}`}
