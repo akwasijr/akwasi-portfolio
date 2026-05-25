@@ -184,7 +184,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .hero-name__first,
 .hero-name__last {
   display: block;
-  font-size: clamp(64px, 16vw, 220px);
+  font-size: clamp(32px, 8vw, 110px);
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.04em;
@@ -198,7 +198,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .hero-mega {
-  font-size: clamp(28px, 6vw, 56px);
+  font-size: clamp(32px, 7vw, 64px);
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.02em;
