@@ -430,8 +430,8 @@ export default function HeroSection() {
           <span className="hero-name__last">Fosuhene</span>
         </motion.div>
 
-        {/* Interactive heading with hover effects */}
-        <motion.h1 className="hero-mega" style={{ y: headingY }}>
+        {/* Interactive heading with hover effects — right-aligned */}
+        <motion.h1 className="hero-mega" style={{ y: headingY, alignSelf: 'flex-end', textAlign: 'right' }}>
           {headingLines.map((line, i) => {
             const isHovered = hoveredLine === i;
             return (
@@ -444,9 +444,9 @@ export default function HeroSection() {
               >
                 <motion.span
                   style={{ display: 'inline-block' }}
-                  initial={{ y: '120%' }}
-                  animate={reveal ? { y: 0 } : {}}
-                  transition={{ duration: 1, delay: 0.15 + i * 0.14, ease }}
+                  initial={{ x: 80, opacity: 0, filter: 'blur(10px)' }}
+                  animate={reveal ? { x: 0, opacity: 1, filter: 'blur(0px)' } : {}}
+                  transition={{ duration: 1.2, delay: 0.4 + i * 0.2, ease }}
                 >
                   {line.text}
                   <span style={{ position: 'relative', display: 'inline-block' }}>
