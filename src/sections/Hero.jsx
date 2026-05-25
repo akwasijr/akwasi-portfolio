@@ -434,6 +434,10 @@ export default function HeroSection() {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   const contentScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.92]);
 
+  // Star Wars perspective crawl — rotateX increases as you scroll
+  const perspectiveRotateX = useTransform(scrollYProgress, [0, 0.5], [0, 35]);
+  const perspectiveY = useTransform(scrollYProgress, [0, 0.5], [0, -120]);
+
   return (
     <section ref={sectionRef} className="section section--hero-gradient" data-section="0">
       <Starfield count={25} />
@@ -454,9 +458,18 @@ export default function HeroSection() {
         style={{
           display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left',
           opacity: contentOpacity,
-          scale: contentScale,
+          perspective: 800,
+          transformStyle: 'preserve-3d',
         }}
       >
+        <motion.div
+          style={{
+            rotateX: perspectiveRotateX,
+            y: perspectiveY,
+            transformOrigin: 'bottom center',
+            width: '100%',
+          }}
+        >
         {/* Name — large display above heading */}
         <motion.div
           className="hero-name"
@@ -521,6 +534,7 @@ export default function HeroSection() {
             );
           })}
         </motion.h1>
+        </motion.div>
       </motion.div>
 
       <ScrollHint reveal={reveal} />
