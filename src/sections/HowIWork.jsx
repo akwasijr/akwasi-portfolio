@@ -5,7 +5,7 @@ import Starfield from '../components/Starfield';
 const ease = [0.22, 1, 0.36, 1];
 const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
 
-/* ShuffleText — letter scramble on hover */
+/* ShuffleText — gentle letter scramble on hover */
 function ShuffleText({ text, className }) {
   const [display, setDisplay] = useState(text);
   const rafRef = useRef(null);
@@ -14,15 +14,17 @@ function ShuffleText({ text, className }) {
   const scramble = useCallback(() => {
     iterRef.current = 0;
     const resolve = () => {
-      iterRef.current += 1;
+      iterRef.current += 2; // resolve 2 chars at a time
       const result = text.split('').map((char, i) => {
         if (char === ' ') return ' ';
         if (i < iterRef.current) return text[i];
+        // only scramble ~25% of remaining chars each tick
+        if (Math.random() > 0.25) return text[i];
         return CHARS[Math.floor(Math.random() * CHARS.length)];
       }).join('');
       setDisplay(result);
       if (iterRef.current < text.length) {
-        rafRef.current = setTimeout(resolve, 40);
+        rafRef.current = setTimeout(resolve, 90);
       }
     };
     resolve();
