@@ -468,6 +468,9 @@ export default function HeroSection() {
             y: perspectiveY,
             transformOrigin: 'bottom center',
             width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start',
           }}
         >
         {/* Name — large display above heading */}
