@@ -1218,12 +1218,14 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .process-intro__heading {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(40px, 7vw, 90px);
-  font-weight: 300;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.03em;
   color: rgba(255,255,255,0.85);
   text-align: center;
+  text-transform: uppercase;
 }
 
 .process-panel {
@@ -1245,12 +1247,23 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .process-panel__title {
+  font-family: 'Syne', sans-serif;
   font-size: clamp(32px, 5.5vw, 72px);
-  font-weight: 300;
+  font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
   color: rgba(255,255,255,0.9);
   margin-bottom: clamp(20px, 3vw, 40px);
+  text-transform: uppercase;
+}
+
+.process-panel__title-line {
+  cursor: default;
+  transition: color 0.3s ease;
+}
+
+.process-panel__title-line:hover {
+  color: #c6ef4d;
 }
 
 .process-panel__desc {

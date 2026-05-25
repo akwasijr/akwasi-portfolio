@@ -1,8 +1,80 @@
-import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useEffect, useState, useCallback } from 'react';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import Starfield from '../components/Starfield';
 
 const ease = [0.22, 1, 0.36, 1];
+const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&';
+
+/* ShuffleText — letter scramble on hover */
+function ShuffleText({ text, className }) {
+  const [display, setDisplay] = useState(text);
+  const rafRef = useRef(null);
+  const iterRef = useRef(0);
+
+  const scramble = useCallback(() => {
+    iterRef.current = 0;
+    const resolve = () => {
+      iterRef.current += 1;
+      const result = text.split('').map((char, i) => {
+        if (char === ' ') return ' ';
+        if (i < iterRef.current) return text[i];
+        return CHARS[Math.floor(Math.random() * CHARS.length)];
+      }).join('');
+      setDisplay(result);
+      if (iterRef.current < text.length) {
+        rafRef.current = setTimeout(resolve, 40);
+      }
+    };
+    resolve();
+  }, [text]);
+
+  const reset = useCallback(() => {
+    if (rafRef.current) clearTimeout(rafRef.current);
+    setDisplay(text);
+  }, [text]);
+
+  useEffect(() => () => { if (rafRef.current) clearTimeout(rafRef.current); }, []);
+
+  return (
+    <span className={className} onMouseEnter={scramble} onMouseLeave={reset} style={{ cursor: 'default' }}>
+      {display}
+    </span>
+  );
+}
+
+/* Mouse-reactive tilt wrapper */
+function MouseTilt({ children, className }) {
+  const ref = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const onMove = useCallback((e) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const x = ((e.clientX - cx) / (rect.width / 2)) * 8;
+    const y = ((e.clientY - cy) / (rect.height / 2)) * -8;
+    setTilt({ x, y });
+  }, []);
+
+  const onLeave = useCallback(() => setTilt({ x: 0, y: 0 }), []);
+
+  return (
+    <div
+      ref={ref}
+      className={className}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      style={{
+        transform: `perspective(600px) rotateY(${tilt.x}deg) rotateX(${tilt.y}deg)`,
+        transition: tilt.x === 0 && tilt.y === 0 ? 'transform 0.5s ease' : 'transform 0.1s ease',
+      }}
+    >
+      {children}
+    </div>
+  );
+}
 
 /* Colors from site palette */
 const lime = '#c6ef4d';
@@ -329,16 +401,28 @@ function ProcessPanel({ step, index }) {
   const visible = useScrollVisible(ref, 0.15);
   const Pictogram = pictograms[index];
 
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start end', 'end start'],
+  });
+  const textY = useTransform(scrollYProgress, [0, 1], [60, -60]);
+  const pictoY = useTransform(scrollYProgress, [0, 1], [40, -40]);
+
+  const titleLines = step.title.split('\n');
+
   return (
     <div ref={ref} className="process-panel">
-      <div className="process-panel__text">
+      <motion.div className="process-panel__text" style={{ y: textY }}>
         <motion.h2
           className="process-panel__title"
           animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
           transition={{ duration: 0.9, ease }}
         >
-          {step.title.split('\n').map((line, i) => (
-            <span key={i}>{line}<br /></span>
+          {titleLines.map((line, i) => (
+            <span key={i}>
+              <ShuffleText text={line} className="process-panel__title-line" />
+              {i < titleLines.length - 1 && <br />}
+            </span>
           ))}
         </motion.h2>
         <motion.p
@@ -348,10 +432,12 @@ function ProcessPanel({ step, index }) {
         >
           {step.desc}
         </motion.p>
-      </div>
-      <div className="process-panel__pictogram">
-        <Pictogram visible={visible} />
-      </div>
+      </motion.div>
+      <motion.div style={{ y: pictoY }}>
+        <MouseTilt className="process-panel__pictogram">
+          <Pictogram visible={visible} />
+        </MouseTilt>
+      </motion.div>
     </div>
   );
 }
