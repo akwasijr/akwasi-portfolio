@@ -401,18 +401,6 @@ export default function HeroSection() {
       <Starfield count={25} />
       <ShootingStars />
 
-      {/* Name — large display above heading */}
-      <motion.div
-        className="hero-name"
-        initial={{ opacity: 0, y: 30 }}
-        animate={reveal ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-        transition={{ duration: 0.9, delay: 0.1, ease }}
-        style={{ opacity: contentOpacity, scale: contentScale }}
-      >
-        <span className="hero-name__first">Akwasi</span>
-        <span className="hero-name__last">Fosuhene</span>
-      </motion.div>
-
       <AnimatePresence>
         {showSplash && (
           <AsciiSplash key="splash" onComplete={startReveal} />
@@ -431,6 +419,17 @@ export default function HeroSection() {
           scale: contentScale,
         }}
       >
+        {/* Name — large display above heading */}
+        <motion.div
+          className="hero-name"
+          initial={{ opacity: 0, y: 30 }}
+          animate={reveal ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+          transition={{ duration: 0.9, delay: 0.1, ease }}
+        >
+          <span className="hero-name__first">Akwasi</span>
+          <span className="hero-name__last">Fosuhene</span>
+        </motion.div>
+
         {/* Interactive heading with hover effects */}
         <motion.h1 className="hero-mega" style={{ y: headingY }}>
           {headingLines.map((line, i) => {
