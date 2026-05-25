@@ -1204,7 +1204,6 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 /* Timeline */
 /* ── Process Section ── */
 .process-section {
-  background: #1a1a1a;
   position: relative;
 }
 
@@ -1214,6 +1213,8 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   align-items: center;
   justify-content: center;
   padding: clamp(40px, 8vw, 120px) clamp(32px, 5vw, 80px);
+  position: relative;
+  z-index: 2;
 }
 
 .process-intro__heading {
@@ -1234,6 +1235,8 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   max-width: 1400px;
   margin: 0 auto;
   gap: clamp(40px, 6vw, 120px);
+  position: relative;
+  z-index: 2;
 }
 
 .process-panel__text {
@@ -1266,6 +1269,103 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .process-pictogram {
   width: 100%;
   height: 100%;
+}
+
+/* ── Pictogram Animations ── */
+
+/* Stroke draw-on */
+.process-pictogram .draw,
+.process-pictogram .draw-delay,
+.process-pictogram .draw-slow {
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+  transition: stroke-dashoffset 0s;
+}
+
+.process-pictogram--visible .draw {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.process-pictogram--visible .draw-delay {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.6s;
+}
+
+.process-pictogram--visible .draw-slow {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 2.2s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+
+/* Dot fade-in */
+.process-pictogram .dot {
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: opacity 0s, transform 0s;
+}
+
+.process-pictogram--visible .dot {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.5s ease 0.8s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 0.8s;
+}
+
+.process-pictogram .dot-delay {
+  opacity: 0;
+  transform: scale(0);
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: opacity 0s, transform 0s;
+}
+
+.process-pictogram--visible .dot-delay {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.5s ease 1.2s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) 1.2s;
+}
+
+/* Text/shape fade-in */
+.process-pictogram .fade {
+  opacity: 0;
+  transition: opacity 0s;
+}
+
+.process-pictogram--visible .fade {
+  opacity: 1;
+  transition: opacity 1s ease 0.8s;
+}
+
+.process-pictogram .fade-delay {
+  opacity: 0;
+  transition: opacity 0s;
+}
+
+.process-pictogram--visible .fade-delay {
+  opacity: 1;
+  transition: opacity 0.8s ease 1.2s;
+}
+
+/* Pulse ring for tap indicator */
+.process-pictogram .pulse {
+  opacity: 0;
+  transform: scale(0.5);
+  transform-origin: center;
+  transform-box: fill-box;
+  transition: opacity 0s, transform 0s;
+}
+
+.process-pictogram--visible .pulse {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.4s ease 1s, transform 0.4s ease 1s;
+  animation: pictoPulse 2s ease-in-out 1.5s infinite;
+}
+
+@keyframes pictoPulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.2; transform: scale(1.5); }
 }
 
 @media (max-width: 768px) {

@@ -1,12 +1,17 @@
 import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import Starfield from '../components/Starfield';
 
 const ease = [0.22, 1, 0.36, 1];
-const s = 'rgba(255,255,255,0.18)';
-const s2 = 'rgba(255,255,255,0.08)';
-const dot = 'rgba(255,255,255,0.9)';
 
-function useScrollVisible(ref, threshold = 0.2) {
+/* Colors from site palette */
+const lime = '#c6ef4d';
+const lav = '#a5a5f6';
+const dimLime = 'rgba(198,239,77,0.25)';
+const dimLav = 'rgba(165,165,246,0.2)';
+const faint = 'rgba(255,255,255,0.12)';
+
+function useScrollVisible(ref, threshold = 0.15) {
   const [visible, setVisible] = useState(false);
   useEffect(() => {
     const el = ref.current;
@@ -22,192 +27,264 @@ function useScrollVisible(ref, threshold = 0.2) {
   return visible;
 }
 
-/* Discover: radar/compass with concentric rings + crosshairs + scanning dots */
-function PictogramDiscover() {
+/* Animated SVG wrapper: draws strokes on when visible */
+function AnimatedSVG({ visible, children, className }) {
   return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Outer dashed ring */}
-      <circle cx="200" cy="200" r="180" stroke={s} strokeWidth="0.8" strokeDasharray="4 3" />
-      {/* Middle ring */}
-      <circle cx="200" cy="200" r="130" stroke={s} strokeWidth="0.6" />
-      {/* Inner ring */}
-      <circle cx="200" cy="200" r="70" stroke={s} strokeWidth="0.8" />
-      {/* Crosshairs */}
-      <line x1="200" y1="20" x2="200" y2="120" stroke={s} strokeWidth="0.5" />
-      <line x1="200" y1="280" x2="200" y2="380" stroke={s} strokeWidth="0.5" />
-      <line x1="20" y1="200" x2="120" y2="200" stroke={s} strokeWidth="0.5" />
-      <line x1="280" y1="200" x2="380" y2="200" stroke={s} strokeWidth="0.5" />
-      {/* Scanner sweep line */}
-      <line x1="200" y1="200" x2="320" y2="90" stroke={s} strokeWidth="0.6" />
-      {/* Detected points */}
-      <circle cx="280" cy="120" r="4" fill={dot} />
-      <circle cx="310" cy="180" r="2.5" fill={dot} />
-      <circle cx="140" cy="290" r="3" fill={dot} />
-      <circle cx="170" cy="100" r="2" fill={dot} />
-      {/* Compass triangle */}
-      <polygon points="200,125 194,145 206,145" stroke={s} strokeWidth="0.6" fill="none" />
+    <svg
+      viewBox="0 0 400 400"
+      fill="none"
+      className={`process-pictogram ${visible ? 'process-pictogram--visible' : ''} ${className || ''}`}
+    >
+      {children}
     </svg>
   );
 }
 
-/* Define: geometric grid with aligned nodes and structured connections */
-function PictogramDefine() {
+/*
+  DISCOVER: Person with magnifying glass examining user personas
+  Story: You're looking closely at real people to understand their needs
+*/
+function PictogramDiscover({ visible }) {
   return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Outer circle context */}
-      <circle cx="200" cy="200" r="180" stroke={s2} strokeWidth="0.6" strokeDasharray="4 3" />
-      {/* Bounding frame */}
-      <rect x="100" y="80" width="200" height="240" stroke={s} strokeWidth="0.8" />
-      {/* Vertical center line */}
-      <line x1="200" y1="80" x2="200" y2="320" stroke={s} strokeWidth="0.5" />
-      {/* Horizontal divisions */}
-      <line x1="100" y1="160" x2="300" y2="160" stroke={s2} strokeWidth="0.4" />
-      <line x1="100" y1="240" x2="300" y2="240" stroke={s2} strokeWidth="0.4" />
-      {/* Funnel shape: convergence */}
-      <line x1="120" y1="100" x2="200" y2="200" stroke={s} strokeWidth="0.7" />
-      <line x1="280" y1="100" x2="200" y2="200" stroke={s} strokeWidth="0.7" />
-      <line x1="200" y1="200" x2="160" y2="300" stroke={s} strokeWidth="0.7" />
-      <line x1="200" y1="200" x2="240" y2="300" stroke={s} strokeWidth="0.7" />
-      {/* Key nodes */}
-      <circle cx="120" cy="100" r="3" fill={dot} />
-      <circle cx="280" cy="100" r="3" fill={dot} />
-      <circle cx="200" cy="200" r="5" fill={dot} />
-      <circle cx="160" cy="300" r="3" fill={dot} />
-      <circle cx="240" cy="300" r="3" fill={dot} />
-      {/* Arrows pointing up from bottom */}
-      <line x1="200" y1="60" x2="200" y2="30" stroke={s} strokeWidth="0.6" />
-      <polyline points="194,38 200,28 206,38" stroke={s} strokeWidth="0.6" fill="none" />
-    </svg>
+    <AnimatedSVG visible={visible}>
+      {/* Person silhouette (the researcher) */}
+      <circle cx="140" cy="130" r="22" stroke={lime} strokeWidth="1.2" className="draw" />
+      <path d="M100 220 Q100 175 140 175 Q180 175 180 220" stroke={lime} strokeWidth="1.2" className="draw" fill="none" />
+
+      {/* Magnifying glass */}
+      <circle cx="270" cy="170" r="50" stroke={lav} strokeWidth="1.5" className="draw" />
+      <line x1="305" y1="205" x2="340" y2="240" stroke={lav} strokeWidth="2" className="draw" />
+
+      {/* Inside magnifying glass: a simplified user face being examined */}
+      <circle cx="270" cy="160" r="10" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <path d="M255 182 Q255 172 270 172 Q285 172 285 182" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Research notes / data points floating around */}
+      <line x1="60" y1="270" x2="130" y2="270" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="60" y1="285" x2="110" y2="285" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="60" y1="300" x2="120" y2="300" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <circle cx="50" cy="270" r="3" className="dot" fill={lime} />
+      <circle cx="50" cy="285" r="3" className="dot" fill={lime} />
+      <circle cx="50" cy="300" r="3" className="dot" fill={lime} />
+
+      {/* Connection lines from person to notes */}
+      <path d="M140 220 Q100 260 70 265" stroke={dimLime} strokeWidth="0.5" className="draw-delay" fill="none" />
+    </AnimatedSVG>
   );
 }
 
-/* Envision: interconnected constellation / network with orbital paths */
-function PictogramEnvision() {
+/*
+  DEFINE: Compass pointing north with a clear path ahead
+  Story: Setting direction, aligning on where to go
+*/
+function PictogramDefine({ visible }) {
   return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Orbital rings */}
-      <ellipse cx="200" cy="200" rx="170" ry="100" stroke={s2} strokeWidth="0.5" transform="rotate(-20 200 200)" />
-      <ellipse cx="200" cy="200" rx="170" ry="100" stroke={s2} strokeWidth="0.5" transform="rotate(40 200 200)" />
-      <ellipse cx="200" cy="200" rx="170" ry="100" stroke={s2} strokeWidth="0.5" transform="rotate(100 200 200)" />
-      {/* Center hub */}
-      <circle cx="200" cy="200" r="24" stroke={s} strokeWidth="0.8" />
-      <circle cx="200" cy="200" r="6" fill={dot} />
-      {/* Constellation nodes */}
-      <circle cx="100" cy="140" r="10" stroke={s} strokeWidth="0.6" />
-      <circle cx="100" cy="140" r="3" fill={dot} />
-      <circle cx="300" cy="150" r="8" stroke={s} strokeWidth="0.6" />
-      <circle cx="300" cy="150" r="2.5" fill={dot} />
-      <circle cx="140" cy="310" r="12" stroke={s} strokeWidth="0.6" />
-      <circle cx="140" cy="310" r="3.5" fill={dot} />
-      <circle cx="290" cy="280" r="7" stroke={s} strokeWidth="0.6" />
-      <circle cx="290" cy="280" r="2" fill={dot} />
-      <circle cx="200" cy="80" r="6" stroke={s} strokeWidth="0.6" />
-      <circle cx="200" cy="80" r="2" fill={dot} />
-      {/* Connection lines */}
-      <line x1="110" y1="145" x2="190" y2="195" stroke={s} strokeWidth="0.4" />
-      <line x1="292" y1="155" x2="215" y2="195" stroke={s} strokeWidth="0.4" />
-      <line x1="148" y1="302" x2="192" y2="215" stroke={s} strokeWidth="0.4" />
-      <line x1="285" y1="275" x2="215" y2="212" stroke={s} strokeWidth="0.4" />
-      <line x1="200" y1="86" x2="200" y2="176" stroke={s} strokeWidth="0.4" />
-    </svg>
-  );
-}
+    <AnimatedSVG visible={visible}>
+      {/* Compass outer ring */}
+      <circle cx="200" cy="200" r="140" stroke={faint} strokeWidth="0.8" className="draw" />
+      <circle cx="200" cy="200" r="100" stroke={lav} strokeWidth="1" className="draw" />
 
-/* Prototype & Test: wireframe + iteration arrows */
-function PictogramPrototype() {
-  return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Outer context ring */}
-      <circle cx="200" cy="200" r="180" stroke={s2} strokeWidth="0.5" strokeDasharray="4 3" />
-      {/* Screen frame */}
-      <rect x="110" y="100" width="180" height="200" rx="4" stroke={s} strokeWidth="0.8" />
-      {/* Top bar */}
-      <line x1="110" y1="130" x2="290" y2="130" stroke={s} strokeWidth="0.5" />
-      <circle cx="128" cy="115" r="4" stroke={s} strokeWidth="0.5" />
-      <circle cx="142" cy="115" r="4" stroke={s} strokeWidth="0.5" />
-      <circle cx="156" cy="115" r="4" stroke={s} strokeWidth="0.5" />
-      {/* Content blocks */}
-      <rect x="125" y="145" width="70" height="8" rx="2" stroke={s2} strokeWidth="0.4" />
-      <rect x="125" y="165" width="150" height="40" rx="2" stroke={s2} strokeWidth="0.4" />
-      <rect x="125" y="218" width="65" height="24" rx="2" stroke={s} strokeWidth="0.5" />
-      <rect x="200" y="218" width="65" height="24" rx="2" stroke={s2} strokeWidth="0.4" />
-      <rect x="125" y="255" width="150" height="6" rx="2" stroke={s2} strokeWidth="0.3" />
-      <rect x="125" y="268" width="110" height="6" rx="2" stroke={s2} strokeWidth="0.3" />
-      {/* Iteration cycle arrow (outside frame) */}
-      <path d="M 310 160 A 80 80 0 0 1 310 260" stroke={s} strokeWidth="0.7" fill="none" />
-      <polyline points="306,255 312,265 318,255" stroke={s} strokeWidth="0.6" fill="none" />
-      {/* Test indicator dots */}
-      <circle cx="330" cy="200" r="3" fill={dot} />
-      <circle cx="340" cy="220" r="2" fill={dot} />
-    </svg>
-  );
-}
+      {/* Cardinal marks */}
+      <line x1="200" y1="55" x2="200" y2="75" stroke={lime} strokeWidth="1.2" className="draw-delay" />
+      <line x1="200" y1="325" x2="200" y2="345" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="55" y1="200" x2="75" y2="200" stroke={faint} strokeWidth="0.8" className="draw-delay" />
+      <line x1="325" y1="200" x2="345" y2="200" stroke={faint} strokeWidth="0.8" className="draw-delay" />
 
-/* Refine: precision instrument, concentric focus with detail markers */
-function PictogramRefine() {
-  return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Outer dashed ring with tick marks */}
-      <circle cx="200" cy="200" r="175" stroke={s} strokeWidth="0.6" strokeDasharray="2 4" />
-      {/* Tick marks around outer ring */}
-      {Array.from({ length: 36 }).map((_, i) => {
-        const angle = (i * 10) * Math.PI / 180;
-        const x1 = 200 + 165 * Math.cos(angle);
-        const y1 = 200 + 165 * Math.sin(angle);
-        const x2 = 200 + 175 * Math.cos(angle);
-        const y2 = 200 + 175 * Math.sin(angle);
-        return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke={s} strokeWidth="0.5" />;
+      {/* Compass needle pointing up/north */}
+      <polygon points="200,100 188,210 200,190 212,210" stroke={lime} strokeWidth="1" className="draw-delay" fill="none" />
+      <polygon points="200,100 200,190 212,210" fill={dimLime} className="fade" />
+
+      {/* South half of needle */}
+      <polygon points="200,300 188,190 200,210 212,190" stroke={dimLav} strokeWidth="0.6" className="draw-delay" fill="none" />
+
+      {/* Center pivot */}
+      <circle cx="200" cy="200" r="6" fill={lime} className="dot" />
+
+      {/* "N" label */}
+      <text x="200" y="48" textAnchor="middle" fill={lime} fontSize="14" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">N</text>
+
+      {/* Tick marks */}
+      {[45, 90, 135, 180, 225, 270, 315].map((deg) => {
+        const r1 = 95, r2 = 105;
+        const rad = (deg * Math.PI) / 180;
+        return (
+          <line key={deg}
+            x1={200 + r1 * Math.sin(rad)} y1={200 - r1 * Math.cos(rad)}
+            x2={200 + r2 * Math.sin(rad)} y2={200 - r2 * Math.cos(rad)}
+            stroke={faint} strokeWidth="0.6" className="draw-delay"
+          />
+        );
       })}
-      {/* Middle precision ring */}
-      <circle cx="200" cy="200" r="110" stroke={s} strokeWidth="0.7" />
-      {/* Inner focus ring */}
-      <circle cx="200" cy="200" r="50" stroke={s} strokeWidth="0.8" />
-      {/* Center target */}
-      <circle cx="200" cy="200" r="8" fill={dot} fillOpacity="0.3" stroke={dot} strokeWidth="0.8" />
-      <circle cx="200" cy="200" r="2.5" fill={dot} />
-      {/* Alignment crosshairs (short) */}
-      <line x1="200" y1="145" x2="200" y2="185" stroke={s} strokeWidth="0.4" />
-      <line x1="200" y1="215" x2="200" y2="255" stroke={s} strokeWidth="0.4" />
-      <line x1="145" y1="200" x2="185" y2="200" stroke={s} strokeWidth="0.4" />
-      <line x1="215" y1="200" x2="255" y2="200" stroke={s} strokeWidth="0.4" />
-      {/* Detail adjustment markers */}
-      <polygon points="200,90 196,100 204,100" stroke={s} strokeWidth="0.5" fill="none" />
-      <polygon points="310,200 300,196 300,204" stroke={s} strokeWidth="0.5" fill="none" />
-      <polygon points="200,310 204,300 196,300" stroke={s} strokeWidth="0.5" fill="none" />
-      <polygon points="90,200 100,204 100,196" stroke={s} strokeWidth="0.5" fill="none" />
-    </svg>
+    </AnimatedSVG>
   );
 }
 
-/* Evolve: expanding growth rings, outward radiation */
-function PictogramEvolve() {
+/*
+  ENVISION: People around a table/whiteboard with sticky notes
+  Story: Collaborative workshops mapping out possibilities
+*/
+function PictogramEnvision({ visible }) {
   return (
-    <svg viewBox="0 0 400 400" fill="none" className="process-pictogram">
-      {/* Growth rings expanding outward */}
-      <circle cx="200" cy="200" r="40" stroke={s} strokeWidth="0.8" />
-      <circle cx="200" cy="200" r="80" stroke={s} strokeWidth="0.6" />
-      <circle cx="200" cy="200" r="120" stroke={s2} strokeWidth="0.5" />
-      <circle cx="200" cy="200" r="160" stroke={s2} strokeWidth="0.4" strokeDasharray="6 4" />
-      {/* Center seed */}
-      <circle cx="200" cy="200" r="6" fill={dot} />
-      {/* Outward arrows at cardinal points */}
-      <line x1="200" y1="155" x2="200" y2="90" stroke={s} strokeWidth="0.6" />
-      <polyline points="194,98 200,85 206,98" stroke={s} strokeWidth="0.6" fill="none" />
-      <line x1="245" y1="200" x2="310" y2="200" stroke={s} strokeWidth="0.6" />
-      <polyline points="302,194 315,200 302,206" stroke={s} strokeWidth="0.6" fill="none" />
-      <line x1="200" y1="245" x2="200" y2="310" stroke={s} strokeWidth="0.6" />
-      <polyline points="194,302 200,315 206,302" stroke={s} strokeWidth="0.6" fill="none" />
-      <line x1="155" y1="200" x2="90" y2="200" stroke={s} strokeWidth="0.6" />
-      <polyline points="98,194 85,200 98,206" stroke={s} strokeWidth="0.6" fill="none" />
-      {/* Diagonal growth nodes */}
-      <circle cx="260" cy="130" r="3" fill={dot} />
-      <circle cx="130" cy="270" r="2.5" fill={dot} />
-      <circle cx="290" cy="280" r="2" fill={dot} />
-      <circle cx="120" cy="130" r="2" fill={dot} />
-      {/* Connection from center to diagonal nodes */}
-      <line x1="205" y1="195" x2="255" y2="135" stroke={s2} strokeWidth="0.3" />
-      <line x1="195" y1="205" x2="135" y2="265" stroke={s2} strokeWidth="0.3" />
-    </svg>
+    <AnimatedSVG visible={visible}>
+      {/* Whiteboard/canvas */}
+      <rect x="100" y="80" width="200" height="140" rx="4" stroke={lav} strokeWidth="1" className="draw" />
+
+      {/* Sticky notes on the board */}
+      <rect x="120" y="100" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <rect x="175" y="95" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <rect x="230" y="100" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      <rect x="145" y="155" width="40" height="35" rx="2" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      <rect x="205" y="150" width="40" height="35" rx="2" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+
+      {/* Lines inside sticky notes (text) */}
+      <line x1="126" y1="112" x2="152" y2="112" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+      <line x1="126" y1="120" x2="148" y2="120" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+      <line x1="181" y1="107" x2="207" y2="107" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+      <line x1="181" y1="115" x2="203" y2="115" stroke={dimLime} strokeWidth="0.5" className="draw-delay" />
+
+      {/* Person 1 (left) */}
+      <circle cx="110" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <path d="M85 330 Q85 300 110 300 Q135 300 135 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Person 2 (center) */}
+      <circle cx="200" cy="275" r="16" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      <path d="M175 325 Q175 295 200 295 Q225 295 225 325" stroke={lav} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Person 3 (right) */}
+      <circle cx="290" cy="280" r="16" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <path d="M265 330 Q265 300 290 300 Q315 300 315 330" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Connection lines from people to board */}
+      <path d="M110 265 L140 220" stroke={dimLime} strokeWidth="0.5" strokeDasharray="3 2" className="draw-delay" />
+      <path d="M200 260 L200 220" stroke={dimLav} strokeWidth="0.5" strokeDasharray="3 2" className="draw-delay" />
+      <path d="M290 265 L260 220" stroke={dimLime} strokeWidth="0.5" strokeDasharray="3 2" className="draw-delay" />
+    </AnimatedSVG>
+  );
+}
+
+/*
+  PROTOTYPE & TEST: Screen mockup with a person tapping/clicking, feedback loop arrow
+  Story: Building something tangible and putting it in front of real users
+*/
+function PictogramPrototype({ visible }) {
+  return (
+    <AnimatedSVG visible={visible}>
+      {/* Device screen */}
+      <rect x="60" y="70" width="170" height="240" rx="6" stroke={lav} strokeWidth="1.2" className="draw" />
+      {/* Screen top bar */}
+      <line x1="60" y1="100" x2="230" y2="100" stroke={dimLav} strokeWidth="0.6" className="draw" />
+
+      {/* UI elements on screen */}
+      <rect x="80" y="115" width="130" height="12" rx="2" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      <rect x="80" y="140" width="130" height="50" rx="2" stroke={dimLime} strokeWidth="0.6" className="draw-delay" />
+      <rect x="80" y="205" width="55" height="20" rx="3" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      <rect x="145" y="205" width="55" height="20" rx="3" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+
+      {/* Touch/click indicator (finger tap) */}
+      <circle cx="107" cy="215" r="12" stroke={lime} strokeWidth="0.6" className="pulse" fill="none" />
+      <circle cx="107" cy="215" r="4" fill={lime} className="dot" />
+
+      {/* Person (tester) on the right */}
+      <circle cx="310" cy="160" r="20" stroke={lav} strokeWidth="0.8" className="draw-delay" />
+      <path d="M282 220 Q282 185 310 185 Q338 185 338 220" stroke={lav} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Feedback loop arrow from person back to screen */}
+      <path d="M285 230 Q200 310 100 310 Q60 310 60 280" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" strokeDasharray="4 3" />
+      <polyline points="55,288 60,275 68,286" stroke={lime} strokeWidth="0.8" className="draw-delay" fill="none" />
+
+      {/* Feedback speech bubbles */}
+      <circle cx="330" cy="120" r="3" fill={lime} className="dot-delay" />
+      <circle cx="345" cy="108" r="3" fill={lime} className="dot-delay" />
+      <circle cx="355" cy="90" r="8" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+      <line x1="350" y1="88" x2="360" y2="88" stroke={lime} strokeWidth="0.5" className="draw-delay" />
+      <line x1="349" y1="93" x2="358" y2="93" stroke={lime} strokeWidth="0.5" className="draw-delay" />
+    </AnimatedSVG>
+  );
+}
+
+/*
+  REFINE: Before/after with polish details, slider in between
+  Story: Sweating the details, polishing micro-interactions
+*/
+function PictogramRefine({ visible }) {
+  return (
+    <AnimatedSVG visible={visible}>
+      {/* "Before" rough shape (left) */}
+      <rect x="40" y="100" width="130" height="180" rx="4" stroke={faint} strokeWidth="0.8" className="draw" />
+      <text x="105" y="90" textAnchor="middle" fill={faint} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">before</text>
+      {/* Rough content */}
+      <rect x="55" y="125" width="100" height="10" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
+      <rect x="55" y="150" width="100" height="40" rx="2" stroke={faint} strokeWidth="0.4" className="draw-delay" />
+      <rect x="55" y="205" width="60" height="14" rx="2" stroke={faint} strokeWidth="0.5" className="draw-delay" />
+      {/* Rough edges (jagged line) */}
+      <polyline points="55,245 70,240 80,250 95,238 110,248 125,240 140,245" stroke={faint} strokeWidth="0.5" className="draw-delay" fill="none" />
+
+      {/* Center divider / slider */}
+      <line x1="200" y1="80" x2="200" y2="300" stroke={lime} strokeWidth="1" className="draw" />
+      <circle cx="200" cy="190" r="8" stroke={lime} strokeWidth="1" fill="#00330f" className="draw" />
+      <polyline points="195,188 199,192 195,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
+      <polyline points="205,188 201,192 205,196" stroke={lime} strokeWidth="0.6" fill="none" className="draw-delay" />
+
+      {/* "After" polished shape (right) */}
+      <rect x="230" y="100" width="130" height="180" rx="8" stroke={lav} strokeWidth="1.2" className="draw" />
+      <text x="295" y="90" textAnchor="middle" fill={lav} fontSize="11" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">after</text>
+      {/* Clean content */}
+      <rect x="248" y="125" width="95" height="10" rx="3" stroke={lav} strokeWidth="0.6" className="draw-delay" />
+      <rect x="248" y="150" width="95" height="40" rx="4" stroke={lav} strokeWidth="0.6" className="draw-delay" />
+      <rect x="248" y="205" width="55" height="14" rx="7" stroke={lime} strokeWidth="0.8" className="draw-delay" />
+      {/* Sparkle/polish indicator */}
+      <line x1="320" y1="210" x2="320" y2="222" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+      <line x1="314" y1="216" x2="326" y2="216" stroke={lime} strokeWidth="0.6" className="draw-delay" />
+
+      {/* Smooth curve (refined) */}
+      <path d="M248 245 Q270 235 295 245 Q320 255 343 245" stroke={lav} strokeWidth="0.6" className="draw-delay" fill="none" />
+    </AnimatedSVG>
+  );
+}
+
+/*
+  EVOLVE: Growth chart with upward trend, branching iterations
+  Story: Measuring, learning, the experience keeps growing
+*/
+function PictogramEvolve({ visible }) {
+  return (
+    <AnimatedSVG visible={visible}>
+      {/* Axis lines */}
+      <line x1="70" y1="330" x2="350" y2="330" stroke={faint} strokeWidth="0.8" className="draw" />
+      <line x1="70" y1="330" x2="70" y2="70" stroke={faint} strokeWidth="0.8" className="draw" />
+
+      {/* Grid lines */}
+      {[130, 195, 260].map(y => (
+        <line key={y} x1="70" y1={y} x2="350" y2={y} stroke={faint} strokeWidth="0.3" strokeDasharray="3 4" className="draw-delay" />
+      ))}
+
+      {/* Growth curve */}
+      <path d="M80 310 Q130 300 160 280 Q200 250 230 200 Q260 160 290 130 Q310 110 340 85"
+        stroke={lime} strokeWidth="1.8" className="draw-slow" fill="none" strokeLinecap="round" />
+
+      {/* Data points on the curve */}
+      <circle cx="160" cy="280" r="4" fill={lime} className="dot" />
+      <circle cx="230" cy="200" r="4" fill={lime} className="dot-delay" />
+      <circle cx="290" cy="130" r="5" fill={lime} className="dot-delay" />
+      <circle cx="340" cy="85" r="6" fill={lime} className="dot-delay" />
+
+      {/* Iteration markers (version labels) */}
+      <text x="160" y="300" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v1</text>
+      <text x="230" y="220" textAnchor="middle" fill={dimLime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v2</text>
+      <text x="290" y="150" textAnchor="middle" fill={lime} fontSize="9" fontFamily="'IBM Plex Mono', monospace" className="fade-delay">v3</text>
+      <text x="340" y="75" textAnchor="middle" fill={lime} fontSize="10" fontFamily="'IBM Plex Mono', monospace" fontWeight="500" className="fade-delay">v4</text>
+
+      {/* Small upward arrow at the end */}
+      <polyline points="335,80 340,68 345,80" stroke={lime} strokeWidth="0.8" fill="none" className="draw-delay" />
+
+      {/* User count growing (small person icons along bottom) */}
+      <circle cx="130" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+      <circle cx="200" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+      <circle cx="210" cy="355" r="5" stroke={dimLav} strokeWidth="0.5" className="draw-delay" />
+      <circle cx="275" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+      <circle cx="285" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+      <circle cx="295" cy="355" r="5" stroke={lav} strokeWidth="0.5" className="draw-delay" />
+    </AnimatedSVG>
   );
 }
 
@@ -272,26 +349,21 @@ function ProcessPanel({ step, index }) {
           {step.desc}
         </motion.p>
       </div>
-      <motion.div
-        className="process-panel__pictogram"
-        animate={visible ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.9 }}
-        transition={{ duration: 1, delay: 0.1, ease }}
-      >
-        <Pictogram />
-      </motion.div>
+      <div className="process-panel__pictogram">
+        <Pictogram visible={visible} />
+      </div>
     </div>
   );
 }
-
-/* ─── COMBINED SECTION ─── */
 
 export default function HowIWorkSection() {
   const introRef = useRef(null);
   const introVisible = useScrollVisible(introRef, 0.3);
 
   return (
-    <div className="process-section">
-      {/* Section intro */}
+    <div className="process-section" style={{ background: '#00330f' }}>
+      <Starfield count={25} />
+
       <div ref={introRef} className="process-intro">
         <motion.h2
           className="process-intro__heading"
@@ -302,7 +374,6 @@ export default function HowIWorkSection() {
         </motion.h2>
       </div>
 
-      {/* Full-viewport panels */}
       {steps.map((step, i) => (
         <ProcessPanel key={i} step={step} index={i} />
       ))}
