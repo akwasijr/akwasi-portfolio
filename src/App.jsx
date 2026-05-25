@@ -35,7 +35,7 @@ const pageComponents = {
 
 const pageTitles = {
   'about': 'About',
-  'how-i-work': 'How I Work',
+  'how-i-work': 'Process',
   'selected-work': 'Selected Work',
   'contact': 'Contact',
 };

@@ -16,7 +16,7 @@ const items = [
   },
   {
     id: 'how-i-work',
-    title: 'How I Work', label: 'Craft + Process + Tools',
+    title: 'Process', label: 'Craft + Process + Tools',
     detail: 'AI experience design, copilot interfaces, and the process from problem to prototype.',
   },
   {
