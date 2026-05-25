@@ -414,7 +414,7 @@ export default function HeroSection() {
       <motion.div
         className="section-inner"
         style={{
-          display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center',
+          display: 'flex', flexDirection: 'column', alignItems: 'flex-start', textAlign: 'left',
           opacity: contentOpacity,
           scale: contentScale,
         }}

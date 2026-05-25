@@ -175,9 +175,10 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .hero-name {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   z-index: 5;
   margin-bottom: 24px;
+  width: 100%;
 }
 
 .hero-name__first,
@@ -197,7 +198,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 
 .hero-mega {
-  font-size: clamp(24px, 5vw, 48px);
+  font-size: clamp(28px, 6vw, 56px);
   font-weight: 500;
   line-height: 1.1;
   letter-spacing: -0.02em;
