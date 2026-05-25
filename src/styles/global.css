@@ -190,7 +190,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
   letter-spacing: -0.04em;
   color: #c6ef4d;
   text-transform: uppercase;
-  font-family: var(--font-sans, 'DM Sans', sans-serif);
+  font-family: 'Syne', var(--font-sans, 'DM Sans', sans-serif);
 }
 
 .hero-name__last {
