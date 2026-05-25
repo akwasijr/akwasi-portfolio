@@ -40,33 +40,33 @@ function useOverlayScroll() {
 const steps = [
   {
     icon: '/assets/icons/01.svg',
-    title: 'Understand\nthe Problem',
-    desc: 'Business goals, user needs, technical landscape. Define the challenge and align on success.',
+    title: 'Discover',
+    desc: 'Listen before designing. Stakeholder interviews, user research, landscape analysis. Understand the people, the friction, and the real problem beneath the brief.',
   },
   {
     icon: '/assets/icons/02.svg',
-    title: 'Story\nand Vision',
-    desc: 'Craft a narrative that connects goals to capabilities, a shared vision for every stakeholder.',
+    title: 'Define',
+    desc: 'Frame the challenge clearly. Align on what success looks like, who it serves, and what constraints matter. AI makes things faster — definition makes sure we\'re building the right thing.',
   },
   {
     icon: '/assets/icons/03.svg',
-    title: 'Solution\nEnvisioning',
-    desc: 'Workshops, user journeys, and design thinking to map where AI meets real human needs.',
+    title: 'Envision',
+    desc: 'Workshops, journey maps, and design thinking. Map where intelligence meets real human needs. Use delegation ladders and trust models to shape how people and AI work together.',
   },
   {
     icon: '/assets/icons/04.svg',
-    title: 'Rapid\nPrototyping',
-    desc: 'Functional prototypes in days not months. Real code, real interactions, validated fast.',
+    title: 'Prototype\n& Test',
+    desc: 'Tangible concepts people can react to — not decks, not wireframes in isolation. Test with real users early. In a world where AI can generate anything, knowing what to keep matters most.',
   },
   {
     icon: '/assets/icons/05.svg',
-    title: 'Design\nSystem',
-    desc: 'Scalable component libraries. Consistency, accessibility, and brand alignment from the start.',
+    title: 'Refine',
+    desc: 'Iterate on what the testing reveals. Sweat the details that build trust — micro-interactions, error states, moments of delight. Good AI design is invisible until it isn\'t.',
   },
   {
     icon: '/assets/icons/06.svg',
-    title: 'Ship\nand Iterate',
-    desc: 'Production-grade code. Design intent survives to production and scales with the team.',
+    title: 'Evolve',
+    desc: 'Design doesn\'t end at handoff. Measure, learn, adapt. The best experiences are living systems that grow with their users, not static deliverables that gather dust.',
   },
 ];
 
@@ -257,10 +257,10 @@ export default function HowIWorkSection() {
           animate={introVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, ease }}
         >
-          How I work
+          Process
         </motion.p>
         <h2 className="pj-intro__heading">
-          {['From problem', 'to working', 'product'].map((line, i) => (
+          {['Design that', 'starts with', 'people'].map((line, i) => (
             <span key={i} style={{ overflow: 'hidden', display: 'block' }}>
               <motion.span
                 style={{ display: 'block' }}
@@ -287,7 +287,7 @@ export default function HowIWorkSection() {
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.7, ease }}
         >
-          I design AI experiences: copilot interfaces, agent workflows, intelligent dashboards, and build them in production-grade code. React, TypeScript, Electron, design systems with Fluent UI and Figma. From workshop facilitation and strategy through to shipped product.
+          I design AI experiences for enterprise — copilot interfaces, agent workflows, intelligent dashboards. AI makes it easy to build fast. My job is to make sure we build right. That means discovery before decisions, testing before shipping, and always designing for the person on the other side of the screen.
         </motion.p>
       </section>
 
