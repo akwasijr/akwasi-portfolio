@@ -373,7 +373,8 @@ export default function HeroSection() {
     // Wait for splash to fully unmount before starting dissolve
     setTimeout(() => {
       setShowCheckered(true);
-      setTimeout(() => setReveal(true), 200);
+      // Delay reveal until checkered dissolve is nearly done (~1200ms into 1500ms animation)
+      setTimeout(() => setReveal(true), 1200);
     }, 400);
   }, []);
 
