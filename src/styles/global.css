@@ -172,6 +172,30 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
    ══════════════════════════════════════ */
 .hero-logo { width: 160px; margin-bottom: 48px; }
 
+.hero-name {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
+  margin-bottom: 24px;
+}
+
+.hero-name__first,
+.hero-name__last {
+  display: block;
+  font-size: clamp(48px, 12vw, 160px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: #c6ef4d;
+  text-transform: uppercase;
+  font-family: var(--font-sans, 'DM Sans', sans-serif);
+}
+
+.hero-name__last {
+  color: #a5a5f6;
+}
+
 .hero-mega {
   font-size: clamp(56px, 13vw, 180px);
   font-weight: 900;

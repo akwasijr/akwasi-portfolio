@@ -401,19 +401,17 @@ export default function HeroSection() {
       <Starfield count={25} />
       <ShootingStars />
 
-      {/* Name — top right */}
-      <motion.span
-        initial={{ opacity: 0 }}
-        animate={reveal ? { opacity: 0.8 } : { opacity: 0 }}
-        transition={{ duration: 0.8, delay: 0.3, ease }}
-        style={{
-          position: 'absolute', top: '32px', right: '40px', zIndex: 5,
-          fontFamily: "'IBM Plex Mono', monospace", fontSize: 'clamp(16px, 2vw, 22px)',
-          fontWeight: 600, color: '#c6ef4d', letterSpacing: '0.04em',
-        }}
+      {/* Name — large display above heading */}
+      <motion.div
+        className="hero-name"
+        initial={{ opacity: 0, y: 30 }}
+        animate={reveal ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.9, delay: 0.1, ease }}
+        style={{ opacity: contentOpacity, scale: contentScale }}
       >
-        Akwasi Fosuhene
-      </motion.span>
+        <span className="hero-name__first">Akwasi</span>
+        <span className="hero-name__last">Fosuhene</span>
+      </motion.div>
 
       <AnimatePresence>
         {showSplash && (
