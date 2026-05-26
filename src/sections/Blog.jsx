@@ -1,32 +1,55 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Starfield from '../components/Starfield';
 
 const ease = [0.22, 1, 0.36, 1];
 
 /* ── Article data ── */
 const articles = [
   {
+    id: 'why-this-matters',
+    number: '00',
+    title: 'Why I wrote this',
+    subtitle: 'Design got a new material. We need new rules for it.',
+    date: 'May 2026',
+    readTime: '4 min read',
+    tags: ['Design', 'AI'],
+    lede: 'I have been designing digital products for over a decade. In the last few years, something fundamental shifted. The thing we are designing is no longer just an interface. It is a relationship between a person and a system that acts on their behalf. That changes everything about how I think about my craft.',
+    sections: [
+      {
+        heading: 'A design problem, not a technology problem',
+        body: `There is no shortage of writing about AI. Most of it is about what the technology can do. Very little of it is about what it should do, and even less about how to design the experience around it.\n\nThat gap is what motivated this series. I kept running into the same problems across different projects and different industries. An agent that technically worked but that nobody trusted. A dashboard that showed everything the AI was doing but helped nobody make a decision. An approval flow that felt like bureaucracy instead of collaboration.\n\nThese are not engineering failures. They are design failures. And they happen because we are applying old design patterns to a fundamentally new kind of interaction.`,
+      },
+      {
+        heading: 'The shift from tools to teammates',
+        body: `For most of software history, we designed tools. The user has intent, the tool executes. Click here, get that. The interface is a control panel.\n\nAgents are different. They have their own intent (or at least the appearance of it). They make decisions. They take actions. They come back and tell you what they did. That is not a tool. That is a working relationship.\n\nAnd working relationships require a completely different design vocabulary. Trust. Delegation. Accountability. Repair. These are words from organizational psychology, not interface design. But they are exactly the words we need.\n\nI spent the last year pulling together the patterns and principles that actually work. Not the theoretical frameworks that sound good in a presentation, but the specific design decisions that made real products better for real people.`,
+      },
+      {
+        heading: 'What this series covers',
+        body: `Seven articles, each tackling a different dimension of designing for agents.\n\nI start with three principles that kept showing up across every project I worked on. Then trust, because without it nothing else matters. Then the coordination model I use instead of the overused "human in the loop" framing. Then the core UI patterns for approvals and delegation. Then agentic sludge, which is the dark pattern conversation the industry is not having yet. Then multi-agent systems, because the future is teams of agents, not solo ones. And finally the workshop exercises I use to get organizations aligned before a single pixel is designed.\n\nEvery article is grounded in work I have actually done. No hypothetical scenarios. No "imagine a world where." Just the patterns I have tested, the mistakes I have made, and the things I wish I had known earlier.`,
+      },
+    ],
+  },
+  {
     id: 'core-principles',
     number: '01',
     title: 'Outcomes, Exceptions, Values',
-    subtitle: 'Three principles for agent experience design',
+    subtitle: 'Three rules I keep coming back to when designing for agents',
     date: 'May 2026',
     readTime: '6 min read',
     tags: ['Agent UX', 'Principles'],
-    lede: 'When AI agents act on behalf of people, the design rules change. Three principles govern every interaction: show what was achieved not how, surface only what needs human attention, and let people express preferences in their own words.',
+    lede: 'I spent the better part of last year designing interfaces where AI does the work and humans make the calls. Somewhere in that process, three principles kept showing up. They are not groundbreaking on their own, but every time I ignored one of them, the design fell apart.',
     sections: [
       {
-        heading: 'Outcomes over processes',
-        body: `Show what was achieved, not the steps taken.\n\nInformation hierarchy by priority:\n\n1. Outcome: what was achieved (always visible)\n2. Impact: what this means for the user (always visible)\n3. Decisions remaining: what needs human input (always visible)\n4. Summary of approach: how the agent did it (on demand)\n5. Detailed process log: every step (audit only)\n\nThe anti-pattern is "Agent processed record 4,532 of 12,000. Step 3 of 7: Validating compliance." Better: "Portfolio rebalancing complete. Estimated annual savings: $45K. 3 positions need your review."\n\nProcess details create cognitive overhead. Only show them when trust is forming, outcomes are wrong, or audits are required.`,
+        heading: 'Show results, not steps',
+        body: `Here is something I see constantly in agent interfaces: "Processing record 4,532 of 12,000. Step 3 of 7: Validating compliance." Nobody needs that. Nobody wants that. It is the software equivalent of someone narrating every turn they take while driving you somewhere.\n\nWhat people actually want to know is: did it work, what changed, and do I need to do anything?\n\nSo I started stacking information in priority order. The outcome comes first and it is always visible. The impact comes next because people want to know what it means for them. Then any decisions that still need a human. Everything else, the how-it-was-done summary and the detailed logs, those go behind a click.\n\nCompare "Portfolio rebalancing complete. Estimated annual savings: $45K. 3 positions need your review" to a progress bar with seven steps. The first one lets you get on with your day. The second one makes you watch.`,
       },
       {
-        heading: 'Exceptions over routine',
-        body: `Human attention is the scarcest resource. Only surface what genuinely requires human involvement.\n\nSix exception categories that require human attention:\n\n• Judgment needed: ambiguous data, unclear best path\n• Authority exceeded: action exceeds approved scope\n• Ethical dimension: values and moral considerations at stake\n• Novel situation: unprecedented, never encountered\n• Confidence gap: multiple equally probable outcomes\n• Conflict: competing objectives\n\nHandle the "quiet confidence problem." Silence must feel reassuring:\n\n• Periodic summaries: "47 items processed normally today"\n• Anomaly absence confirmation: "No unusual patterns detected"\n• Performance trends: "Accuracy remains at 99.2%"\n\nThe anti-pattern is "The Everything Dashboard," showing every action. The courage is in what you choose not to show.`,
+        heading: 'Only interrupt when it matters',
+        body: `Human attention is the most expensive resource in any system. Every notification, every alert, every "just letting you know" carries a cost. The question is whether the information is worth that cost.\n\nI keep a short list of the situations where a human genuinely needs to be pulled in: the data is ambiguous and requires judgment. The action exceeds what the agent is allowed to do. There is an ethical dimension. It is a situation nobody has seen before. The agent is not confident. Or two goals are competing with each other.\n\nEverything else? Handle it and tell me later.\n\nThe tricky part is the silence. When an agent is quietly doing its job, people get nervous. "Is it still working? Did it miss something?" So you need those periodic reassurances. "47 items processed normally today." "No unusual patterns detected." It sounds simple but getting that balance right is honestly the hardest design challenge in this space.\n\nI call the anti-pattern "The Everything Dashboard." It shows every action the agent took, which completely defeats the purpose of having an agent in the first place.`,
       },
       {
-        heading: 'Values over settings',
-        body: `Humans express what they care about in natural language, not technical thresholds.\n\nWrong: response_time_sla: 3600\nRight: "Respond to client emails within a business day"\n\nWrong: risk_score_threshold: 0.65\nRight: "Be conservative. When you're unsure, ask me"\n\nThree value layers:\n\n1. Non-negotiable: org-set, cannot be overridden ("Never share customer financial data externally")\n2. Recommended: leadership-set, adjustable with justification\n3. Personal: user-set ("I like concise summaries")\n\nWhen values conflict, surface the tension: "You've prioritized both speed and accuracy. In this situation, those are in tension. What matters more here?"`,
+        heading: 'Let people talk like people',
+        body: `Nobody thinks in thresholds. Nobody wakes up and says "I want my response_time_sla set to 3600." They say "respond to client emails within a business day." That is the same instruction but one of them feels like configuring a router and the other feels like talking to a colleague.\n\nThe design shift is small but it changes everything. Instead of risk_score_threshold: 0.65, you get "be conservative, when you're unsure, ask me." Instead of max_autonomy_level: 3, you get "handle routine tasks but check with me on anything unusual."\n\nI think about values in three layers. Some are non-negotiable, set at the org level, and nobody can override them. Some are recommended by leadership but you can adjust them if you have a reason. And some are personal preferences that just make the experience feel like yours.\n\nThe interesting design moment is when values conflict. "You said you want speed and accuracy. Right now those are pulling in different directions. Which one matters more here?" That is a real conversation, not a settings panel.`,
       },
     ],
   },
@@ -34,27 +57,27 @@ const articles = [
     id: 'trust-building',
     number: '02',
     title: 'The trust journey',
-    subtitle: 'How humans learn to rely on AI agents',
+    subtitle: 'Nobody trusts a new coworker on day one. Same goes for agents.',
     date: 'May 2026',
     readTime: '7 min read',
     tags: ['Trust', 'Agent UX'],
-    lede: 'Trust is not a toggle. It is a journey with four stages, each with different design requirements. The hardest part is not building trust but repairing it when it breaks.',
+    lede: 'Every product manager I have worked with wants to skip to the part where the agent runs everything. But trust does not work that way. You would not hand a new team member the keys to production on their first week. Agents earn trust the same way people do, by showing up and getting things right, repeatedly.',
     sections: [
       {
-        heading: 'Four stages of trust',
-        body: `Supervised, Guided, Collaborative, Trusted.\n\nSupervised: agent asks permission before acting. Every decision presented with full reasoning. Highest overhead.\n\nGuided: routine decisions handled independently. Major decisions still need approval. Agent building credibility.\n\nCollaborative: established working rhythm. Agent knows when to act and when to ask. Human focuses on exceptions.\n\nTrusted: agent operates independently. Human receives outcome summaries only. Intervention by exception.\n\nTransitions must be gradual (smooth expansion, not sudden switches), evidence-based (triggered by track record, not time elapsed), reversible (trust decreases if errors occur), and transparent (humans understand where they are and why).`,
+        heading: 'Four stages, not a switch',
+        body: `I think about trust in four stages and each one has completely different design needs.\n\nIn the Supervised stage, the agent asks before doing anything. Every decision gets shown with full reasoning. It is high overhead and that is the point. This is where the human is learning what this thing can actually do.\n\nIn the Guided stage, the agent starts handling routine stuff on its own. Big decisions still come to you. This is where credibility gets built.\n\nIn the Collaborative stage, you have a working rhythm. The agent knows when to act and when to ask. You are mostly dealing with exceptions. This is where it starts to feel like a real working relationship.\n\nIn the Trusted stage, the agent operates independently. You get summaries. You step in when something goes sideways. This is the goal but you cannot start here.\n\nThe key thing about transitions: they need to be gradual, based on track record not time, and always reversible. If the agent messes up at stage three, it should drop back to stage two for a while. Nobody should have to rebuild from zero.`,
       },
       {
-        heading: 'When trust breaks',
-        body: `Five steps to repair:\n\n1. Immediate transparency: full disclosure of what went wrong\n2. Impact assessment: consequences and remediation\n3. Root cause: one-time error or systemic issue?\n4. Adjustment: changes to prevent recurrence\n5. Autonomy recalibration: temporarily reduced independence\n\nThe trust paradox: more trust equals less oversight equals errors harder to catch. Counter with automated monitoring at all trust levels, periodic audits sampling agent decisions, proactive reporting on edge cases (even successfully handled ones), and external validation via cross-checking systems.`,
+        heading: 'What happens when it breaks',
+        body: `Trust breaks. It just does. The question is what happens next.\n\nI have seen teams try to hide errors or minimize them. That is the worst thing you can do. When something goes wrong, you need immediate transparency about what happened. Then an honest assessment of the impact. Then whether this was a one-off or a pattern. Then what you are changing to prevent it. And then, critically, the agent needs to step back and operate with less independence for a while.\n\nHere is the uncomfortable truth about trust: the more of it you have, the less you are watching, which means errors are harder to catch. I call this the trust paradox. The counter is to keep automated monitoring running at every trust level, sample decisions periodically even when things are going well, and have the agent proactively flag edge cases it handled successfully. "I encountered something unusual but resolved it. Here is what I did." That builds more trust than silence ever will.`,
       },
       {
-        heading: 'Measuring trust',
-        body: `Six metrics that matter:\n\n• Acceptance ratio: plans accepted without edit / total shown. Below 70% signals agent misalignment.\n• Override frequency: "handle it myself" clicks / total shown. Above 15% signals trust breakdown.\n• Setting churn: autonomy setting changes per active user per month. High churn signals trust volatility.\n• Trust density: percentage breakdown of users per autonomy level. Clustering at lowest signals adoption failure.\n• Recovery speed: time from trust-break to pre-event autonomy level. Never recovering signals permanent damage.\n• "Why?" tickets: support tickets about unclear agent behavior per 1K users. Rising trend signals explainability gap.\n\nIf override frequency exceeds 10%, audit the agent's decision model, not the user.`,
+        heading: 'Measuring what you cannot see',
+        body: `Trust is a feeling but you can measure the behaviors around it.\n\nAcceptance ratio: how often do people approve the agent's plans without editing them? If that drops below 70%, the agent is not aligned with what people actually want.\n\nOverride frequency: how often do people click "I'll handle this myself"? Above 15% and you have a trust problem.\n\nSetting churn: how often do people change the agent's autonomy settings? If they keep toggling things, they have not found a comfortable level yet.\n\nRecovery speed: after a mistake, how long until the user returns to their previous comfort level? If they never do, that is permanent damage.\n\nThe one I find most telling is what I call "why?" tickets. Support tickets where people are confused about what the agent did or why. If that number is rising, your explainability is failing.\n\nOne rule I keep coming back to: if override frequency exceeds 10%, audit the agent's decision model. Not the user. The user is telling you something.`,
       },
       {
-        heading: 'Responsive salience',
-        body: `Instead of manual trust settings, the system auto-adjusts visibility based on signals:\n\n• Task complexity and risk: higher means more visible\n• User expertise and comfort: higher means less visible\n• Historical trust signals: stronger track record means less friction\n• User state (focus mode, meeting, etc.): busy means fewer interruptions\n\nWhen trust is low or risk is high: richer explanations, more approval gates, step-by-step visibility. When trust is high and risk is low: work quietly, report results, batch updates.\n\nPreferences diverge between individuals. Some want detail, some want silence. Make this easy to express and adjust.`,
+        heading: 'Make the system adapt, not the person',
+        body: `Instead of making people manually configure how much they trust the agent, the system should adjust visibility based on what is actually happening.\n\nHigher risk task? Show more. The user is experienced and comfortable? Show less. Strong track record? Less friction. User is in focus mode or in a meeting? Fewer interruptions.\n\nWhen trust is low or the stakes are high, give richer explanations and more approval gates. When trust is high and the risk is low, work quietly and batch the updates.\n\nThe important thing to remember is that people are different. Some want every detail. Some want silence unless something is on fire. The best systems make it easy to express that preference naturally, not through a settings page with 40 toggles.`,
       },
     ],
   },
@@ -62,23 +85,23 @@ const articles = [
     id: 'coordination-zones',
     number: '03',
     title: 'Beyond "in the loop"',
-    subtitle: 'Three coordination zones that replace binary thinking',
+    subtitle: 'The human-in-the-loop framing is too simple. Here is what I use instead.',
     date: 'May 2026',
     readTime: '5 min read',
     tags: ['Coordination', 'Framework'],
-    lede: 'The binary of "human in the loop" versus "fully autonomous" is a false choice. Three coordination zones, shifting dynamically through a workflow, better describe how humans and agents actually collaborate.',
+    lede: 'Every conversation about AI agents eventually hits the same question: "But is there a human in the loop?" It is a yes-or-no question for a problem that is not yes-or-no. I have been using a different framing that maps much closer to how people and agents actually work together.',
     sections: [
       {
-        heading: 'Done with me, done for me, done under me',
-        body: `Three zones replace the binary:\n\nDone with me: high AI salience, high human involvement. Mutual collaboration, frequent back-and-forth. Use for complex decisions, creative work, high stakes, early trust-building.\n\nDone for me: high AI salience, low human involvement. Agent handles it, user initiates and reviews. Use for well-defined tasks, research and synthesis, repetitive workflows.\n\nDone under me: low AI salience, low human involvement. Background assistance, user may not notice AI. Use for low-risk/high-frequency tasks, personalization, mature trusted systems.`,
+        heading: 'Three zones instead of two',
+        body: `I think about collaboration in three zones.\n\n"Done with me" is real-time collaboration. The agent and the human are both fully engaged, going back and forth. This is where you want to be for complex decisions, creative work, high-stakes situations, or anytime you are still building trust.\n\n"Done for me" is delegation. The agent handles it, the human kicks it off and reviews the result. This works well for well-defined tasks, research, synthesis, anything repetitive.\n\n"Done under me" is background assistance. The agent is working but the user might not even notice. Low-risk, high-frequency stuff. Personalization. Systems that have earned deep trust.\n\nThe mistake most teams make is treating these as permanent labels. "This feature is a done-for-me feature." That is not how work actually flows.`,
       },
       {
-        heading: 'Zones are not fixed',
-        body: `A single workflow moves between zones.\n\nExample:\n1. Done under me: agent monitors data feeds overnight\n2. Done for me: agent compiles initial analysis\n3. Done with me: analyst and agent interpret surprising trend together\n4. Done for me: agent formats final output\n\nThe design challenge is not picking a zone but designing smooth transitions between them.`,
+        heading: 'A single task moves between zones',
+        body: `Here is a real example from a financial analysis workflow I designed.\n\nOvernight, the agent monitors data feeds. That is "done under me." Nobody is watching.\n\nIn the morning, it compiles an initial analysis. "Done for me." The analyst will review it later.\n\nBut the analysis surfaces a surprising trend. Now the analyst and the agent need to interpret it together. "Done with me." Real collaboration.\n\nOnce they agree on the interpretation, the agent formats the final output. Back to "done for me."\n\nOne workflow, four zone transitions. The design challenge is not picking a zone. It is making those transitions feel smooth and natural.`,
       },
       {
-        heading: 'Designing transitions',
-        body: `Transitions between zones are the highest-risk UX moments.\n\nUpward transitions (agent requests human involvement):\n• Provide context before asking for a decision\n• Explain why this moment requires human judgment\n• Make it easy to defer ("not now, remind me in an hour")\n\nDownward transitions (agent resumes independent work):\n• Confirm the handoff ("Got it. I'll proceed with option B and check back when the draft is ready.")\n• Set expectations about what happens next and when\n• Provide easy way to re-engage`,
+        heading: 'The transitions are where things break',
+        body: `Zone transitions are the highest-risk moments in any agent experience. This is where context gets lost, where people feel confused, where the agent does something unexpected.\n\nWhen the agent needs to pull a human in (an upward transition), it needs to provide context before asking for a decision. Why does this moment need human judgment? And it needs to make it easy to say "not now, remind me in an hour." People are busy.\n\nWhen the agent takes back control (a downward transition), it needs to confirm the handoff. "Got it. I'll proceed with option B and check back when the draft is ready." Set expectations about what happens next and when. And always give the person an easy way to jump back in if they change their mind.\n\nI have found that most "the agent did something weird" complaints trace back to a poorly designed transition, not a bad agent decision.`,
       },
     ],
   },
@@ -86,23 +109,23 @@ const articles = [
     id: 'approval-flows',
     number: '04',
     title: 'The proposal card',
-    subtitle: 'Designing agent approval flows',
+    subtitle: 'A small UI pattern that carries a lot of weight',
     date: 'May 2026',
     readTime: '6 min read',
     tags: ['Patterns', 'Approval'],
-    lede: 'The core UX primitive for agent experiences: agent proposes, human reviews, human approves or adjusts or rejects, agent learns. The proposal card is where this happens.',
+    lede: 'Agent proposes, human reviews, human decides, agent learns. That loop is the foundation of every agent experience I have designed. And the proposal card is where it all comes together in the interface.',
     sections: [
       {
-        heading: 'Anatomy of a proposal card',
-        body: `A self-contained summary with enough context to decide:\n\n• What: proposed action in plain language\n• Why: agent's reasoning\n• Risk: what could go wrong\n• Alternatives: other options considered\n• Urgency: time-sensitivity\n• Actions: Approve / Adjust / Reject / Defer / Delegate\n\nGraduated detail levels:\n• Quick approvals: low-risk, streamlined card\n• Standard approvals: full proposal card\n• Deep reviews: full analysis with data and implications`,
+        heading: 'Everything you need to decide, nothing you do not',
+        body: `A proposal card needs to be self-contained. The person looking at it should have enough context to make a decision without going anywhere else.\n\nThat means: what the agent wants to do, in plain language. Why it thinks this is the right call. What could go wrong. What other options it considered. How urgent it is. And then the actions: approve, adjust, reject, defer, or delegate to someone else.\n\nBut here is the thing. Not every decision deserves the same amount of ceremony. Low-risk routine stuff gets a streamlined card. Standard decisions get the full layout. And for big decisions with real consequences, you pull in the full analysis with data and implications.\n\nGetting this graduation right is important. If you give every decision the same weight, people stop paying attention. If you underplay a big decision, people lose trust.`,
       },
       {
-        heading: 'The delegation ladder',
-        body: `Based on Parasuraman, Sheridan and Wickens' Levels of Automation model (2000).\n\n• Watch Me: agent observes the human working. Human is performer.\n• Help Me: agent assists when asked. Human is director.\n• Advise Me: agent proactively suggests. Human is decision-maker.\n• Do It, I'll Check: agent acts, human reviews before final. Human is reviewer.\n• Do It, Tell Me: agent acts and reports after. Human is monitor.\n• Do It: agent handles end to end. Human is escalation point.\n\nCalibrate per task type, not globally. Schedule meetings might be "act with confirmation." Sending emails might be "plan and propose." Budget reallocation might be "observe and suggest."`,
+        heading: 'Not all tasks deserve the same leash',
+        body: `There is a model from Parasuraman, Sheridan and Wickens that maps levels of automation. I have adapted it into something I use in workshops all the time.\n\nAt one end: "Watch Me." The agent just observes. At the other: "Do It." The agent handles everything end to end. In between you have "Help Me" where it assists when asked, "Advise Me" where it proactively suggests, "Do It I'll Check" where it acts but you review before it is final, and "Do It Tell Me" where it acts and reports after.\n\nThe key insight is that you calibrate this per task type, not globally. Schedule a meeting? Act with confirmation. Send an email on my behalf? Let me review the draft first. File an expense under $50? Just do it and tell me. Reallocate the budget? I want to see your analysis first.\n\nWhen I run these exercises with stakeholders, the disagreements about where to place each task are the most valuable output. Those disagreements reveal risk tolerance, political dynamics, and the places where the organization is not aligned.`,
       },
       {
-        heading: 'Learning from approvals',
-        body: `The learning loop: approvals reinforce approach. Rejections with explanation adjust behavior. Adjustments show agent how to improve. Over time, fewer decisions need human review.\n\nBatch processing patterns:\n• Batch approval: "These 15 items match past approvals: approve all?"\n• Category rules: "For items like this, proceed without asking"\n• Smart grouping: similar decisions clustered for efficient review`,
+        heading: 'The agent gets smarter over time',
+        body: `Every approval is a signal. When you approve something, the agent learns "more of this." When you reject something and explain why, the agent adjusts. When you modify a proposal, the agent sees exactly how to improve.\n\nOver time, fewer decisions need human review. That is the whole point.\n\nBatch processing makes this practical at scale. "These 15 items match past approvals. Approve all?" Or even better: "For items like this, proceed without asking." The agent creates categories from your behavior and you confirm the rules.\n\nThe result is a system that starts cautious and gradually earns its way to independence. Not because someone flipped a switch, but because it demonstrated that it understands what you want.`,
       },
     ],
   },
@@ -110,23 +133,23 @@ const articles = [
     id: 'agentic-sludge',
     number: '05',
     title: 'Agentic sludge',
-    subtitle: 'Dark patterns in autonomous systems',
+    subtitle: 'The dark patterns nobody is talking about yet',
     date: 'May 2026',
     readTime: '7 min read',
     tags: ['Ethics', 'Dark Patterns'],
-    lede: 'Agentic sludge is friction, ambiguity, or manipulation by autonomous agents that makes it harder for users to understand, influence, or override automated decisions. Traditional dark patterns manipulate interfaces. Agentic sludge manipulates outcomes.',
+    lede: 'We spent years identifying dark patterns in interfaces. Trick buttons, hidden fees, confusing opt-outs. Now agents are making decisions on behalf of users and a whole new category of manipulation is emerging. I am calling it agentic sludge.',
     sections: [
       {
-        heading: 'The six forms',
-        body: `1. Opaque Autonomy: agent acts without clear explanation of what or why.\n\n2. Consent Erosion: agent gradually expands scope without re-confirming boundaries.\n\n3. Recovery Friction: making it hard to undo, reverse, or escalate agent actions.\n\n4. Attention Manipulation: over-notifying on low stakes, under-reporting high stakes.\n\n5. Autonomy Creep: system silently increases agent independence without opt-in.\n\n6. Opaque Optimization: agent optimizes for platform goals, not user goals.`,
+        heading: 'Six ways agents manipulate without you noticing',
+        body: `Traditional dark patterns manipulate what you see. Agentic sludge manipulates what happens.\n\nOpaque Autonomy: the agent does things without explaining what or why. You find out after the fact, or you don't find out at all.\n\nConsent Erosion: the agent gradually expands what it does without re-confirming that you are OK with it. You approved email sorting. Now it is drafting replies. When did you agree to that?\n\nRecovery Friction: it is hard to undo what the agent did. The undo button is buried, or it does not exist, or "undo" only partially reverses the action.\n\nAttention Manipulation: the agent floods you with low-stakes notifications so you stop reading them, then buries the high-stakes alert in the noise.\n\nAutonomy Creep: the system quietly increases the agent's independence without asking. What started as "suggest and wait" becomes "act and inform" with no opt-in.\n\nOpaque Optimization: the agent says it is working for you but it is actually optimizing for the platform's goals. More engagement, more upsells, more data collection.`,
       },
       {
-        heading: 'The sludge audit',
-        body: `Six tests to run against every feature with autonomous agent behavior:\n\n• Transparency: Can the user see what happened, why, and what data was used? All three available within one interaction step.\n• Consent: Did the user explicitly authorize this scope of action? Every autonomous action traces to explicit approval.\n• Recovery: Can the user reverse this within a reasonable time? Undo available, discoverable, functional.\n• Attention: Are notifications proportional to stakes? Highest-stakes items get most prominent treatment.\n• Drift: Has autonomy changed since setup? Was the user informed? Every scope change logged and presented for approval.\n• Alignment: Is the agent optimizing for user goals or platform goals? Objective function documented, auditable, user-aligned.`,
+        heading: 'Six tests to run on every agent feature',
+        body: `I built a sludge audit. Six questions you run against any feature where an agent acts autonomously.\n\nTransparency: can the user see what happened, why, and what data was used? All three need to be available within one interaction step.\n\nConsent: did the user explicitly authorize this scope of action? Not "they agreed to the terms of service." Explicit, specific authorization.\n\nRecovery: can the user reverse this within a reasonable time? Undo needs to be available, discoverable, and actually functional.\n\nAttention: are notifications proportional to the stakes? The highest-stakes items should get the most prominent treatment.\n\nDrift: has the agent's autonomy changed since setup? Was the user informed? Every scope change should be logged and presented for approval.\n\nAlignment: is the agent optimizing for user goals or platform goals? The objective function should be documented and auditable.\n\nI have yet to run this audit on a product without finding at least two failures.`,
       },
       {
-        heading: 'Counter-patterns',
-        body: `For every form of sludge, a counter-pattern:\n\n• Opaque Autonomy → Intent Preview (show plan before acting)\n• Consent Erosion → Autonomy Dial with explicit re-auth\n• Recovery Friction → Action Audit + Undo within 2 clicks\n• Attention Manipulation → Notification filtering ranked by stakes\n• Autonomy Creep → Autonomy change notifications\n• Opaque Optimization → Goal alignment transparency\n\nEvery autonomous action must answer: What action was taken? Why? What data was used? What alternatives were considered? Can this be undone, and how?\n\nIf the system cannot generate this explanation, the action should not be autonomous.`,
+        heading: 'For every problem, a counter',
+        body: `Each form of sludge has a design counter-pattern.\n\nFor opaque autonomy: the Intent Preview. Before acting, the agent shows its plan. "Here is what I am about to do. Proceed?"\n\nFor consent erosion: the Autonomy Dial with explicit re-authorization. The scope never expands silently.\n\nFor recovery friction: Action Audit with undo within two clicks. Every action logged, every action reversible.\n\nFor attention manipulation: notification filtering ranked by stakes. Critical things look critical. Routine things batch quietly.\n\nFor autonomy creep: autonomy change notifications. "I've been handling these on my own for two weeks. Want to make that permanent?"\n\nFor opaque optimization: goal alignment transparency. Show users what the agent is optimizing for and let them change it.\n\nHere is my rule: every autonomous action must be able to answer five questions. What was done? Why? What data was used? What alternatives were considered? Can it be undone?\n\nIf the system cannot generate those answers, the action should not be autonomous.`,
       },
     ],
   },
@@ -134,27 +157,27 @@ const articles = [
     id: 'multi-agent',
     number: '06',
     title: 'Orchestrating agent teams',
-    subtitle: 'Multi-agent choreography and the command center',
+    subtitle: 'When one agent is not enough and you need to design for many',
     date: 'May 2026',
     readTime: '6 min read',
     tags: ['Multi-Agent', 'Architecture'],
-    lede: 'When multiple specialized agents collaborate, the human needs to see the choreography: handoffs, bottlenecks, conflicts. Think orchestra conductor, not micromanager.',
+    lede: 'Single-agent experiences are hard enough. But the real world is heading toward teams of specialized agents working together. A research agent hands off to an analysis agent which hands off to a reporting agent. And somewhere in that chain, a human needs to understand what is going on.',
     sections: [
       {
-        heading: 'The choreography view',
-        body: `Show: which agent handles the current phase, where the last handoff happened, what information was passed, where work is stuck.\n\nThink orchestra conductor's score: the whole composition, not individual parts.\n\nHandoffs are the most critical moments: where information is lost, approaches conflict, delays accumulate. Make them reviewable, auditable, adjustable.\n\nWhen agents have competing priorities, surface what each agent optimizes for, where objectives conflict, and the trade-offs and resolution options.`,
+        heading: 'Think conductor, not micromanager',
+        body: `When multiple agents are collaborating, the human needs to see the big picture. Which agent is handling the current phase? Where did the last handoff happen? What information was passed along? And most importantly, where is work stuck?\n\nI think about it like an orchestra conductor's score. You are looking at the whole composition, not following individual instruments. You step in when something is off, not when everything is working.\n\nThe critical moments are the handoffs. That is where information gets lost, where approaches conflict, where delays pile up. In every multi-agent system I have designed, the handoffs got more design attention than the individual agent interfaces. Making handoffs visible, reviewable, and adjustable turned out to be the single most impactful design decision.`,
       },
       {
-        heading: 'Agent team composition',
-        body: `Four layers:\n\n• Front-line agents: direct execution\n• Supervisory agents: coordinating front-line work\n• Strategic agents: analysis and planning\n• Humans: direction-setting and judgment\n\nProtocol layer:\n• MCP (Model Context Protocol): standardizes how agents access tools and data\n• A2A (Agent-to-Agent Protocol): standardizes how agents discover and communicate with each other\n• Agent Cards describe capabilities; other agents can discover, negotiate, and delegate`,
+        heading: 'How agent teams are structured',
+        body: `I have been working with a four-layer model.\n\nFront-line agents do the actual work. They execute tasks, process data, generate outputs.\n\nSupervisory agents coordinate the front-line. They manage handoffs, resolve conflicts between agents, and escalate when needed.\n\nStrategic agents sit above that. They do analysis, planning, and pattern recognition across the whole system.\n\nAnd then humans. Direction-setting and judgment. The things that require context, values, and accountability.\n\nOn the protocol side, MCP (Model Context Protocol) standardizes how agents access tools and data. A2A (Agent-to-Agent Protocol) standardizes how agents discover each other and communicate. Agent Cards describe what each agent can do so others can find it, negotiate with it, and delegate to it.\n\nThis is still early. The protocols are evolving fast. But the design patterns for how humans interact with agent teams are more stable than you might think.`,
       },
       {
-        heading: 'The command center',
-        body: `The daily starting point. A single surface showing the state of your agent team.\n\nStructure:\n• Completed work (outcomes, not processes)\n• Pending decisions (items needing judgment)\n• Blocked items (where agents are stuck)\n• Performance signals (trends and metrics)\n• Exception queue (the most critical element)\n\nDesign for the morning briefing model: the first 10 minutes of the workday. Progressive disclosure: summary first, details on demand. Every item has a clear next action. Comparative context: "this is unusual" vs "this is expected."`,
+        heading: 'The morning briefing',
+        body: `Every agent team needs a command center. A single surface that shows the state of everything.\n\nI design these around the "morning briefing" model. Imagine the first 10 minutes of your workday. What do you need to know?\n\nCompleted work, described as outcomes not processes. Pending decisions that need your judgment. Blocked items where agents are stuck and cannot proceed. Performance signals showing trends. And the exception queue, which is honestly the most important element.\n\nThe design principles: summary first, details on demand. Every item has a clear next action, not just information. And comparative context: "this is unusual" versus "this is expected." That comparison is what turns raw data into something actionable.`,
       },
       {
-        heading: 'Ambient awareness',
-        body: `Maintain peripheral awareness of agent activity, like a manager with an open office door.\n\nIntelligent interruption matrix:\n• High urgency + low confidence: interrupt immediately\n• High urgency + high confidence: brief notification\n• Low urgency + low confidence: queue for review\n• Low urgency + high confidence: handle silently\n\nUse continuous signals instead of binary notifications. Subtle visual indicators for ongoing status. Natural summaries at meaningful intervals. Too many interruptions and users ignore everything. Too few and users lose trust.`,
+        heading: 'Staying aware without being overwhelmed',
+        body: `The goal is peripheral awareness. Like a manager with an open office door. You are not watching every conversation but you notice when something sounds wrong.\n\nI use a simple matrix for interruptions. High urgency and low confidence? Interrupt immediately. High urgency and high confidence? Brief notification. Low urgency and low confidence? Queue it for later. Low urgency and high confidence? Handle it silently.\n\nThe shift from binary notifications to continuous signals is important. Instead of "alert" or "no alert," you have subtle visual indicators for ongoing status. A gentle "busy" or "idle" or "waiting for input." Natural summaries at meaningful intervals instead of real-time feeds.\n\nThere is a real tension here. Too many interruptions and people ignore everything, including the important stuff. Too few and people lose trust because they cannot see what is happening. Getting that balance right is an ongoing calibration, not a one-time decision.`,
       },
     ],
   },
@@ -162,27 +185,27 @@ const articles = [
     id: 'workshop-toolkit',
     number: '07',
     title: 'The workshop toolkit',
-    subtitle: 'Facilitating agent design decisions with stakeholders',
+    subtitle: 'Four exercises I run to get stakeholders aligned on agent design',
     date: 'May 2026',
     readTime: '5 min read',
     tags: ['Workshop', 'Facilitation'],
-    lede: 'Four workshop frameworks for surfacing design requirements for agent experiences. The disagreements between stakeholders are the design input.',
+    lede: 'The hardest part of designing agent experiences is not the design. It is getting the organization aligned on what the agent should and should not do. I developed four workshop exercises for this. The disagreements they surface are the most valuable output.',
     sections: [
       {
         heading: 'The delegation ladder',
-        body: `Place every task on a spectrum from "Watch Me" to "Do It." The disagreements between stakeholders are the design input.\n\nSix levels: Watch Me (agent observes), Help Me (agent assists when asked), Advise Me (agent proactively suggests), Do It I'll Check (agent acts, human reviews), Do It Tell Me (agent acts and reports), Do It (agent handles end to end).\n\nIn-person: sort task cards onto ladder. Where people disagree reveals risk tolerance differences and political dynamics.`,
+        body: `Take a stack of cards, each one describing a task the agent could handle. Place each card on a ladder from "Watch Me" (agent just observes) to "Do It" (agent handles everything).\n\nThe magic is not in the final placement. It is in the arguments. When a product manager puts "send customer emails" at "Do It" and the legal team puts it at "Watch Me," that disagreement is the design requirement. It tells you where the organization's risk tolerance fractures, where the political dynamics live, and where you need the most nuanced controls.\n\nI have run this exercise dozens of times. It consistently surfaces things that months of meetings and documents never would.`,
       },
       {
         heading: 'The trust battery',
-        body: `Every agent starts at about 50%. Successful interactions charge it. Mistakes drain it.\n\nThree questions to ask:\n• What charges it fast? (Transparency? Speed? Accuracy?)\n• What drains it immediately?\n• At what level would you let the agent act without checking?\n\nDot voting works well for remote teams. In-person, use physical "battery" visualizations.`,
+        body: `Every agent starts at about 50% charge. Successful interactions charge the battery. Mistakes drain it.\n\nThe exercise is built around three questions: What charges it fast? Is it transparency, speed, or accuracy? What drains it immediately? And at what battery level would you let the agent act without checking?\n\nThe answers vary wildly between roles. Engineers tend to trust quickly if the accuracy is high. Legal teams drain the battery on any edge case. Executives care about speed. Product teams care about user feedback.\n\nThose differences are not problems. They are design inputs. They tell you which signals to surface for which audience. Remote teams can do this with dot voting. In person, I use physical battery visualizations that people can walk up to and adjust.`,
       },
       {
         heading: 'The blast radius map',
-        body: `For every agent action: "If the agent gets this wrong, what's the worst that happens?"\n\n• Inner ring (low impact, reversible): autonomous\n• Middle ring (costly but reversible): confirmation required\n• Outer ring (irreversible/high impact): human approval mandatory\n\nThis exercise often reveals that stakeholders dramatically disagree about what's "low impact." Those disagreements are the most valuable design input.`,
+        body: `For every agent action, ask one question: "If the agent gets this wrong, what is the worst that happens?"\n\nDraw three rings. Inner ring: low impact, reversible. The agent can do this on its own. Middle ring: costly but reversible. The agent needs confirmation. Outer ring: irreversible or high impact. Human approval mandatory.\n\nThis exercise consistently reveals something interesting. Stakeholders dramatically disagree about what counts as "low impact." The finance team thinks a $500 error is nothing. The customer success team thinks it is a relationship-ending event. Those disagreements are the most valuable design input you will get.\n\nThe blast radius map gives you a principled framework for deciding where to put approval gates. Not based on gut feel or the loudest person in the room, but on actual risk assessment.`,
       },
       {
         heading: 'The information asymmetry grid',
-        body: `A 2x2 grid: what the agent knows vs. what the user knows.\n\n• Agent knows, user knows: shared ground. Agent acts confidently.\n• Agent knows, user doesn't: agent must explain. Design for proactive disclosure.\n• Agent doesn't know, user knows: user must inform agent. Design for easy input.\n• Neither knows: danger zone. Design for caution and escalation.\n\nThis grid surfaces the real communication design challenges. Most teams only think about the "shared ground" quadrant.`,
+        body: `A simple 2x2: what the agent knows versus what the user knows.\n\nWhen both know the same thing, you are on solid ground. The agent acts confidently because they are aligned.\n\nWhen the agent knows something the user does not, the agent needs to explain proactively. Design for disclosure.\n\nWhen the user knows something the agent does not, you need to design for easy input. How does the user share context naturally?\n\nAnd when neither knows? That is the danger zone. Design for caution and escalation.\n\nMost teams only think about the first quadrant. But the most interesting design challenges live in the other three, especially the one where nobody knows what is going on. That is where you need the most careful guardrails and the clearest escalation paths.`,
       },
     ],
   },
@@ -196,43 +219,37 @@ function BlogCard({ article, index, onClick }) {
   return (
     <motion.article
       className="blog-card"
-      initial={{ opacity: 0, y: 40 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6, delay: 0.15 + index * 0.08, ease }}
+      transition={{ duration: 0.5, delay: 0.1 + index * 0.06, ease }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onClick={onClick}
       style={{ cursor: 'pointer' }}
     >
-      <div className="blog-card__number">{article.number}</div>
-      <div className="blog-card__content">
-        <div className="blog-card__meta">
-          <span>{article.date}</span>
-          <span className="blog-card__dot">·</span>
-          <span>{article.readTime}</span>
+      <div className="blog-card__inner">
+        <div className="blog-card__top">
+          <span className="blog-card__number">{article.number}</span>
+          <span className="blog-card__meta">{article.date} · {article.readTime}</span>
         </div>
         <h3 className="blog-card__title">
           <motion.span
-            animate={{ x: hovered ? 8 : 0 }}
-            transition={{ duration: 0.3, ease }}
+            style={{ display: 'inline-block' }}
+            animate={{ x: hovered ? 4 : 0 }}
+            transition={{ duration: 0.25, ease }}
           >
             {article.title}
           </motion.span>
         </h3>
         <p className="blog-card__subtitle">{article.subtitle}</p>
-        <div className="blog-card__tags">
-          {article.tags.map((tag) => (
-            <span key={tag} className="blog-card__tag">{tag}</span>
-          ))}
-        </div>
       </div>
-      <motion.div
+      <motion.span
         className="blog-card__arrow"
-        animate={{ x: hovered ? 6 : 0, opacity: hovered ? 1 : 0.3 }}
-        transition={{ duration: 0.3, ease }}
+        animate={{ x: hovered ? 4 : 0, opacity: hovered ? 0.8 : 0.2 }}
+        transition={{ duration: 0.25, ease }}
       >
         →
-      </motion.div>
+      </motion.span>
     </motion.article>
   );
 }
@@ -256,59 +273,61 @@ function ArticleView({ article, onBack }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.4, ease }}
+      transition={{ duration: 0.35, ease }}
     >
-      <div className="blog-article__header">
+      <nav className="blog-article__nav">
         <button className="blog-article__back" onClick={onBack}>
-          ← Back to articles
+          ← All articles
         </button>
+      </nav>
+
+      <header className="blog-article__header">
         <div className="blog-article__meta">
-          <span>{article.date}</span>
-          <span className="blog-card__dot">·</span>
-          <span>{article.readTime}</span>
+          {article.date} · {article.readTime}
         </div>
         <motion.h1
           className="blog-article__title"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.1, ease }}
+          transition={{ duration: 0.5, delay: 0.08, ease }}
         >
           {article.title}
         </motion.h1>
         <motion.p
           className="blog-article__subtitle"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2, ease }}
+          transition={{ duration: 0.5, delay: 0.16, ease }}
         >
           {article.subtitle}
         </motion.p>
-        <div className="blog-article__tags">
-          {article.tags.map((tag) => (
-            <span key={tag} className="blog-card__tag">{tag}</span>
-          ))}
-        </div>
-      </div>
+      </header>
 
       <motion.div
         className="blog-article__lede"
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3, ease }}
+        transition={{ duration: 0.5, delay: 0.24, ease }}
       >
         <p>{article.lede}</p>
       </motion.div>
 
       <div className="blog-article__body">
         {article.sections.map((section, i) => (
-          <ArticleSection key={i} section={section} index={i} />
+          <ArticleSection key={i} section={section} />
         ))}
       </div>
+
+      <footer className="blog-article__footer">
+        <button className="blog-article__back" onClick={onBack}>
+          ← All articles
+        </button>
+      </footer>
     </motion.div>
   );
 }
 
-function ArticleSection({ section, index }) {
+function ArticleSection({ section }) {
   const ref = useRef(null);
   const [visible, setVisible] = useState(false);
 
@@ -318,7 +337,7 @@ function ArticleSection({ section, index }) {
     const root = el.closest('.overlay') || null;
     const obs = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { root, threshold: 0.1, rootMargin: '0px 0px -5% 0px' }
+      { root, threshold: 0.08, rootMargin: '0px 0px -5% 0px' }
     );
     obs.observe(el);
     return () => obs.disconnect();
@@ -328,15 +347,13 @@ function ArticleSection({ section, index }) {
     <motion.section
       ref={ref}
       className="blog-article__section"
-      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay: 0.1, ease }}
+      animate={visible ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 }}
+      transition={{ duration: 0.5, ease }}
     >
-      <h2 className="blog-article__section-heading">{section.heading}</h2>
-      <div className="blog-article__section-body">
-        {section.body.split('\n\n').map((para, j) => (
-          <p key={j}>{para}</p>
-        ))}
-      </div>
+      <h2>{section.heading}</h2>
+      {section.body.split('\n\n').map((para, j) => (
+        <p key={j}>{para}</p>
+      ))}
     </motion.section>
   );
 }
@@ -346,7 +363,6 @@ function ArticleSection({ section, index }) {
 export default function BlogSection() {
   const [activeArticle, setActiveArticle] = useState(null);
 
-  // Intercept the overlay-back event to go from article → list
   useEffect(() => {
     if (!activeArticle) return;
     const handler = (e) => {
@@ -358,9 +374,7 @@ export default function BlogSection() {
   }, [activeArticle]);
 
   return (
-    <div className="blog-section" style={{ background: '#00330f' }}>
-      <Starfield count={20} />
-
+    <div className="blog-section">
       <AnimatePresence mode="wait">
         {activeArticle ? (
           <ArticleView
@@ -377,33 +391,33 @@ export default function BlogSection() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <div className="blog-list__header">
+            <header className="blog-list__header">
               <motion.p
                 className="blog-list__label"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease }}
+                transition={{ duration: 0.5, ease }}
               >
                 Writing
               </motion.p>
               <motion.h2
                 className="blog-list__title"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.1, ease }}
+                transition={{ duration: 0.5, delay: 0.08, ease }}
               >
                 From UX to AX
               </motion.h2>
               <motion.p
                 className="blog-list__desc"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.2, ease }}
+                transition={{ duration: 0.5, delay: 0.16, ease }}
               >
-                A design framework for agent-managed experiences.
-                How to design systems where AI acts on behalf of people.
+                A framework for designing agent experiences.<br />
+                Eight articles on what changes when AI acts on behalf of people.
               </motion.p>
-            </div>
+            </header>
 
             <div className="blog-list__grid">
               {articles.map((article, i) => (
