@@ -3,7 +3,7 @@ import Starfield from '../components/Starfield';
 
 export default function CTASection() {
   return (
-    <section className="section section--dark" data-section="7">
+    <section className="section section--cta" data-section="7">
       <Starfield count={20} />
 
       <div className="section-inner" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -13,8 +13,7 @@ export default function CTASection() {
 
         <ScrollReveal delay={0.15}>
           <p className="cta-body">
-            From AI strategy to working product. Available for<br />
-            enterprise engagements and collaborations.
+            From AI strategy to working product.
           </p>
         </ScrollReveal>
 
@@ -22,6 +21,14 @@ export default function CTASection() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
             <span style={{ fontSize: '15px', color: 'rgba(255,255,255,0.5)' }}>akwasi@outlook.com</span>
             <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.35)' }}>+1 470 244 9539 · +31 6 340 15 149</span>
+            <a
+              href="https://www.linkedin.com/in/akwasi-fosuhene-0021a823/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)', marginTop: '4px', borderBottom: '1px solid rgba(255,255,255,0.2)', paddingBottom: '2px', transition: 'color 0.2s' }}
+            >
+              LinkedIn
+            </a>
           </div>
         </ScrollReveal>
 

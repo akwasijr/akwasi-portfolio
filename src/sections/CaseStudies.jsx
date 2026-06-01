@@ -166,31 +166,32 @@ const projects = [
     ],
   },
   {
-    id: 'starkit',
-    client: 'Experiment',
-    title: 'Starkit',
-    color: '#1e293b',
-    image: '/assets/projects/starkit-dashboard.png',
-    tags: ['Design Systems', 'Rapid Prototyping'],
+    id: 'industry-dashboards',
+    client: 'Industry Concepts',
+    title: 'Other Projects',
+    color: '#141e30',
+    image: '/case-studies/industry-banking/industry-banking.png',
+    tags: ['Dashboard Design', 'AI Integration'],
     sections: [
       {
-        heading: 'Problem',
-        body: 'Pre-sales engagements needed working prototypes in days, not weeks. Designers rebuilt the same dashboard patterns (KPI cards, charts, data tables) from scratch every time. AI could generate code fast, but without structured briefs the output was inconsistent.',
+        heading: 'Context',
+        body: 'A collection of industry-specific dashboard concepts, each designed around the operational realities of a different sector. Banking, energy, manufacturing, logistics, and telecom - five verticals, five different user contexts, one shared design challenge: making dense, real-time data immediately actionable without overwhelming the operator.',
       },
       {
-        heading: 'Solution',
-        body: 'Two rebrandable Next.js starters: an admin dashboard with KPI cards, analytics charts, user management, and settings; and a consumer app with wallet, transactions, onboarding, and authentication flows. Includes a structured project brief template that feeds directly into AI-assisted code generation.',
+        heading: 'Design approach',
+        body: 'Each dashboard starts from the domain. A wealth management interface uses a Sankey-style flow to show how money moves across asset classes. An energy grid dashboard uses heatmaps so shift operators can spot production anomalies at a glance. A cargo distribution panel mirrors the physical planning workflow - select a flight, see the aircraft hold, assign containers, confirm costs. The telecom NOC uses a bubble chart sized by frequency and colour-coded by severity so operators read the shape of a problem before reading any numbers. Every layout choice maps to how people in that industry actually think and work.',
       },
       {
-        heading: 'AI impact',
-        body: 'The project brief format is designed as direct AI input: personas, features, and acceptance criteria feed into code generation prompts. Structured templates mean AI produces consistent output with clear guardrails. Teams go from client brief to deployed prototype in under a week.',
+        heading: 'AI patterns',
+        body: 'Each concept integrates AI differently based on the task. The banking dashboard surfaces a portfolio rebalance recommendation inline with a single-click action. The energy grid shows predictive insights with confidence scores so operators know when to trust versus investigate. The smart factory includes a persistent conversational assistant for natural-language queries against production data. The common thread: AI appears where it reduces a multi-step workflow to one decision point, never as a standalone feature.',
       },
     ],
     images: [
-      { src: '/assets/projects/starkit-01-dashboard.png', caption: 'KPI dashboard with revenue charts and activity feed' },
-      { src: '/assets/projects/starkit-02-analytics.png', caption: 'Analytics: traffic trends, top pages, device breakdown' },
-      { src: '/assets/projects/starkit-03-users.png', caption: 'User management with roles, status, and search' },
-      { src: '/assets/projects/starkit-04-settings.png', caption: 'Rebrandable settings: logo, colors, company info' },
+      { src: '/case-studies/industry-banking/industry-banking.png', caption: 'Banking: portfolio management with AI rebalance recommendations' },
+      { src: '/case-studies/industry-energy/industry-energy.png', caption: 'Energy: grid monitoring with heatmaps and predictive insights' },
+      { src: '/case-studies/industry-smart-factory/industry-smart-factory.png', caption: 'Manufacturing: factory operations with conversational AI assistant' },
+      { src: '/case-studies/industry-supply-chain/industry-supply-chain.png', caption: 'Logistics: cargo distribution with aircraft hold visualisation' },
+      { src: '/case-studies/industry-telco/industry-telco.png', caption: 'Telecom: network health with severity bubble chart' },
     ],
   },
 ];
@@ -229,7 +230,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
         y: startY,
         scaleX: startScaleX,
         scaleY: startScaleY,
-        borderRadius: '20px',
+        borderRadius: '0px',
       }}
       animate={{
         x: 0,
@@ -243,7 +244,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
         y: startY,
         scaleX: startScaleX,
         scaleY: startScaleY,
-        borderRadius: '20px',
+        borderRadius: '0px',
       }}
       transition={{ duration: 0.55, ease }}
       onClick={onClose}
@@ -255,7 +256,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.4, delay: 0.25, ease }}
         onClick={(e) => e.stopPropagation()}
-        style={hasImages ? { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px', maxWidth: '1200px', alignItems: 'start' } : { maxWidth: '720px' }}
+        style={hasImages ? { maxWidth: '1200px' } : { maxWidth: '720px' }}
       >
         <div>
           <div className="case-expanded__tags">
@@ -277,9 +278,9 @@ function ExpandedCard({ project, cardRect, onClose }) {
           )}
         </div>
         {hasImages && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', position: 'sticky', top: '48px' }}>
+          <div className="case-expanded__gallery">
             <div style={{
-              borderRadius: '12px',
+              borderRadius: '0',
               overflow: 'hidden',
               background: 'rgba(0,0,0,0.3)',
               aspectRatio: '16/10',
@@ -309,7 +310,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
                     key={i}
                     onClick={() => setActiveImg(i)}
                     style={{
-                      flex: '0 0 64px', height: '40px', borderRadius: '6px',
+                      flex: '0 0 80px', height: '52px', borderRadius: '0',
                       overflow: 'hidden', border: i === activeImg ? '2px solid #fff' : '2px solid transparent',
                       opacity: i === activeImg ? 1 : 0.5,
                       cursor: 'pointer', padding: 0, background: 'rgba(0,0,0,0.3)',
@@ -332,10 +333,17 @@ export default function CaseStudiesSection() {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(null);
   const [cardRect, setCardRect] = useState(null);
+  const [entered, setEntered] = useState(false);
   const frontCardRef = useRef(null);
   const timerRef = useRef(null);
   const expandedRef = useRef(expanded);
   expandedRef.current = expanded;
+
+  // Stagger cards fanning out on mount
+  useEffect(() => {
+    const t = setTimeout(() => setEntered(true), 400);
+    return () => clearTimeout(t);
+  }, []);
 
   // Intercept overlay back/close — close expanded card first
   useEffect(() => {
@@ -380,6 +388,21 @@ export default function CaseStudiesSection() {
     }
   };
 
+  // Touch swipe handling
+  const touchRef = useRef({ startX: 0, startY: 0 });
+  const handleTouchStart = (e) => {
+    touchRef.current.startX = e.touches[0].clientX;
+    touchRef.current.startY = e.touches[0].clientY;
+  };
+  const handleTouchEnd = (e) => {
+    const dx = e.changedTouches[0].clientX - touchRef.current.startX;
+    const dy = e.changedTouches[0].clientY - touchRef.current.startY;
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      if (dx < 0) { go(1); resetTimer(); }
+      else { go(-1); resetTimer(); }
+    }
+  };
+
   return (
     <section className="section section--dark" data-section="5">
       <Starfield count={22} />
@@ -389,7 +412,11 @@ export default function CaseStudiesSection() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.15}>
-          <div className="fan-carousel">
+          <div
+            className="fan-carousel"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             {projects.map((p, i) => {
               let offset = i - active;
               if (offset > 4) offset -= projects.length;
@@ -405,9 +432,13 @@ export default function CaseStudiesSection() {
                   key={p.id}
                   className={'fan-card' + (isFront ? ' fan-card--front' : '')}
                   onClick={(e) => handleCardClick(i, e)}
-                  animate={{ x: t.x, rotate: t.rotate, scale: t.scale, opacity: t.opacity }}
+                  initial={{ x: 0, rotate: 0, scale: 0.85, opacity: 0, y: 60 }}
+                  animate={entered
+                    ? { x: t.x, rotate: t.rotate, scale: t.scale, opacity: t.opacity, y: 0 }
+                    : { x: 0, rotate: 0, scale: 0.85, opacity: 0, y: 60 }
+                  }
                   whileHover={isFront ? { scale: 1.04, y: -8 } : {}}
-                  transition={{ duration: 0.5, ease: [0.4, 0, 0.2, 1] }}
+                  transition={{ duration: 0.7, delay: entered ? i * 0.06 : 0, ease: [0.22, 1, 0.36, 1] }}
                   style={{ zIndex: t.zIndex, background: p.color, transformOrigin: 'bottom center', overflow: 'hidden' }}
                 >
                   {p.image && (
@@ -434,7 +465,7 @@ export default function CaseStudiesSection() {
                       marginTop: '4px', color: textColor,
                     }}>{p.title}</h3>
                   </div>
-                  {isFront && <span className="fan-card__hint" style={{ color: textColor }}>Click to expand</span>}
+                  {isFront && <span className="fan-card__hint" style={{ color: textColor }}>Tap to expand</span>}
                 </motion.div>
               );
             })}

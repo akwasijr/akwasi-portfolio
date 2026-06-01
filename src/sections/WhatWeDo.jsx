@@ -199,7 +199,7 @@ export default function WhatWeDoSection() {
           role="presentation"
           className="wwd-badge"
           style={{
-            width: '100%', height: '100%', borderRadius: '50%',
+            width: '100%', height: '100%', borderRadius: '0',
             background: '#00330f', border: '2px solid rgba(198,239,77,0.3)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700,

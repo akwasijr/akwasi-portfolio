@@ -12,6 +12,9 @@ import HowIWorkSection from './sections/HowIWork';
 import CaseStudiesSection from './sections/CaseStudies';
 import CTASection from './sections/CTA';
 import BlogSection from './sections/Blog';
+import PixelRipple from './components/PixelRipple';
+import CookieConsent from './components/CookieConsent';
+import { trackPage } from './lib/analytics';
 
 const pageComponents = {
   'about': () => <AboutSection />,
@@ -47,6 +50,17 @@ export default function App() {
   const containerRef = useRef(null);
   const [activePage, setActivePage] = useState(null);
   const [originY, setOriginY] = useState(50);
+  const [isBlogRoute, setIsBlogRoute] = useState(false);
+
+  // Handle #/blog hash route for standalone blog tab
+  useEffect(() => {
+    const checkHash = () => {
+      setIsBlogRoute(window.location.hash === '#/blog');
+    };
+    checkHash();
+    window.addEventListener('hashchange', checkHash);
+    return () => window.removeEventListener('hashchange', checkHash);
+  }, []);
 
   const handleOpenPage = useCallback((pageId, clickY) => {
     const pct = clickY ? (clickY / window.innerHeight) * 100 : 50;
@@ -76,9 +90,27 @@ export default function App() {
 
   const PageContent = activePage ? pageComponents[activePage] : null;
 
+  const currentPath = isBlogRoute ? '/blog' : activePage ? `/${activePage}` : '/';
+
+  // Track virtual page views + dwell (no-op until analytics consent is granted)
+  useEffect(() => {
+    trackPage(currentPath);
+  }, [currentPath]);
+
+  // Standalone blog tab
+  if (isBlogRoute) {
+    return (
+      <div className="blog-standalone">
+        <BlogSection />
+        <CookieConsent currentPath={currentPath} />
+      </div>
+    );
+  }
+
   return (
     <>
       <CustomCursor />
+      <PixelRipple />
       <div ref={containerRef} className="scroll-container">
         <HeroSection />
         <TableOfContentsSection onOpenPage={handleOpenPage} pageOpen={!!activePage} />
@@ -98,6 +130,8 @@ export default function App() {
           </FullPageOverlay>
         )}
       </AnimatePresence>
+
+      <CookieConsent currentPath={currentPath} />
     </>
   );
 }

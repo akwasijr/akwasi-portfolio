@@ -53,7 +53,7 @@ function Satellite({ data }) {
           whiteSpace: 'nowrap',
         }}>
           <div style={{
-            width: '64px', height: '64px', borderRadius: '50%',
+            width: '64px', height: '64px', borderRadius: '0',
             border: '2.5px solid ' + data.color,
             background: 'rgba(255,255,255,0.92)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -77,7 +77,7 @@ function CenterBadge() {
   return (
     <Html center style={{ pointerEvents: 'none' }}>
       <div style={{
-        width: '80px', height: '80px', borderRadius: '50%',
+        width: '80px', height: '80px', borderRadius: '0',
         background: '#00330f', border: '2px solid #c6ef4d',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: "'IBM Plex Mono', monospace", fontWeight: 700,

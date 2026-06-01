@@ -7,7 +7,7 @@ const items = [
   {
     id: 'about',
     title: 'About', label: 'Who I am',
-    detail: 'At Microsoft. 11+ years in product design, the last 4 focused on AI experiences.',
+    detail: 'Product designer specialising in AI experiences, copilot interfaces, and agent-driven workflows.',
   },
   {
     id: 'selected-work',
@@ -16,7 +16,7 @@ const items = [
   },
   {
     id: 'how-i-work',
-    title: 'Process', label: 'Craft + Process + Tools',
+    title: 'Process', label: 'AI, Design and Product Strategy',
     detail: 'AI experience design, copilot interfaces, and the process from problem to prototype.',
   },
   {
@@ -27,7 +27,7 @@ const items = [
   {
     id: 'contact',
     title: 'Contact', label: 'Get in touch',
-    detail: 'Available for consulting and collaboration.',
+    detail: 'Let\'s build something together.',
   },
 ];
 
@@ -111,6 +111,10 @@ export default function TableOfContentsSection({ onOpenPage, pageOpen }) {
                 onMouseEnter={() => setHoveredIdx(i)}
                 onMouseLeave={() => setHoveredIdx(null)}
                 onClick={(e) => {
+                  if (item.id === 'writing') {
+                    window.open('/#/blog', '_blank');
+                    return;
+                  }
                   const rect = e.currentTarget.getBoundingClientRect();
                   const y = rect.top + rect.height / 2;
                   onOpenPage && onOpenPage(item.id, y);

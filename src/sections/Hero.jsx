@@ -398,6 +398,218 @@ function CheckeredReveal({ onComplete }) {
   );
 }
 
+/* ── Tiny Tetris — small animated game in bottom-left corner ── */
+const TSHAPES = [
+  [[1,1,1,1]],           // I
+  [[1,1],[1,1]],         // O
+  [[0,1,0],[1,1,1]],     // T
+  [[0,1,1],[1,1,0]],     // S
+  [[1,1,0],[0,1,1]],     // Z
+  [[1,0],[1,0],[1,1]],   // L
+  [[0,1],[0,1],[1,1]],   // J
+];
+const TCOLS = ['#c6ef4d','#a5a5f6','#7779f0','#c6ef4d','#a5a5f6','#7779f0','#c6ef4d'];
+
+function TinyTetris() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const cell = 10;
+    const cols = 10;
+    const rows = 20;
+    const w = cols * cell;
+    const h = rows * cell;
+    canvas.width = w * dpr;
+    canvas.height = h * dpr;
+    canvas.style.width = `${w}px`;
+    canvas.style.height = `${h}px`;
+    ctx.scale(dpr, dpr);
+
+    const grid = Array.from({ length: rows }, () => new Array(cols).fill(0));
+    let piece, pColor, px, py, timer;
+    let flashRows = [];    // rows currently flashing before clear
+    let flashTicks = 0;    // countdown for flash effect
+    let sparkles = [];     // little particles after line clear
+
+    function spawn() {
+      const idx = Math.floor(Math.random() * TSHAPES.length);
+      piece = TSHAPES[idx];
+      pColor = TCOLS[idx];
+      px = Math.floor(Math.random() * (cols - piece[0].length + 1));
+      py = 0;
+    }
+
+    function fits(shape, ox, oy) {
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[0].length; c++) {
+          if (!shape[r][c]) continue;
+          const nr = oy + r, nc = ox + c;
+          if (nc < 0 || nc >= cols || nr >= rows) return false;
+          if (nr >= 0 && grid[nr][nc]) return false;
+        }
+      }
+      return true;
+    }
+
+    function lock() {
+      for (let r = 0; r < piece.length; r++) {
+        for (let c = 0; c < piece[0].length; c++) {
+          if (!piece[r][c]) continue;
+          const nr = py + r;
+          if (nr >= 0 && nr < rows) grid[nr][px + c] = pColor;
+        }
+      }
+      // Find full rows — don't clear yet, flash them first
+      const full = [];
+      for (let r = rows - 1; r >= 0; r--) {
+        if (grid[r].every(c => c)) full.push(r);
+      }
+      if (full.length > 0) {
+        flashRows = full;
+        flashTicks = 4; // flash for 4 ticks before clearing
+        // Add sparkle particles along cleared rows
+        full.forEach(r => {
+          for (let i = 0; i < 6; i++) {
+            sparkles.push({
+              x: Math.random() * w,
+              y: r * cell + cell / 2,
+              vx: (Math.random() - 0.5) * 3,
+              vy: (Math.random() - 0.5) * 2.5,
+              life: 8 + Math.floor(Math.random() * 6),
+              color: grid[r][Math.floor(Math.random() * cols)] || '#fff',
+            });
+          }
+        });
+      }
+      // If pile gets too high, dissolve row by row from top
+      const topRow = grid.findIndex(row => row.some(c => c));
+      if (topRow >= 0 && topRow < 3) {
+        for (let r = 0; r < rows; r++) grid[r].fill(0);
+        flashRows = [];
+        flashTicks = 0;
+      }
+    }
+
+    function clearFlashedRows() {
+      flashRows.sort((a, b) => b - a);
+      flashRows.forEach(r => {
+        grid.splice(r, 1);
+        grid.unshift(new Array(cols).fill(0));
+      });
+      flashRows = [];
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, w, h);
+      // Faint grid lines
+      ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+      ctx.lineWidth = 0.5;
+      for (let r = 0; r <= rows; r++) {
+        ctx.beginPath(); ctx.moveTo(0, r * cell); ctx.lineTo(w, r * cell); ctx.stroke();
+      }
+      for (let c = 0; c <= cols; c++) {
+        ctx.beginPath(); ctx.moveTo(c * cell, 0); ctx.lineTo(c * cell, h); ctx.stroke();
+      }
+      // Draw locked pieces
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (grid[r][c]) {
+            const isFlashing = flashRows.includes(r);
+            if (isFlashing) {
+              // Blink white on flash ticks
+              ctx.fillStyle = flashTicks % 2 === 0 ? '#fff' : grid[r][c];
+              ctx.globalAlpha = flashTicks % 2 === 0 ? 0.8 : 0.5;
+            } else {
+              ctx.fillStyle = grid[r][c];
+              ctx.globalAlpha = 0.4;
+            }
+            ctx.fillRect(c * cell + 1, r * cell + 1, cell - 2, cell - 2);
+            ctx.globalAlpha = 1;
+          }
+        }
+      }
+      // Draw sparkles
+      sparkles.forEach(s => {
+        ctx.fillStyle = s.color;
+        ctx.globalAlpha = Math.min(0.9, s.life / 6);
+        const sz = s.life > 4 ? 3 : 2;
+        ctx.fillRect(s.x - sz / 2, s.y - sz / 2, sz, sz);
+        ctx.globalAlpha = 1;
+      });
+      // Draw falling piece (brighter)
+      if (piece && flashTicks === 0) {
+        for (let r = 0; r < piece.length; r++) {
+          for (let c = 0; c < piece[0].length; c++) {
+            if (!piece[r][c]) continue;
+            const dr = py + r, dc = px + c;
+            if (dr >= 0) {
+              ctx.fillStyle = pColor;
+              ctx.globalAlpha = 0.7;
+              ctx.fillRect(dc * cell + 1, dr * cell + 1, cell - 2, cell - 2);
+              ctx.globalAlpha = 1;
+            }
+          }
+        }
+      }
+    }
+
+    function tick() {
+      // Update sparkles
+      sparkles = sparkles.filter(s => {
+        s.x += s.vx;
+        s.y += s.vy;
+        s.vy += 0.15; // gravity
+        s.life--;
+        return s.life > 0;
+      });
+
+      // If flashing, count down then clear
+      if (flashTicks > 0) {
+        flashTicks--;
+        if (flashTicks === 0) clearFlashedRows();
+        draw();
+        return;
+      }
+
+      if (!piece) { spawn(); draw(); return; }
+      if (fits(piece, px, py + 1)) {
+        py++;
+      } else {
+        lock();
+        spawn();
+        if (!fits(piece, px, py)) {
+          for (let r = 0; r < rows; r++) grid[r].fill(0);
+        }
+      }
+      draw();
+    }
+
+    spawn();
+    draw();
+    timer = setInterval(tick, 180);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'absolute',
+        bottom: '80px',
+        left: '5%',
+        opacity: 0.6,
+        pointerEvents: 'none',
+        zIndex: 1,
+        imageRendering: 'pixelated',
+      }}
+    />
+  );
+}
+
 export default function HeroSection() {
   const sectionRef = useRef(null);
   const [showSplash, setShowSplash] = useState(true);
@@ -540,6 +752,7 @@ export default function HeroSection() {
         </motion.div>
       </motion.div>
 
+      <TinyTetris />
       <ScrollHint reveal={reveal} />
     </section>
   );
