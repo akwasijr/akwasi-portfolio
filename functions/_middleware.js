@@ -464,12 +464,9 @@ async function handleStats(kv) {
   // Inverted keys → list returns newest first, so the capped sample is recent.
   const eventList = await kv.list({ prefix: 'event:', limit: 1000 });
   const eventValues = await Promise.all(eventList.keys.slice(0, 200).map(k => kv.get(k.name)));
-  const pageDwell = {};        // path → { totalMs, views }
-  const sessionDwell = {};     // session → total visible ms
   const sessionBatches = {};   // session → [{ time, events, country, region }]
   const regionTotals = {};     // "Region, CC" → count
   const consentCounts = { accept: 0, decline: 0 };
-  let trackedPageviews = 0;
   for (const val of eventValues) {
     if (!val) continue;
     let ev; try { ev = JSON.parse(val); } catch { continue; }
@@ -486,24 +483,8 @@ async function handleStats(kv) {
         if (!sessionBatches[ev.session]) sessionBatches[ev.session] = [];
         sessionBatches[ev.session].push({ time: ev.time || '', events: ev.events, country: ev.country, region: ev.region });
       }
-      for (const e of ev.events) {
-        if (!e || !e.path) continue;
-        trackedPageviews++;
-        const d = pageDwell[e.path] || { totalMs: 0, views: 0 };
-        d.totalMs += e.dwellMs || 0;
-        d.views++;
-        pageDwell[e.path] = d;
-        if (ev.session) sessionDwell[ev.session] = (sessionDwell[ev.session] || 0) + (e.dwellMs || 0);
-      }
     }
   }
-  const sessionDurations = Object.values(sessionDwell);
-  const avgSessionMs = sessionDurations.length
-    ? sessionDurations.reduce((a, b) => a + b, 0) / sessionDurations.length : 0;
-  const allDwellMs = Object.values(pageDwell).reduce((a, d) => a + d.totalMs, 0);
-  const avgPageMs = trackedPageviews ? allDwellMs / trackedPageviews : 0;
-  const topDwellPages = Object.entries(pageDwell)
-    .sort((a, b) => (b[1].totalMs / b[1].views) - (a[1].totalMs / a[1].views));
   const sortedRegions = Object.entries(regionTotals).sort((a, b) => b[1] - a[1]);
   const totalConsent = consentCounts.accept + consentCounts.decline;
 
@@ -870,37 +851,46 @@ async function handleStats(kv) {
       color: rgba(255,255,255,0.25); font-size: 13px;
     }
 
-    /* ── Visitor journeys ── */
-    .journeys { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-    .journey {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 8px;
-      padding: 14px 16px;
+    /* ── Expandable visitor row (Recent activity) ── */
+    .visit { font-size: 13px; }
+    .visit__summary {
+      display: grid;
+      grid-template-columns: 22px 80px 1fr auto;
+      gap: 16px; align-items: center;
+      padding: 12px 0; cursor: pointer; list-style: none;
     }
-    .journey__head {
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+    .visit__summary::-webkit-details-marker { display: none; }
+    .visit__toggle {
+      width: 22px; height: 22px; border-radius: 6px;
+      display: inline-flex; align-items: center; justify-content: center;
+      background: rgba(198,239,77,0.1); color: #c6ef4d;
+      font-size: 15px; font-weight: 600; line-height: 1;
+      transition: background 0.2s ease;
     }
-    .journey__who { font-size: 12px; color: rgba(255,255,255,0.45); }
-    .journey__who strong { color: rgba(255,255,255,0.8); font-weight: 500; }
-    .journey__total {
+    .visit__toggle::before { content: '+'; }
+    .visit[open] .visit__toggle::before { content: '\\2212'; }
+    .visit[open] .visit__toggle,
+    .visit__summary:hover .visit__toggle { background: rgba(198,239,77,0.2); }
+    .visit__total {
       font-size: 12px; font-weight: 600; color: #c6ef4d;
       background: rgba(198,239,77,0.08); padding: 3px 10px; border-radius: 999px;
+      white-space: nowrap;
     }
-    .journey__path {
-      display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
-      font-size: 12px;
+    .visit__steps {
+      list-style: none; margin: 2px 0 14px 38px; padding-left: 14px;
+      display: flex; flex-direction: column; gap: 2px;
+      border-left: 2px solid rgba(255,255,255,0.06);
     }
-    .journey__step {
-      display: inline-flex; align-items: baseline; gap: 6px;
-      background: rgba(255,255,255,0.05); border-radius: 6px;
-      padding: 4px 9px;
+    .visit__step {
+      display: flex; align-items: baseline; justify-content: space-between;
+      gap: 12px; font-size: 12px; padding: 4px 0;
     }
-    .journey__step-path { color: rgba(255,255,255,0.85); }
-    .journey__step-dwell { color: rgba(255,255,255,0.35); font-size: 11px; }
-    .journey__arrow { color: rgba(255,255,255,0.25); font-size: 13px; }
-    .journey__more { color: rgba(255,255,255,0.35); font-size: 11px; align-self: center; }
+    .visit__step-path { color: rgba(255,255,255,0.8); }
+    .visit__step-order {
+      color: rgba(255,255,255,0.3); margin-right: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .visit__step-dwell { color: rgba(255,255,255,0.4); font-size: 11px; white-space: nowrap; }
 
     /* ── Live dot pulse ── */
     .live-dot {
@@ -1058,60 +1048,6 @@ async function handleStats(kv) {
       </div>
     </div>
 
-    <!-- Engagement (client-side dwell tracking, consent-based) -->
-    <div class="panel">
-      <div class="section-head"><span class="section-head__dot"></span>Engagement &middot; how long people stay</div>
-      ${trackedPageviews > 0 ? `
-      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px">
-        <div class="kpi kpi--accent">
-          <div class="kpi__value">${fmtDur(avgSessionMs)}</div>
-          <div class="kpi__label">Avg time on site</div>
-          <div class="kpi__sub">${sessionDurations.length} session${sessionDurations.length !== 1 ? 's' : ''}</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__value">${fmtDur(avgPageMs)}</div>
-          <div class="kpi__label">Avg time / page</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi__value">${trackedPageviews}</div>
-          <div class="kpi__label">Tracked page views</div>
-        </div>
-      </div>
-      <div style="font-family:'Space Grotesk',sans-serif;font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:10px">Time on page — which pages hold attention</div>
-      <ul class="path-list">
-        ${topDwellPages.slice(0, 10).map(([path, d]) => `
-        <li>
-          <span class="path-list__path">${path}</span>
-          <span class="path-list__count">${fmtDur(d.totalMs / d.views)}<span style="color:rgba(255,255,255,0.3);font-weight:400;margin-left:8px">${d.views} view${d.views !== 1 ? 's' : ''}</span></span>
-        </li>`).join('')}
-      </ul>` : '<div class="empty-state">No engagement data yet — visitors who accept analytics will appear here.</div>'}
-    </div>
-
-    <!-- Visitor journeys: each person's page-by-page path + time -->
-    <div class="panel">
-      <div class="section-head"><span class="section-head__dot"></span>Visitor journeys &middot; who went where, and for how long</div>
-      ${journeys.length > 0 ? `
-      <ul class="journeys">
-        ${journeys.slice(0, 25).map(j => {
-          const loc = [j.region, countryNames[j.country] || j.country].filter(Boolean).join(', ') || 'Unknown location';
-          const shownSteps = j.steps.slice(0, 12);
-          const extra = j.steps.length - shownSteps.length;
-          const pathHtml = shownSteps.map(s => {
-            const label = s.path === '/' ? 'home' : s.path;
-            return `<span class="journey__step"><span class="journey__step-path">${label}</span><span class="journey__step-dwell">${fmtDur(s.dwellMs)}</span></span>`;
-          }).join('<span class="journey__arrow">&rsaquo;</span>');
-          return `
-          <li class="journey">
-            <div class="journey__head">
-              <span class="journey__who"><strong>${loc}</strong> &middot; ${j.steps.length} page${j.steps.length !== 1 ? 's' : ''} &middot; ${j.lastTime ? relTime(j.lastTime) : ''}</span>
-              <span class="journey__total">${fmtDur(j.totalMs)} on site</span>
-            </div>
-            <div class="journey__path">${pathHtml}${extra > 0 ? `<span class="journey__more">+${extra} more</span>` : ''}</div>
-          </li>`;
-        }).join('')}
-      </ul>` : '<div class="empty-state">No visitor journeys yet — they appear once visitors who accepted analytics browse multiple pages.</div>'}
-    </div>
-
     <!-- Approximate location + Consent -->
     <div class="grid-2">
       <div class="panel">
@@ -1144,23 +1080,31 @@ async function handleStats(kv) {
       </div>
     </div>
 
-    <!-- Live visit feed -->
+    <!-- Recent activity: per-visitor, expand (+) for time on site + sub-pages -->
     <div class="panel">
       <div class="section-head"><span class="section-head__dot"></span>Recent activity</div>
-      ${recentVisits.length > 0 ? `
+      ${journeys.length > 0 ? `
       <ul class="feed">
-        ${recentVisits.slice(0, 25).map(v => {
-          const device = v.ua.includes('Tablet') || v.ua.includes('iPad') ? 'tablet' :
-                         v.ua.includes('Mobile') || v.ua.includes('Android') ? 'mobile' : 'desktop';
-          const country = countryNames[v.country] || v.country;
+        ${journeys.slice(0, 30).map(j => {
+          const loc = [j.region, countryNames[j.country] || j.country].filter(Boolean).join(', ') || 'Unknown location';
+          const stepsHtml = j.steps.map((s, i) => {
+            const label = s.path === '/' ? 'home' : s.path;
+            return `<li class="visit__step"><span class="visit__step-path"><span class="visit__step-order">${i + 1}</span>${label}</span><span class="visit__step-dwell">${fmtDur(s.dwellMs)}</span></li>`;
+          }).join('');
           return `
           <li class="feed__item">
-            <span class="feed__time">${relTime(v.time)}</span>
-            <span class="feed__detail"><strong>${v.path}</strong> from ${country}</span>
-            <span class="feed__badge feed__badge--${device}">${device}</span>
+            <details class="visit">
+              <summary class="visit__summary">
+                <span class="visit__toggle"></span>
+                <span class="feed__time">${j.lastTime ? relTime(j.lastTime) : ''}</span>
+                <span class="feed__detail"><strong>${loc}</strong> &middot; ${j.steps.length} page${j.steps.length !== 1 ? 's' : ''}</span>
+                <span class="visit__total">${fmtDur(j.totalMs)} on site</span>
+              </summary>
+              <ol class="visit__steps">${stepsHtml}</ol>
+            </details>
           </li>`;
         }).join('')}
-      </ul>` : '<div class="empty-state">No visits recorded yet</div>'}
+      </ul>` : '<div class="empty-state">No visitor activity yet — visitors who accept analytics appear here with the pages they viewed.</div>'}
     </div>
   </div>
 
