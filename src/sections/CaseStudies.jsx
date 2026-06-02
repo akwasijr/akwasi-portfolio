@@ -13,26 +13,69 @@ const projects = [
     color: '#14130e',
     image: '/assets/projects/ey-results.png',
     tags: ['Enterprise AI', 'Audit & Assurance'],
+    lead: 'A financial-statement review that once took auditors several days, rebuilt as a guided AI workflow that runs the full disclosure checklist in minutes - while the auditor still signs off on every call.',
+    meta: {
+      capabilities: ['Product Design', 'AI UX', 'Design System'],
+      role: 'Product Strategy & UX design',
+      timeline: '2025',
+      platform: 'Web application',
+    },
     sections: [
       {
-        heading: 'Problem',
-        body: 'EY teams reviewing client financial statements worked through long compliance checklists by hand - hundreds of items per engagement, spanning everything from simple presentation and formatting checks to complex cross-referencing between the notes, the cash flow statement, and the statement of financial position. A single review could take several days, and the repetitive, manual nature of the work left more room for items to slip through than for reviewers to apply their judgment where it actually mattered.',
+        heading: 'The context',
+        body: 'EY teams reviewing client financial statements worked through long compliance checklists by hand. A single engagement could carry hundreds of items, spanning everything from simple presentation and formatting checks to complex cross-referencing between the notes, the cash flow statement, and the statement of financial position. The work was slow, repetitive, and easy to lose hours in.',
       },
       {
-        heading: 'Definition',
-        body: 'We mapped the tool around how an engagement actually runs: set up the engagement (entity, accounting standard, regulatory framework, year under review), choose which areas to review, point the tool at the source documents, then run the standard FS disclosure checklist against them. The checklist itself is structured and repeatable - basis of preparation, cover page, management responsibility, profit or loss, financial position - which made it a strong fit for AI execution with a human approving every result.',
+        heading: 'Why it mattered',
+        body: 'In assurance, a missed disclosure is not a small thing - it is a quality and reputational risk. Yet the sheer volume of manual checking meant reviewers spent their sharpest attention on mechanical comparison rather than judgment. The goal was never to replace the auditor; it was to give them their time and focus back for the calls that actually need a human.',
       },
       {
-        heading: 'Output',
-        body: 'An AI FS Review tool that executes the full disclosure checklist against uploaded financial statements in minutes instead of days. Reviewers get a results dashboard summarising items reviewed, validations passed and failed, and items still to confirm, with a clear breakdown of what was executed, skipped, or errored and why. Every checklist item shows an AI-generated finding with a citation back to the source, a cross-referencing status that flags issues like unlinked notes ("Note 15 and 23 are not linked"), and Approve / Not Applicable controls plus thumbs feedback - keeping the reviewer in control of each judgment while the AI handles the heavy, repetitive scanning.',
+        heading: 'Where AI earned its place',
+        body: 'AI is strong at exactly the part that was draining people: reading every page, matching figures across statements, and applying a known checklist consistently at scale. So we pointed it there - executing the disclosure checklist, surfacing each finding with a citation, and flagging cross-reference breaks. We deliberately kept AI away from the final verdict. It proposes and evidences; the reviewer decides.',
+      },
+      {
+        heading: 'Designing for trust',
+        body: 'Auditors will not trust a black box, and they should not have to. Every screen was designed to make the AI legible: live progress as the checklist runs, an honest breakdown of what was executed, skipped, or errored, a citation on every finding, and simple Approve / Not Applicable controls. That is why the design work mattered - the hard part was not generating answers, it was presenting them so a professional could verify and own them quickly.',
       },
     ],
+    process: [
+      {
+        title: 'Set up the engagement',
+        body: 'The reviewer names the engagement and entity, then picks the accounting standard (IFRS / PFRS), regulatory framework, country, and year under review. These choices tell the AI which checklist and rules to apply, so the review is scoped correctly before a single document is touched.',
+      },
+      {
+        title: 'Choose the review areas',
+        body: 'Rather than running everything blindly, the reviewer selects which statements and disclosures are in scope - basis of preparation, cover page, management responsibility, profit or loss, financial position. The work matches the engagement instead of a one-size checklist.',
+      },
+      {
+        title: 'Add the document sources',
+        body: 'The reviewer uploads the financial statements and supporting files. Clear states for uploading, parsing, and ready keep them oriented while the system ingests potentially hundreds of pages.',
+      },
+      {
+        title: 'Let the AI execute the checklist',
+        body: 'The AI runs each checklist item against the source documents, showing live progress and a transparent count of what was executed, skipped, or errored - never a silent black box.',
+      },
+      {
+        title: 'Review findings and cross-references',
+        body: 'Each item returns an AI finding with a citation back to the exact source, plus cross-referencing checks that flag inconsistencies like unlinked notes ("Note 15 and 23 are not linked"). The reviewer reads the reasoning, not just a verdict.',
+      },
+      {
+        title: 'Approve, flag, or mark not applicable',
+        body: 'The reviewer confirms each result with Approve / Not Applicable controls and thumbs feedback. The human signs off on every line; the AI just removed the hours of manual scanning needed to get there.',
+      },
+    ],
+    outcomes: [
+      { value: 'Days to minutes', label: 'A full statement review that took several days now runs in minutes' },
+      { value: 'Every item cited', label: 'Each AI finding links back to its source for fast verification' },
+      { value: '100% human sign-off', label: 'Reviewers approve, reject, or exempt every checklist result' },
+      { value: 'End to end', label: 'From basis of preparation to financial position in one flow' },
+    ],
     images: [
-      { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status' },
-      { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year' },
-      { src: '/assets/projects/ey-executing.png', caption: 'AI executing the checklist against the uploaded documents' },
-      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm' },
-      { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls' },
+      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'laptop' },
+      { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status', device: 'browser' },
+      { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year', device: 'browser' },
+      { src: '/assets/projects/ey-executing.png', caption: 'AI executing the checklist against the uploaded documents', device: 'browser' },
+      { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls', device: 'browser' },
     ],
   },
   {
@@ -234,6 +277,44 @@ function getFanTransform(offset) {
   return { x: sign * 420, rotate: sign * 14, scale: 0.78, zIndex: 1, opacity: 0.6 };
 }
 
+function DeviceImage({ src, caption, device = 'browser', alt }) {
+  const img = <img src={src} alt={alt} loading="lazy" />;
+  let frame;
+  if (device === 'laptop') {
+    frame = (
+      <div className="device device--laptop">
+        <div className="device__screen">{img}</div>
+        <div className="device__base"><span className="device__notch" /></div>
+      </div>
+    );
+  } else if (device === 'phone') {
+    frame = (
+      <div className="device device--phone">
+        <span className="device__camera" />
+        <div className="device__screen">{img}</div>
+      </div>
+    );
+  } else if (device === 'plain') {
+    frame = <div className="device device--plain"><div className="device__screen">{img}</div></div>;
+  } else {
+    frame = (
+      <div className="device device--browser">
+        <div className="device__bar">
+          <span className="device__dot" /><span className="device__dot" /><span className="device__dot" />
+          <span className="device__url" />
+        </div>
+        <div className="device__screen">{img}</div>
+      </div>
+    );
+  }
+  return (
+    <figure className="case-figure">
+      {frame}
+      {caption && <figcaption className="case-figure__caption">{caption}</figcaption>}
+    </figure>
+  );
+}
+
 function ExpandedCard({ project, cardRect, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -247,111 +328,121 @@ function ExpandedCard({ project, cardRect, onClose }) {
   const startScaleX = cardRect ? cardRect.width / window.innerWidth : 0.3;
   const startScaleY = cardRect ? cardRect.height / window.innerHeight : 0.4;
 
-  const [activeImg, setActiveImg] = useState(0);
-  const hasImages = project.images && project.images.length > 0;
+  const images = project.images || [];
+  const heroImage = images[0];
+  const galleryImages = images.slice(1);
+  const meta = project.meta || {};
+  const metaItems = [
+    ['Client', project.client],
+    ['Capabilities', meta.capabilities],
+    ['Role', meta.role],
+    ['Platform', meta.platform],
+    ['Timeline', meta.timeline],
+  ].filter(([, v]) => v && (!Array.isArray(v) || v.length));
 
   return (
     <motion.div
       className="case-expanded"
       style={{ background: project.color }}
-      initial={{
-        x: startX,
-        y: startY,
-        scaleX: startScaleX,
-        scaleY: startScaleY,
-        borderRadius: '0px',
-      }}
-      animate={{
-        x: 0,
-        y: 0,
-        scaleX: 1,
-        scaleY: 1,
-        borderRadius: '0px',
-      }}
-      exit={{
-        x: startX,
-        y: startY,
-        scaleX: startScaleX,
-        scaleY: startScaleY,
-        borderRadius: '0px',
-      }}
+      initial={{ x: startX, y: startY, scaleX: startScaleX, scaleY: startScaleY, borderRadius: '0px' }}
+      animate={{ x: 0, y: 0, scaleX: 1, scaleY: 1, borderRadius: '0px' }}
+      exit={{ x: startX, y: startY, scaleX: startScaleX, scaleY: startScaleY, borderRadius: '0px' }}
       transition={{ duration: 0.55, ease }}
       onClick={onClose}
     >
+      <button className="case-detail__close" onClick={onClose} aria-label="Close case study">✕ Close</button>
       <motion.div
-        className="case-expanded__inner"
+        className="case-detail"
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 20 }}
         transition={{ duration: 0.4, delay: 0.25, ease }}
         onClick={(e) => e.stopPropagation()}
-        style={hasImages ? { maxWidth: '1200px' } : { maxWidth: '720px' }}
       >
-        <div>
+        <header className="case-detail__hero">
           <div className="case-expanded__tags">
             {project.tags.map(t => <span key={t} className="case-expanded__tag">{t}</span>)}
           </div>
-          <span className="case-expanded__client">{project.client}</span>
-          <h2 className="case-expanded__title">{project.title}</h2>
-          {project.sections ? (
-            <div className="case-expanded__sections">
-              {project.sections.map((s, i) => (
-                <div key={i} className="case-expanded__section">
-                  <h4 className="case-expanded__section-heading">{s.heading}</h4>
-                  <p className="case-expanded__body">{s.body}</p>
+          <h2 className="case-detail__title">{project.title}</h2>
+          {project.lead && <p className="case-detail__lead">{project.lead}</p>}
+          {metaItems.length > 0 && (
+            <dl className="case-detail__meta">
+              {metaItems.map(([label, value]) => (
+                <div className="case-detail__meta-item" key={label}>
+                  <dt>{label}</dt>
+                  <dd>{Array.isArray(value) ? value.join(', ') : value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+        </header>
+
+        {heroImage && (
+          <DeviceImage
+            src={heroImage.src || heroImage}
+            caption={heroImage.caption}
+            device={heroImage.device || 'browser'}
+            alt={`${project.title} - ${heroImage.caption || 'product screenshot'}`}
+          />
+        )}
+
+        {project.sections && (
+          <div className="case-detail__sections">
+            {project.sections.map((s, i) => (
+              <section className="case-section" key={i}>
+                <h3 className="case-section__label">{s.heading}</h3>
+                <p className="case-section__body">{s.body}</p>
+              </section>
+            ))}
+          </div>
+        )}
+
+        {project.process && project.process.length > 0 && (
+          <section className="case-block case-process">
+            <h3 className="case-block__label">The UX journey</h3>
+            <ol className="case-process__list">
+              {project.process.map((step, i) => (
+                <li className="case-process__step" key={i}>
+                  <span className="case-process__num">{i + 1}</span>
+                  <div className="case-process__content">
+                    <h4 className="case-process__title">{step.title}</h4>
+                    <p className="case-process__body">{step.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {project.outcomes && project.outcomes.length > 0 && (
+          <section className="case-block case-outcomes">
+            <h3 className="case-block__label">Outcomes</h3>
+            <div className="case-outcomes__grid">
+              {project.outcomes.map((o, i) => (
+                <div className="case-outcome" key={i}>
+                  <span className="case-outcome__value">{o.value}</span>
+                  <span className="case-outcome__label">{o.label}</span>
                 </div>
               ))}
             </div>
-          ) : (
-            <p className="case-expanded__body">{project.full}</p>
-          )}
-        </div>
-        {hasImages && (
-          <div className="case-expanded__gallery">
-            <div style={{
-              borderRadius: '0',
-              overflow: 'hidden',
-              background: 'rgba(0,0,0,0.3)',
-              aspectRatio: '16/10',
-            }}>
-              <img
-                src={project.images[activeImg]?.src || project.images[activeImg]}
-                alt={`${project.title} screenshot`}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
+          </section>
+        )}
+
+        {galleryImages.length > 0 && (
+          <section className="case-block case-gallery">
+            <h3 className="case-block__label">Inside the product</h3>
+            <div className="case-gallery__stack">
+              {galleryImages.map((img, i) => (
+                <DeviceImage
+                  key={i}
+                  src={img.src || img}
+                  caption={img.caption}
+                  device={img.device || 'browser'}
+                  alt={`${project.title} - ${img.caption || 'product screenshot'}`}
+                />
+              ))}
             </div>
-            {project.images[activeImg]?.caption && (
-              <p style={{
-                fontSize: '13px', color: 'rgba(255,255,255,0.5)',
-                fontFamily: "'IBM Plex Mono', monospace",
-                textAlign: 'center', margin: 0,
-              }}>
-                {project.images[activeImg].caption}
-              </p>
-            )}
-            {project.images.length > 1 && (
-              <div style={{
-                display: 'flex', gap: '8px', overflowX: 'auto',
-                paddingBottom: '4px',
-              }}>
-                {project.images.map((img, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImg(i)}
-                    style={{
-                      flex: '0 0 80px', height: '52px', borderRadius: '0',
-                      overflow: 'hidden', border: i === activeImg ? '2px solid #fff' : '2px solid transparent',
-                      opacity: i === activeImg ? 1 : 0.5,
-                      cursor: 'pointer', padding: 0, background: 'rgba(0,0,0,0.3)',
-                      transition: 'opacity 0.2s, border-color 0.2s',
-                    }}
-                  >
-                    <img src={img?.src || img} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+          </section>
         )}
       </motion.div>
     </motion.div>
