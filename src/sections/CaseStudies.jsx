@@ -7,6 +7,35 @@ const ease = [0.22, 1, 0.36, 1];
 
 const projects = [
   {
+    id: 'ey-fs-review',
+    client: 'EY',
+    title: 'AI FS Review Tool',
+    color: '#14130e',
+    image: '/assets/projects/ey-results.png',
+    tags: ['Enterprise AI', 'Audit & Assurance'],
+    sections: [
+      {
+        heading: 'Problem',
+        body: 'EY teams reviewing client financial statements worked through long compliance checklists by hand - hundreds of items per engagement, spanning everything from simple presentation and formatting checks to complex cross-referencing between the notes, the cash flow statement, and the statement of financial position. A single review could take several days, and the repetitive, manual nature of the work left more room for items to slip through than for reviewers to apply their judgment where it actually mattered.',
+      },
+      {
+        heading: 'Definition',
+        body: 'We mapped the tool around how an engagement actually runs: set up the engagement (entity, accounting standard, regulatory framework, year under review), choose which areas to review, point the tool at the source documents, then run the standard FS disclosure checklist against them. The checklist itself is structured and repeatable - basis of preparation, cover page, management responsibility, profit or loss, financial position - which made it a strong fit for AI execution with a human approving every result.',
+      },
+      {
+        heading: 'Output',
+        body: 'An AI FS Review tool that executes the full disclosure checklist against uploaded financial statements in minutes instead of days. Reviewers get a results dashboard summarising items reviewed, validations passed and failed, and items still to confirm, with a clear breakdown of what was executed, skipped, or errored and why. Every checklist item shows an AI-generated finding with a citation back to the source, a cross-referencing status that flags issues like unlinked notes ("Note 15 and 23 are not linked"), and Approve / Not Applicable controls plus thumbs feedback - keeping the reviewer in control of each judgment while the AI handles the heavy, repetitive scanning.',
+      },
+    ],
+    images: [
+      { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status' },
+      { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year' },
+      { src: '/assets/projects/ey-executing.png', caption: 'AI executing the checklist against the uploaded documents' },
+      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm' },
+      { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls' },
+    ],
+  },
+  {
     id: 'icc-cpo',
     client: 'International Commercial Court',
     title: 'CPO Case Assistant',
