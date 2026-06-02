@@ -466,6 +466,7 @@ async function handleStats(kv) {
   const eventValues = await Promise.all(eventList.keys.slice(0, 200).map(k => kv.get(k.name)));
   const pageDwell = {};        // path → { totalMs, views }
   const sessionDwell = {};     // session → total visible ms
+  const sessionBatches = {};   // session → [{ time, events, country, region }]
   const regionTotals = {};     // "Region, CC" → count
   const consentCounts = { accept: 0, decline: 0 };
   let trackedPageviews = 0;
@@ -480,6 +481,10 @@ async function handleStats(kv) {
       if (ev.region && ev.country && ev.country !== '??') {
         const label = `${ev.region}, ${ev.country}`;
         regionTotals[label] = (regionTotals[label] || 0) + 1;
+      }
+      if (ev.session) {
+        if (!sessionBatches[ev.session]) sessionBatches[ev.session] = [];
+        sessionBatches[ev.session].push({ time: ev.time || '', events: ev.events, country: ev.country, region: ev.region });
       }
       for (const e of ev.events) {
         if (!e || !e.path) continue;
@@ -501,6 +506,26 @@ async function handleStats(kv) {
     .sort((a, b) => (b[1].totalMs / b[1].views) - (a[1].totalMs / a[1].views));
   const sortedRegions = Object.entries(regionTotals).sort((a, b) => b[1] - a[1]);
   const totalConsent = consentCounts.accept + consentCounts.decline;
+
+  // Per-visitor journeys: ordered page sequence + dwell, reconstructed from each
+  // session's batches (sorted chronologically), newest sessions first.
+  const journeys = Object.entries(sessionBatches).map(([session, batches]) => {
+    batches.sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+    const steps = [];
+    let country = '', region = '';
+    for (const b of batches) {
+      if (!country && b.country && b.country !== '??') country = b.country;
+      if (!region && b.region) region = b.region;
+      for (const e of b.events) {
+        if (e && e.path) steps.push({ path: e.path, dwellMs: e.dwellMs || 0 });
+      }
+    }
+    const totalMs = steps.reduce((sum, s) => sum + s.dwellMs, 0);
+    return {
+      session, steps, totalMs, country, region,
+      lastTime: batches.length ? batches[batches.length - 1].time : '',
+    };
+  }).filter(j => j.steps.length).sort((a, b) => (b.lastTime || '').localeCompare(a.lastTime || ''));
 
   // ms → "1m 20s" / "45s"
   function fmtDur(ms) {
@@ -845,6 +870,38 @@ async function handleStats(kv) {
       color: rgba(255,255,255,0.25); font-size: 13px;
     }
 
+    /* ── Visitor journeys ── */
+    .journeys { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .journey {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 14px 16px;
+    }
+    .journey__head {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px; margin-bottom: 10px; flex-wrap: wrap;
+    }
+    .journey__who { font-size: 12px; color: rgba(255,255,255,0.45); }
+    .journey__who strong { color: rgba(255,255,255,0.8); font-weight: 500; }
+    .journey__total {
+      font-size: 12px; font-weight: 600; color: #c6ef4d;
+      background: rgba(198,239,77,0.08); padding: 3px 10px; border-radius: 999px;
+    }
+    .journey__path {
+      display: flex; align-items: center; flex-wrap: wrap; gap: 6px;
+      font-size: 12px;
+    }
+    .journey__step {
+      display: inline-flex; align-items: baseline; gap: 6px;
+      background: rgba(255,255,255,0.05); border-radius: 6px;
+      padding: 4px 9px;
+    }
+    .journey__step-path { color: rgba(255,255,255,0.85); }
+    .journey__step-dwell { color: rgba(255,255,255,0.35); font-size: 11px; }
+    .journey__arrow { color: rgba(255,255,255,0.25); font-size: 13px; }
+    .journey__more { color: rgba(255,255,255,0.35); font-size: 11px; align-self: center; }
+
     /* ── Live dot pulse ── */
     .live-dot {
       width: 8px; height: 8px; border-radius: 50%;
@@ -1028,6 +1085,31 @@ async function handleStats(kv) {
           <span class="path-list__count">${fmtDur(d.totalMs / d.views)}<span style="color:rgba(255,255,255,0.3);font-weight:400;margin-left:8px">${d.views} view${d.views !== 1 ? 's' : ''}</span></span>
         </li>`).join('')}
       </ul>` : '<div class="empty-state">No engagement data yet — visitors who accept analytics will appear here.</div>'}
+    </div>
+
+    <!-- Visitor journeys: each person's page-by-page path + time -->
+    <div class="panel">
+      <div class="section-head"><span class="section-head__dot"></span>Visitor journeys &middot; who went where, and for how long</div>
+      ${journeys.length > 0 ? `
+      <ul class="journeys">
+        ${journeys.slice(0, 25).map(j => {
+          const loc = [j.region, countryNames[j.country] || j.country].filter(Boolean).join(', ') || 'Unknown location';
+          const shownSteps = j.steps.slice(0, 12);
+          const extra = j.steps.length - shownSteps.length;
+          const pathHtml = shownSteps.map(s => {
+            const label = s.path === '/' ? 'home' : s.path;
+            return `<span class="journey__step"><span class="journey__step-path">${label}</span><span class="journey__step-dwell">${fmtDur(s.dwellMs)}</span></span>`;
+          }).join('<span class="journey__arrow">&rsaquo;</span>');
+          return `
+          <li class="journey">
+            <div class="journey__head">
+              <span class="journey__who"><strong>${loc}</strong> &middot; ${j.steps.length} page${j.steps.length !== 1 ? 's' : ''} &middot; ${j.lastTime ? relTime(j.lastTime) : ''}</span>
+              <span class="journey__total">${fmtDur(j.totalMs)} on site</span>
+            </div>
+            <div class="journey__path">${pathHtml}${extra > 0 ? `<span class="journey__more">+${extra} more</span>` : ''}</div>
+          </li>`;
+        }).join('')}
+      </ul>` : '<div class="empty-state">No visitor journeys yet — they appear once visitors who accepted analytics browse multiple pages.</div>'}
     </div>
 
     <!-- Approximate location + Consent -->
