@@ -315,6 +315,66 @@ function DeviceImage({ src, caption, device = 'browser', alt }) {
   );
 }
 
+function mixHex(hex, target, amt) {
+  const h = (hex || '#141414').replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const tr = parseInt(target.slice(1, 3), 16);
+  const tg = parseInt(target.slice(3, 5), 16);
+  const tb = parseInt(target.slice(5, 7), 16);
+  const mix = (a, t) => Math.round(a + (t - a) * amt);
+  const to2 = (v) => v.toString(16).padStart(2, '0');
+  return `#${to2(mix(r, tr))}${to2(mix(g, tg))}${to2(mix(b, tb))}`;
+}
+
+function surfacesFor(color) {
+  const h = (color || '#141414').replace('#', '');
+  const r = parseInt(h.slice(0, 2), 16);
+  const g = parseInt(h.slice(2, 4), 16);
+  const b = parseInt(h.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  const towards = lum < 0.5 ? '#ffffff' : '#000000';
+  return {
+    panel: mixHex(color, towards, lum < 0.5 ? 0.08 : 0.07),
+    panelStrong: mixHex(color, towards, lum < 0.5 ? 0.14 : 0.12),
+  };
+}
+
+function ImageSlider({ images, title, projectTitle }) {
+  const trackRef = useRef(null);
+  const scrollByDir = (dir) => {
+    const track = trackRef.current;
+    if (!track) return;
+    const slide = track.querySelector('.case-slide');
+    const amount = slide ? slide.getBoundingClientRect().width + 24 : track.clientWidth;
+    track.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+  return (
+    <section className="case-block case-slider">
+      <div className="case-slider__head">
+        <h3 className="case-block__label">{title}</h3>
+        <div className="case-slider__nav">
+          <button type="button" className="case-slider__btn" aria-label="Previous image" onClick={() => scrollByDir(-1)}>‹</button>
+          <button type="button" className="case-slider__btn" aria-label="Next image" onClick={() => scrollByDir(1)}>›</button>
+        </div>
+      </div>
+      <div className="case-slider__track" ref={trackRef}>
+        {images.map((img, i) => (
+          <div className="case-slide" key={i}>
+            <DeviceImage
+              src={img.src || img}
+              caption={img.caption}
+              device={img.device || 'browser'}
+              alt={`${projectTitle} - ${img.caption || 'product screenshot'}`}
+            />
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function ExpandedCard({ project, cardRect, onClose }) {
   useEffect(() => {
     const onKey = (e) => { if (e.key === 'Escape') onClose(); };
@@ -332,6 +392,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
   const heroImage = images[0];
   const galleryImages = images.slice(1);
   const meta = project.meta || {};
+  const surfaces = surfacesFor(project.color);
   const metaItems = [
     ['Client', project.client],
     ['Capabilities', meta.capabilities],
@@ -343,7 +404,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
   return (
     <motion.div
       className="case-expanded"
-      style={{ background: project.color }}
+      style={{ background: project.color, '--panel': surfaces.panel, '--panel-strong': surfaces.panelStrong }}
       initial={{ x: startX, y: startY, scaleX: startScaleX, scaleY: startScaleY, borderRadius: '0px' }}
       animate={{ x: 0, y: 0, scaleX: 1, scaleY: 1, borderRadius: '0px' }}
       exit={{ x: startX, y: startY, scaleX: startScaleX, scaleY: startScaleY, borderRadius: '0px' }}
@@ -360,9 +421,6 @@ function ExpandedCard({ project, cardRect, onClose }) {
         onClick={(e) => e.stopPropagation()}
       >
         <header className="case-detail__hero">
-          <div className="case-expanded__tags">
-            {project.tags.map(t => <span key={t} className="case-expanded__tag">{t}</span>)}
-          </div>
           <h2 className="case-detail__title">{project.title}</h2>
           {project.lead && <p className="case-detail__lead">{project.lead}</p>}
           {metaItems.length > 0 && (
@@ -429,20 +487,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
         )}
 
         {galleryImages.length > 0 && (
-          <section className="case-block case-gallery">
-            <h3 className="case-block__label">Inside the product</h3>
-            <div className="case-gallery__stack">
-              {galleryImages.map((img, i) => (
-                <DeviceImage
-                  key={i}
-                  src={img.src || img}
-                  caption={img.caption}
-                  device={img.device || 'browser'}
-                  alt={`${project.title} - ${img.caption || 'product screenshot'}`}
-                />
-              ))}
-            </div>
-          </section>
+          <ImageSlider images={galleryImages} title="Inside the product" projectTitle={project.title} />
         )}
       </motion.div>
     </motion.div>
