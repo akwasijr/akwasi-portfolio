@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, Fragment } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ScrollReveal from '../components/ScrollReveal';
 import Starfield from '../components/Starfield';
@@ -71,11 +71,11 @@ const projects = [
       { value: 'End to end', label: 'From basis of preparation to financial position in one flow' },
     ],
     images: [
-      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'laptop' },
+      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'desktop' },
       { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status', device: 'browser' },
-      { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year', device: 'browser' },
+      { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year', device: 'tablet' },
       { src: '/assets/projects/ey-executing.png', caption: 'AI executing the checklist against the uploaded documents', device: 'browser' },
-      { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls', device: 'browser' },
+      { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls', device: 'laptop' },
     ],
   },
   {
@@ -294,6 +294,20 @@ function DeviceImage({ src, caption, device = 'browser', alt }) {
         <div className="device__screen">{img}</div>
       </div>
     );
+  } else if (device === 'tablet') {
+    frame = (
+      <div className="device device--tablet">
+        <span className="device__camera" />
+        <div className="device__screen">{img}</div>
+      </div>
+    );
+  } else if (device === 'desktop') {
+    frame = (
+      <div className="device device--desktop">
+        <div className="device__screen">{img}</div>
+        <div className="device__stand"><span className="device__neck" /><span className="device__foot" /></div>
+      </div>
+    );
   } else if (device === 'plain') {
     frame = <div className="device device--plain"><div className="device__screen">{img}</div></div>;
   } else {
@@ -355,8 +369,8 @@ function ImageSlider({ images, title, projectTitle }) {
       <div className="case-slider__head">
         <h3 className="case-block__label">{title}</h3>
         <div className="case-slider__nav">
-          <button type="button" className="case-slider__btn" aria-label="Previous image" onClick={() => scrollByDir(-1)}>‹</button>
-          <button type="button" className="case-slider__btn" aria-label="Next image" onClick={() => scrollByDir(1)}>›</button>
+          <button type="button" className="fan-arrow" aria-label="Previous image" onClick={() => scrollByDir(-1)}>&#8592;</button>
+          <button type="button" className="fan-arrow" aria-label="Next image" onClick={() => scrollByDir(1)}>&#8594;</button>
         </div>
       </div>
       <div className="case-slider__track" ref={trackRef}>
@@ -411,7 +425,6 @@ function ExpandedCard({ project, cardRect, onClose }) {
       transition={{ duration: 0.55, ease }}
       onClick={onClose}
     >
-      <button className="case-detail__close" onClick={onClose} aria-label="Close case study">✕ Close</button>
       <motion.div
         className="case-detail"
         initial={{ opacity: 0, y: 30 }}
@@ -456,17 +469,23 @@ function ExpandedCard({ project, cardRect, onClose }) {
         )}
 
         {project.process && project.process.length > 0 && (
-          <section className="case-block case-process">
+          <section className="case-block case-journey-block">
             <h3 className="case-block__label">The UX journey</h3>
-            <ol className="case-process__list">
+            <ol className="case-journey">
               {project.process.map((step, i) => (
-                <li className="case-process__step" key={i}>
-                  <span className="case-process__num">{i + 1}</span>
-                  <div className="case-process__content">
-                    <h4 className="case-process__title">{step.title}</h4>
-                    <p className="case-process__body">{step.body}</p>
-                  </div>
-                </li>
+                <Fragment key={i}>
+                  <li className="case-journey__step">
+                    <span className="case-journey__num">{String(i + 1).padStart(2, '0')}</span>
+                    <h4 className="case-journey__title">{step.title}</h4>
+                  </li>
+                  {i < project.process.length - 1 && (
+                    <li className="case-journey__arrow" aria-hidden="true">
+                      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 3l5 5-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </li>
+                  )}
+                </Fragment>
               ))}
             </ol>
           </section>
