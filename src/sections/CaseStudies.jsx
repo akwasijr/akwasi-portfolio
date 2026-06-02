@@ -70,6 +70,12 @@ const projects = [
       { value: '100% human sign-off', label: 'Reviewers approve, reject, or exempt every checklist result' },
       { value: 'End to end', label: 'From basis of preparation to financial position in one flow' },
     ],
+    problems: [
+      'A single review ran for several days of manual checklist work',
+      'Hundreds of disclosure items were checked by hand per engagement',
+      'A missed disclosure is a real quality and reputational risk',
+      'Sharp attention was spent on mechanical comparison, not judgment',
+    ],
     images: [
       { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'desktop' },
       { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status', device: 'browser' },
@@ -99,6 +105,11 @@ const projects = [
         body: 'A triage dashboard with KPI cards, case type breakdowns, and fee tracking charts. A filterable case list with status badges, deadline alerts, and AI "Explore Mode" for natural-language case queries. Context-aware AI copilot on every screen providing page-specific prompt packs: workload triage on the dashboard, case-specific queries in list views, and timeline analysis in detail views.',
       },
     ],
+    problems: [
+      'Active cases tracked across spreadsheets and disconnected systems',
+      'Hours lost daily finding case history and checking deadlines',
+      'No unified view of an officer caseload or workload',
+    ],
     images: [
       { src: '/assets/projects/difc-case-detail.png', caption: 'Case detail with claim data and sidebar' },
       { src: '/assets/projects/difc-ai-summary.png', caption: 'AI-generated case summary and next steps' },
@@ -127,6 +138,11 @@ const projects = [
         heading: 'Output',
         body: 'A guided drafting workflow where AI gathers information from multiple sources (case filings, uploaded documents, external references) and generates a first draft with proper legal formatting and citations. Judges review the draft using built-in AI tools: improve text clarity, verify citations against source material to guard against hallucination, proofread, and refine judicial reasoning. The human remains at the center. AI accelerates the assembly, the judge owns the decision.',
       },
+    ],
+    problems: [
+      'Drafting judgments took weeks of manual evidence gathering',
+      'Legal references were scattered across multiple sources',
+      'Repetitive assembly left little time for decision quality',
     ],
     images: [
       { src: '/assets/projects/difc-workflow-step3.png', caption: 'External sources: uploads, links, shared references' },
@@ -162,6 +178,11 @@ const projects = [
         body: 'Each department moved from reactive to predictive. Finance detects fraud automatically. HR screens niche heritage roles (dialect knowledge, traditional poetry, historical expertise) at scale. Legal reviews contracts in minutes. A unified search layer lets executives query across all six domains in natural language.',
       },
     ],
+    problems: [
+      'Six departments ran on disconnected tools with no shared intelligence',
+      'Manual archiving and limited Arabic / English searchability',
+      'Siloed reporting slowed every cross-departmental decision',
+    ],
     images: [
       { src: '/assets/projects/aha-executive.png', caption: 'Executive overview dashboard' },
       { src: '/assets/projects/aha-finance.png', caption: 'Finance and fraud detection' },
@@ -196,6 +217,11 @@ const projects = [
         body: 'The AI guide provides contextual cultural knowledge and adapts to user choices. Speech recognition enables spoken interactions in Arabic. AI generates personalized reflection summaries connecting historical decisions to modern values. Engagement tracking identifies which cultural topics resonate most.',
       },
     ],
+    problems: [
+      'Regional heritage was being lost to younger generations',
+      'Traditional education formats felt passive and one-directional',
+      'No immersive format existed for interactive-media audiences',
+    ],
     images: [
       { src: '/assets/projects/aha-sanaa.png', caption: 'Sanaa, the AI cultural guide' },
     ],
@@ -229,6 +255,11 @@ const projects = [
         body: 'A dashboard tracking session history, token usage, and activity patterns. It gives visibility into how you work with AI over time, what tasks you delegate most, and where the collaboration is most effective. Designed to make the human-AI working relationship transparent and reflective.',
       },
     ],
+    problems: [
+      'AI was bolted onto IDEs as an afterthought, not a starting point',
+      'Constant context-switching between code and design tools',
+      'Re-explaining your stack and style every single session',
+    ],
     images: [
       { src: '/assets/projects/terminal42-workspace.png', caption: 'Terminal workspace with AI copilot' },
       { src: '/assets/projects/terminal42-design.png', caption: 'Design studio with live canvas preview' },
@@ -257,6 +288,11 @@ const projects = [
         heading: 'AI patterns',
         body: 'Each concept integrates AI differently based on the task. The banking dashboard surfaces a portfolio rebalance recommendation inline with a single-click action. The energy grid shows predictive insights with confidence scores so operators know when to trust versus investigate. The smart factory includes a persistent conversational assistant for natural-language queries against production data. The common thread: AI appears where it reduces a multi-step workflow to one decision point, never as a standalone feature.',
       },
+    ],
+    problems: [
+      'Dense, real-time data overwhelmed operators on every screen',
+      'Generic dashboards ignored real domain workflows',
+      'AI features bolted on as standalone, never in the flow of work',
     ],
     images: [
       { src: '/case-studies/industry-banking/industry-banking.png', caption: 'Banking: portfolio management with AI rebalance recommendations' },
@@ -466,6 +502,24 @@ function ExpandedCard({ project, cardRect, onClose }) {
               </section>
             ))}
           </div>
+        )}
+
+        {project.problems && project.problems.length > 0 && (
+          <section className="case-block case-problems">
+            <h3 className="case-block__label">The problems</h3>
+            <ul className="case-problems__list">
+              {project.problems.map((p, i) => (
+                <li className="case-problems__item" key={i}>
+                  <span className="case-problems__mark" aria-hidden="true">
+                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M3.5 3.5l7 7M10.5 3.5l-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    </svg>
+                  </span>
+                  <span className="case-problems__text">{p}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         {project.process && project.process.length > 0 && (
