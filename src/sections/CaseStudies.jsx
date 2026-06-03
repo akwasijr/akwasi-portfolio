@@ -489,7 +489,7 @@ function ExpandedCard({ project, cardRect, onClose }) {
           )}
         </header>
 
-        {heroImage && (
+        {heroImage && !project.video && (
           <DeviceImage
             src={heroImage.src || heroImage}
             caption={heroImage.caption}

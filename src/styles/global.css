@@ -1688,9 +1688,8 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 }
 .case-detail__meta-item dt {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.4);
   margin-bottom: 8px;
 }
@@ -1799,10 +1798,9 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .case-section { display: grid; grid-template-columns: 180px 1fr; gap: 40px; align-items: start; }
 .case-section__label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
   margin: 8px 0 0;
 }
@@ -1818,10 +1816,9 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 /* ── Block label (journey / outcomes / gallery) ── */
 .case-block__label {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  letter-spacing: 0.01em;
   color: rgba(255,255,255,0.45);
   margin: 0 0 28px;
 }
