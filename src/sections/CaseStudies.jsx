@@ -232,6 +232,9 @@ const projects = [
     title: 'Terminal 42',
     color: '#1a1d23',
     image: '/assets/projects/terminal42-splash.png',
+    video: '/assets/projects/terminal42-demo.mp4',
+    videoPoster: '/assets/projects/terminal42-splash.png',
+    videoCaption: 'Terminal 42 v0.12 - live product demo',
     tags: ['Design Experiment', 'AI Workspace', 'Developer Tools'],
     sections: [
       {
@@ -313,8 +316,10 @@ function getFanTransform(offset) {
   return { x: sign * 420, rotate: sign * 14, scale: 0.78, zIndex: 1, opacity: 0.6 };
 }
 
-function DeviceImage({ src, caption, device = 'browser', alt }) {
-  const img = <img src={src} alt={alt} loading="lazy" />;
+function DeviceImage({ src, caption, device = 'browser', alt, video, poster }) {
+  const img = video
+    ? <video src={video} poster={poster} controls playsInline preload="metadata" />
+    : <img src={src} alt={alt} loading="lazy" />;
   let frame;
   if (device === 'laptop') {
     frame = (
@@ -491,6 +496,19 @@ function ExpandedCard({ project, cardRect, onClose }) {
             device={heroImage.device || 'browser'}
             alt={`${project.title} - ${heroImage.caption || 'product screenshot'}`}
           />
+        )}
+
+        {project.video && (
+          <section className="case-block case-demo">
+            <h3 className="case-block__label">Live demo</h3>
+            <DeviceImage
+              video={project.video}
+              poster={project.videoPoster}
+              caption={project.videoCaption}
+              device="laptop"
+              alt={`${project.title} demo video`}
+            />
+          </section>
         )}
 
         {project.sections && (

@@ -1714,6 +1714,7 @@ button { background: none; border: none; color: inherit; cursor: none; font: inh
 .device { width: 100%; }
 .device__screen { overflow: hidden; background: #000; }
 .device__screen img { width: 100%; display: block; }
+.device__screen video { width: 100%; display: block; }
 
 .device--browser {
   border-radius: 12px;
