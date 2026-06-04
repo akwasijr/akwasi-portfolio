@@ -12,6 +12,9 @@ const projects = [
     title: 'AI FS Review Tool',
     color: '#14130e',
     image: '/assets/projects/ey-results.png',
+    video: '/assets/projects/ey-demo.mp4',
+    videoPoster: '/assets/projects/ey-demo-poster.png',
+    videoCaption: 'AI FS Review - product walkthrough',
     tags: ['Enterprise AI', 'Audit & Assurance'],
     lead: 'A financial-statement review that once took auditors several days, rebuilt as a guided AI workflow that runs the full disclosure checklist in minutes - while the auditor still signs off on every call.',
     meta: {
@@ -77,8 +80,8 @@ const projects = [
       'Sharp attention was spent on mechanical comparison, not judgment',
     ],
     images: [
-      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'desktop' },
       { src: '/assets/projects/ey-overview.png', caption: 'FS Review overview - checklists by client, period, and status', device: 'browser' },
+      { src: '/assets/projects/ey-results.png', caption: 'Results dashboard: items reviewed, passed, failed, to confirm', device: 'desktop' },
       { src: '/assets/projects/ey-setup.png', caption: 'Guided review setup: engagement, standard, framework, year', device: 'tablet' },
       { src: '/assets/projects/ey-executing.png', caption: 'AI executing the checklist against the uploaded documents', device: 'browser' },
       { src: '/assets/projects/ey-checklist.png', caption: 'Checklist findings with citations, cross-references, and approve controls', device: 'laptop' },
